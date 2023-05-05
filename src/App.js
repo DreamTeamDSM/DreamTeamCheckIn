@@ -1,5 +1,5 @@
 import React from "react";
-import { createDatabase, saveDatabase, destroyDatabase } from "./database.js";
+import { createDatabase, saveDatabase, destroyDatabase, seedDatabase } from "./database.js";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -25,7 +25,7 @@ function App(props) {
     const db = await createDatabase();
 
     //TODO: Seed data here
-    await database.seedDatabase(db);
+    await seedDatabase(db);
 
     await saveDatabase(db);
   };
