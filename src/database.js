@@ -2,11 +2,25 @@ const initSqlJs = require("sql.js");
 
 const SQLITE_DB_FILE = "sqlite.db";
 
+export async function addLoad(db) {
+  const time = new Date().toISOString();
+  db.run("INSERT INTO Loads VALUES (?)", [time]);
+  await saveDatabase(db);
+}
+
+export async function getLoads(db) {
+  const loads = [];
+  db.each("SELECT * FROM Loads", (row) => {
+    loads.push(row);
+  });
+  return loads;
+}
+
 export async function destroyDatabase() {
   console.log("Destroying database...");
   const dirHandle = await navigator.storage.getDirectory();
   // eslint-disable-next-line no-unused-vars
-  for await (const [key, value] of dirHandle.entries()) {
+  for await (const [key] of dirHandle.entries()) {
     console.log("Deleting file: " + key);
     await dirHandle.removeEntry(key);
   }
@@ -27,12 +41,12 @@ export async function loadDatabase() {
   const fileHandle = await dirHandle.getFileHandle(SQLITE_DB_FILE);
   const fileData = await fileHandle.getFile();
 
-  console.log("Reinitializing database from data...");
+  console.log(`Reinitializing database from data (${fileData.size} bytes)...`);
   const SQL = await initSqlJs({
     locateFile: (file) => `https://sql.js.org/dist/${file}`,
   });
 
-  const db = new SQL.Database(fileData);
+  const db = new SQL.Database(fileData.arrayBuffer());
 
   console.log("Existing database loaded.");
 
@@ -47,6 +61,7 @@ export async function createDatabase() {
   });
 
   const db = new SQL.Database();
+  db.run("CREATE TABLE Loads (time text);");
 
   // TODO: initialize schema
 
@@ -70,7 +85,7 @@ export async function saveDatabase(db) {
   console.log("Serializing database...");
   const binaryArray = db.export();
 
-  console.log("Writing database to file...");
+  console.log("Writing database to file (" + binaryArray.length + " bytes)...");
   const writable = await fileHandle.createWritable();
   await writable.write(binaryArray);
   await writable.close();

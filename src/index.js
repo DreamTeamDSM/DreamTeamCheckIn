@@ -8,6 +8,7 @@ import {
   loadDatabase,
   createDatabase,
   saveDatabase,
+  destroyDatabase,
 } from "./database.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -28,18 +29,24 @@ serviceWorkerRegistration.register();
 reportWebVitals();
 
 async function demoDatabase() {
-  // await destroyDatabase();
+  await destroyDatabase();
 
-  const existingDb = await loadDatabase();
-  if (!existingDb) {
+  var db = await loadDatabase();
+  if (!db) {
     console.log("No existing database found. Creating new one...");
-    const newDb = await createDatabase();
+    db = await createDatabase();
     console.log("New database created. Saving...");
-    await saveDatabase(newDb);
+    await saveDatabase(db);
     console.log("New database saved!");
   } else {
     console.log("Existing database loaded!");
   }
+
+  console.log("Adding new load...");
+  await addLoad(db);
+
+  const loads = await getLoads(db);
+  console.log("Loads: ", loads);
 }
 
 demoDatabase();
