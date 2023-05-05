@@ -29,20 +29,21 @@ const useStyles = makeStyles({
   },
 });
 
+const handleChange = (event,info) => {
+    console.log("event + info",event, info);
+}
 
 const columns = [
     { field: 'id', headerName: 'ID', width: 90 },
     { field: 'groupnumber', headerName: 'Group #', width: 90 },
     { field: 'checkin', headerName: 'Check In', width: 150,
         renderCell: (info) => {
-            console.log(info);
-            return (<Checkbox value="1" />);
+            return (<Checkbox onChange={(event)=>handleChange(event,info)} />);
         }
     },
     { field: 'checkout', headerName: 'Check Out', width: 120,
         renderCell: (info) => {
-            console.log(info);
-            return (<Checkbox value="1" />);
+            return (<Checkbox onChange={(event)=>handleChange(event,info)} />);
         }
     },
     { field: 'firstname', headerName: 'First Name', width: 120 },
