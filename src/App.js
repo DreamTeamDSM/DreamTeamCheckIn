@@ -2,12 +2,12 @@ import React from "react";
 const database = require("./database");
 import { destroyDatabase } from "./database.js";
 
-import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 
 import { RideInfo } from "./components/RideInfo";
+import { Navigation } from './components/Navigation'
 
 function App(props) {
   const db = props.db;
@@ -60,21 +60,10 @@ function App(props) {
   return (
     <ThemeProvider theme={mdTheme}>
       <CssBaseline />
+      <header>
+        <Navigation />
+      </header>
       <Container maxWidth="lg">
-        <header>
-          <Typography
-            component="h1"
-            variant="h4"
-            mt={5}
-            gutterBottom
-            color="inherit"
-            noWrap
-            sx={{ flexGrow: 1 }}
-          >
-            {" "}
-            {"Dream Team Check-in"}
-          </Typography>
-        </header>
         <main>
           <RideInfo
             riders={riders}
