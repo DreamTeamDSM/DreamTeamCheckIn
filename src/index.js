@@ -4,7 +4,12 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
-import { loadDatabase, createDatabase, saveDatabase } from "./database.js";
+import {
+  loadDatabase,
+  createDatabase,
+  saveDatabase,
+  destroyDatabase,
+} from "./database.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -24,6 +29,8 @@ serviceWorkerRegistration.register();
 reportWebVitals();
 
 async function demoDatabase() {
+  // await destroyDatabase();
+
   const existingDb = await loadDatabase();
   if (!existingDb) {
     console.log("No existing database found. Creating new one...");

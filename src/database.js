@@ -2,6 +2,15 @@ const initSqlJs = require("sql.js");
 
 const SQLITE_DB_FILE = "sqlite.db";
 
+export async function destroyDatabase() {
+  console.log("Destroying database...");
+  const dirHandle = await navigator.storage.getDirectory();
+  for await (const [key, value] of dirHandle.entries()) {
+    console.log("Deleting file: " + key);
+    await dirHandle.removeEntry(key);
+  }
+}
+
 export async function loadDatabase() {
   console.log("Loading database...");
 
@@ -22,7 +31,7 @@ export async function loadDatabase() {
     locateFile: (file) => `https://sql.js.org/dist/${file}`,
   });
 
-  const db = SQL.Database(fileData);
+  const db = new SQL.Database(fileData);
 
   console.log("Existing database loaded.");
 
