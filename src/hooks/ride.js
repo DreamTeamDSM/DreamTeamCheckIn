@@ -20,9 +20,11 @@ export const getRides = async () => {
 
   //get rides
   const result = db.exec(
-    "SELECT * FROM Ride"
+    "SELECT * FROM Rides"
   );
   const rideData = resultToObjArray(result[0]);
+
+  console.log(rideData);
 
   return rideData;
 };
