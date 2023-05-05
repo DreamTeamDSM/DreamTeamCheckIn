@@ -1,12 +1,11 @@
 import React from "react";
-const database = require("./database");
-
+import { createDatabase, saveDatabase, destroyDatabase, loadDatabase, saveDatabaseAsFile } from "./database.js";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 
 import { RideInfo } from "./components/RideInfo";
-import { Navigation } from './components/Navigation'
+import { Navigation } from "./components/Navigation";
 
 function App(props) {
   const db = props.db;
@@ -22,11 +21,11 @@ function App(props) {
   };
 
   const handleClick = async () => {
-    const db = await database.createDatabase();
+    const db = await createDatabase();
 
     //TODO: Seed data here
 
-    await database.saveDatabase(db);
+    await saveDatabase(db);
   };
 
   const mdTheme = createTheme({
@@ -46,15 +45,53 @@ function App(props) {
     },
   });
 
-
   const riders = [
-    { id: 1, groupnumber: 1, checkin: 0, checkout: 0, firstname: "Aaron", lastname: "Ayala", ridertype: "New"},
-    { id: 2, groupnumber: 1, checkin: 0, checkout: 0, firstname: "Addison", lastname: "Palmer", ridertype: "Veteran"},
-    { id: 3, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Alayia", lastname: "White", ridertype: "New"},
-    { id: 4, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Alex", lastname: "Erickson", ridertype: "Mentor"},
-    { id: 5, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Peter", lastname: "Parker", ridertype: "Mentor"},
+    {
+      id: 1,
+      groupnumber: 1,
+      checkin: 0,
+      checkout: 0,
+      firstname: "Aaron",
+      lastname: "Ayala",
+      ridertype: "New",
+    },
+    {
+      id: 2,
+      groupnumber: 1,
+      checkin: 0,
+      checkout: 0,
+      firstname: "Addison",
+      lastname: "Palmer",
+      ridertype: "Veteran",
+    },
+    {
+      id: 3,
+      groupnumber: 2,
+      checkin: 0,
+      checkout: 0,
+      firstname: "Alayia",
+      lastname: "White",
+      ridertype: "New",
+    },
+    {
+      id: 4,
+      groupnumber: 2,
+      checkin: 0,
+      checkout: 0,
+      firstname: "Alex",
+      lastname: "Erickson",
+      ridertype: "Mentor",
+    },
+    {
+      id: 5,
+      groupnumber: 2,
+      checkin: 0,
+      checkout: 0,
+      firstname: "Peter",
+      lastname: "Parker",
+      ridertype: "Mentor",
+    },
   ];
-
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -74,11 +111,11 @@ function App(props) {
             Initialize + Seed Database!
           </button>
           <button
-            onClick={() => database.loadDatabase().then((db) => database.saveDatabaseAsFile(db))}
+            onClick={() => loadDatabase().then((db) => saveDatabaseAsFile(db))}
           >
             Download DB as File
           </button>
-          <button onClick={() => database.destroyDatabase()}>Destroy DB</button>
+          <button onClick={() => destroyDatabase()}>Destroy DB</button>
         </main>
       </Container>
     </ThemeProvider>
