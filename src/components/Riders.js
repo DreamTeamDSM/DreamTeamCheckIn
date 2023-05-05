@@ -13,23 +13,40 @@ const useStyles = makeStyles({
   },
 });
 
+
 const handleChange = (event,info) => {
     console.log("event + info",event, info);
 }
 
+const CHECKIN = "Check In";
+const CHECKOUT = "Check Out";
+const COMPLETE = "Complete";
 
-  export default function Riders(props) {
+export default function Riders(props) {
+
+
+
 
     const columns = [
-        { field: 'id', headerName: 'ID', width: 90 },
-        { field: 'groupnumber', headerName: 'Group #', width: 90 },
-        { field: 'checkin', headerName: 'Check In/Out', width: 150, renderCell: renderButton},
-        { field: 'avatar', headerName: 'Avatar', width: 150, renderCell: rednerAvatar},
-        { field: 'firstname', headerName: 'First Name', width: 120 },
-        { field: 'lastname', headerName: 'Last Name', width: 120 },
+        { field: 'id', headerName: 'ID', flex: 1},
+        { field: 'groupnumber', headerName: 'Group #', flex: 1 },
+        { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: renderButton},
+        { field: 'avatar', headerName: 'Avatar', flex: 1, renderCell: rednerAvatar},
+        { field: 'firstname', headerName: 'First Name', flex: 2},
+        { field: 'lastname', headerName: 'Last Name', flex: 2},
       ];
 
-      const rows = props.riders;
+    const rows = props.riders;
+
+    function checkIn(dispatch,id) {
+      dispatch(CHECKOUT);
+      props.checkIn(id);
+    }
+
+    function checkOut(dispatch,id) {
+      dispatch(COMPLETE);
+      props.checkOut(id);
+    }
 
     function rednerAvatar(params) {
         return (
@@ -37,13 +54,14 @@ const handleChange = (event,info) => {
         )
     }
 
+
     function renderButton(params) {
       console.log(params);
-      let defaultState = 'Check In';
+      let defaultState = CHECKIN;
       if (params.row.checkin == 1 && params.row.checkout == 1) {
-        defaultState = 'Complete';
+        defaultState = COMPLETE;
       } else if (params.row.checkin == 1 && params.row.checkout == 0) {
-        defaultState = 'Check Out';
+        defaultState = CHECKOUT;
       }
 
       const [buttonText, setButtonText] = useState(defaultState);
@@ -52,11 +70,10 @@ const handleChange = (event,info) => {
           variant="contained"
           color="primary"
           onClick={() => {
-            if (buttonText === 'Check In') {
-              setButtonText('Check Out');
-              props.increase();
+            if (buttonText === CHECKIN) {
+              checkIn(setButtonText,params.row.id);
             } else if (buttonText === 'Check Out') {
-              setButtonText('Complete');
+              checkOut(setButtonText,params.row.id);
             }
             console.log(`Clicked button for row with id: ${params.id}`);
           }}
