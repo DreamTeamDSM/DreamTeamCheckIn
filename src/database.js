@@ -2,20 +2,6 @@ const initSqlJs = require("sql.js");
 
 const SQLITE_DB_FILE = "sqlite.db";
 
-export async function addLoad(db) {
-  const time = new Date().toISOString();
-  db.run("INSERT INTO Loads VALUES (?)", [time]);
-  await saveDatabase(db);
-}
-
-export async function getLoads(db) {
-  const loads = [];
-  db.each("SELECT * FROM Loads", (row) => {
-    loads.push(row);
-  });
-  return loads;
-}
-
 export async function destroyDatabase() {
   console.log("Destroying database...");
   const dirHandle = await navigator.storage.getDirectory();

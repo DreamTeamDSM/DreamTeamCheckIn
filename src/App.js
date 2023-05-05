@@ -1,5 +1,5 @@
 import React from "react";
-const database = require("./database");
+import { destroyDatabase } from "./database.js";
 /*
 import './App.css';
 const database = require('./database');
@@ -28,17 +28,19 @@ import Container from "@mui/material/Container";
 
 import { RideInfo } from "./components/RideInfo";
 
-function App() {
+function App(props) {
+  const db = props.db;
 
-  const [riders,setRiders] = React.useState(0);
+  const [riders, setRiders] = React.useState(0);
 
   const increaseRider = () => {
-    setRiders(riders=> riders+1);
-  }
+    setRiders((riders) => riders + 1);
+  };
 
   const decreaseRider = () => {
-    setRiders(riders=> riders-1);
-  }
+    setRiders((riders) => riders - 1);
+  };
+
   const handleClick = async () => {
     const db = await database.createDatabase();
 
@@ -90,7 +92,11 @@ function App() {
           </Typography>
         </header>
         <main>
-          <RideInfo riders={riders} increase={increaseRider} decrease={decreaseRider}/>
+          <RideInfo
+            riders={riders}
+            increase={increaseRider}
+            decrease={decreaseRider}
+          />
           <button type="button" onClick={handleClick}>
             Initialize + Seed Database!
           </button>
@@ -99,6 +105,7 @@ function App() {
           >
             Download DB as File
           </button>
+          <button onClick={() => destroyDatabase()}>Destroy DB</button>
         </main>
       </Container>
     </ThemeProvider>
