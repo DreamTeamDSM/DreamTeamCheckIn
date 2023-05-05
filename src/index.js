@@ -6,6 +6,8 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import { loadDatabase, createDatabase, saveDatabase } from "./database.js";
 
+import "@fontsource/inter";
+
 async function setupDatabase() {
   var db = await loadDatabase();
   if (!db) {

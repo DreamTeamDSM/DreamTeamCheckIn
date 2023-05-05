@@ -101,7 +101,7 @@ export async function saveDatabaseAsFile(db) {
   const url = window.URL.createObjectURL(blob);
 
   a.href = url;
-  a.download = new Date().getTime() + "_sqlite.db";
+  a.download = new Date().getTime() + "_sqlite.sqlite";
   a.click();
 
   window.URL.revokeObjectURL(url);
@@ -132,37 +132,37 @@ export async function seedDatabase(db) {
       const type = faker.helpers.arrayElement(['Rider','Support']);
       const active = faker.helpers.arrayElement([0,1]);
 
-      const sqlUser = "INSERT INTO User VALUES (" + user_id + ', "' + firstName + '","' + lastName + '","","' + type + '",' + active + ");";
+      const sqlUser = "INSERT INTO Users VALUES (" + user_id + ', "' + firstName + '","' + lastName + '","","' + type + '",' + active + ");";
       console.log("Executing:",sqlUser);
       db.exec(sqlUser);
-
-      //Ride
-      const ride_date = faker.date.between('2023-01-01', '2023-05-05');
-
-      const sqlRide = "INSERT INTO Ride VALUES (" + ride_id + ',"' + ride_date + '");';
-      console.log(sqlRide);
-      db.exec(sqlRide);
 
       //Route
       const distance = faker.random.numeric(2);
       const route_type = faker.helpers.arrayElement(['outAndBack','Loop']);
 
-      const sqlRoute = "INSERT INTO Route VALUES (" + route_id + ',' + distance + ',"' + route_type + '");';
+      const sqlRoute = "INSERT INTO Routes VALUES (" + route_id + ',' + distance + ',"' + route_type + '");';
       console.log(sqlRoute);
       db.exec(sqlRoute);
 
+      //Ride
+      const ride_date = faker.date.between('2023-01-01', '2023-05-05');
+
+      const sqlRide = "INSERT INTO Rides VALUES (" + ride_id + ',' + route_id + ',"' + ride_date + '");';
+      console.log(sqlRide);
+      db.exec(sqlRide);
+
       //Group
-      const sqlGroup = "INSERT INTO Group (group_id, ride_id) VALUES (" + group_id + ',' + ride_id + ");";
+      const sqlGroup = "INSERT INTO Groups VALUES (" + group_id + ',' + ride_id + ');';
       console.log(sqlGroup);
-      //db.exec(sqlGroup);
+      db.exec(sqlGroup);
 
       //GroupAssignment
-      const sqlGroupAssignment = "INSERT INTO GroupAssignment(user_id,group_id,check_in,check_out) VALUES (" + user_id + "," + group_id + ',0,0);';
+      const sqlGroupAssignment = "INSERT INTO GroupAssignments (user_id,group_id,check_in,check_out) VALUES (" + user_id + "," + group_id + ',0,0);';
       console.log(sqlGroupAssignment);
       db.exec(sqlGroupAssignment);
 
       //Stop
-      const sqlStop = "INSERT INTO Stop VALUES (" + stop_id + "," + route_id + ',"' + faker.random.words(5) + '",0);';
+      const sqlStop = "INSERT INTO Stops VALUES (" + stop_id + "," + route_id + ',"' + faker.random.words(5) + '",0);';
       console.log(sqlStop);
       db.exec(sqlStop);
 
