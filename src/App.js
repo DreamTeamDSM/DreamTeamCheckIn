@@ -1,11 +1,13 @@
 import React from "react";
-import { createDatabase, saveDatabase, destroyDatabase, loadDatabase, saveDatabaseAsFile } from "./database.js";
+import { createDatabase, saveDatabase, seedDatabase, destroyDatabase, loadDatabase, saveDatabaseAsFile } from "./database.js";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 
 import { RideInfo } from "./components/RideInfo";
 import { Navigation } from "./components/Navigation";
+
+import { getRides } from "./hooks/ride";
 
 function App(props) {
   const db = props.db;
@@ -24,7 +26,7 @@ function App(props) {
     const db = await createDatabase();
 
     //TODO: Seed data here
-    await database.seedDatabase(db);
+    await seedDatabase(db);
 
     await saveDatabase(db);
   };
@@ -117,6 +119,7 @@ function App(props) {
             Download DB as File
           </button>
           <button onClick={() => destroyDatabase()}>Destroy DB</button>
+          <button onClick={() => getRides()}>Get Rides</button>
         </main>
       </Container>
     </ThemeProvider>
