@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS "GroupAssignment" (
 	"group_id"	INTEGER,
 	"check_in"	INTEGER DEFAULT 0 CHECK(check_in IN (0,1)),
 	"check_out"	INTEGER DEFAULT 0 CHECK(check_out IN (0,1)),
-  "create_date"	DATETIME,
-  "update_date"	DATETIME,
+  "create_date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
+  "update_date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY("group_id") REFERENCES "Group"("group_id"),
 	FOREIGN KEY("user_id") REFERENCES "User"("user_id")
 );
@@ -46,8 +46,8 @@ CREATE TABLE IF NOT EXISTS "GroupCheck" (
 	"stop_id"	INTEGER,
 	"check_in"	INTEGER DEFAULT 0 CHECK(check_in IN (0,1)),
 	"check_out"	INTEGER DEFAULT 0 CHECK(check_out IN (0,1)),
-  "create_date"	DATETIME,
-  "update_date"	DATETIME,
+  "create_date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
+  "update_date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY("group_id") REFERENCES "Group"("group_id")
 );
 
