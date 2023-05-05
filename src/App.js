@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 const database = require('./database');
 /*
 import './App.css';
@@ -25,11 +24,10 @@ const theme = createTheme({
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-
 import Container from '@mui/material/Container';
-import { RideInfo } from './RideInfo';
 
-import Riders from './components/Riders.js';
+import { RideInfo } from './components/RideInfo';
+
 
 function App() {
   const handleClick = async () => {
