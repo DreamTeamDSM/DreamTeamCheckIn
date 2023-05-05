@@ -53,7 +53,7 @@ const Navigation = (props) => {
                             <MenuItem onClick={handleClose} ride-id='ride-id-something-or-other'>{'5/6/23 Cumming to Walnut Ridge'}</MenuItem>
                         </Menu>
                     </div>
-                    <div>
+                    <div style={{marginLeft: 'auto'}}>
                         <Search searchHandler={props.searchHandler} />
                     </div>
                 </Toolbar>
