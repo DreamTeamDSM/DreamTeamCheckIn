@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS "Users" (
 	"photo"	BLOB,
 	"user_type_id" INTEGER,
 	"active"	INTEGER DEFAULT 0 CHECK("active" IN (0, 1)),
+	"isNew" INTEGER DEFAULT 0 CHECK("isNew" IN (0,1)),
 	PRIMARY KEY("user_id" AUTOINCREMENT),
 	FOREIGN KEY("user_type_id") REFERENCES "UserTypes"("user_type_id")
 );
@@ -18,7 +19,11 @@ CREATE TABLE IF NOT EXISTS "Users" (
 CREATE TABLE IF NOT EXISTS "Routes" (
 	"route_id"	INTEGER NOT NULL,
 	"route_name" TEXT,
+	"via" TEXT,
 	"distance"	NUMERIC,
+	"climb" NUMERIC,
+	"hours" NUMERIC,
+	"difficulty" TEXT,
 	"type"	TEXT CHECK(type IN ('outAndBack','Loop')),
 	PRIMARY KEY("route_id" AUTOINCREMENT)
 );
