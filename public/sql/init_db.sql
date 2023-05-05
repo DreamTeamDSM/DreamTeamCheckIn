@@ -19,7 +19,11 @@ CREATE TABLE IF NOT EXISTS "Users" (
 CREATE TABLE IF NOT EXISTS "Routes" (
 	"route_id"	INTEGER NOT NULL,
 	"route_name" TEXT,
+	"via" TEXT,
 	"distance"	NUMERIC,
+	"climb" NUMERIC,
+	"hours" NUMERIC,
+	"difficulty" TEXT,
 	"type"	TEXT CHECK(type IN ('outAndBack','Loop')),
 	PRIMARY KEY("route_id" AUTOINCREMENT)
 );

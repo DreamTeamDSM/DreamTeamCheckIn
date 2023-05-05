@@ -144,12 +144,12 @@ export async function seedDatabase2(db) {
 
   // Seed data for Routes table
   db.exec(`
-    INSERT INTO Routes (route_name, distance, type) VALUES
-    ('Route 1', 10.2, 'outAndBack'),
-    ('Route 2', 7.8, 'Loop'),
-    ('Route 3', 14.6, 'outAndBack'),
-    ('Route 4', 5.1, 'Loop'),
-    ('Route 5', 12.9, 'outAndBack');
+    INSERT INTO Routes (route_name, distance, type, via, climb, hours, difficulty) VALUES
+    ('Route 1', 10.2, 'outAndBack', 'Pella Rd', 34, 100, 'Easy'),
+    ('Route 2', 7.8, 'Loop', 'Stella Rd', 55, 40, 'Easy'),
+    ('Route 3', 14.6, 'outAndBack', 'Another Rd', 66, 44, 'Easy'),
+    ('Route 4', 5.1, 'Loop', 'Hairy Rd', 33, 77, 'Easy'),
+    ('Route 5', 12.9, 'outAndBack', 'Pizza Rd', 88, 55, 'Medium');
   `);
 
   // Seed data for Rides table
@@ -315,8 +315,12 @@ export async function seedDatabase(db) {
       const distance = faker.random.numeric(2);
       const route_type = faker.helpers.arrayElement(['outAndBack','Loop']);
       const route_name = faker.random.word();
+      const via = faker.random.word();
+      const climb = 100;
+      const hours = 44;
+      const difficulty = 'Medium';
 
-      const sqlRoute = "INSERT INTO Routes VALUES (" + route_id + ',"' + route_name + '",' + distance + ',"' + route_type + '");';
+      const sqlRoute = "INSERT INTO Routes VALUES (" + route_id + ',"' + route_name + '","' + via + '",' + distance + ',' + climb + ',' + hours + ',"' + difficulty + '","' + route_type + '");';
       console.log(sqlRoute);
       db.exec(sqlRoute);
 
