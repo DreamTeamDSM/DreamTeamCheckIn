@@ -39,14 +39,15 @@ export async function loadDatabase() {
 
   console.log("Existing database found. Loading data...");
   const fileHandle = await dirHandle.getFileHandle(SQLITE_DB_FILE);
-  const fileData = await fileHandle.getFile();
+  const file = await fileHandle.getFile();
+  const fileData = new Uint8Array(await file.arrayBuffer());
 
-  console.log(`Reinitializing database from data (${fileData.size} bytes)...`);
+  console.log(`Reinitializing database from data (${file.size} bytes)...`);
   const SQL = await initSqlJs({
     locateFile: (file) => `https://sql.js.org/dist/${file}`,
   });
 
-  const db = new SQL.Database(fileData.arrayBuffer());
+  const db = new SQL.Database(fileData);
 
   console.log("Existing database loaded.");
 

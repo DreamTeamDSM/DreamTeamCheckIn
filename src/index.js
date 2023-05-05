@@ -9,6 +9,8 @@ import {
   createDatabase,
   saveDatabase,
   destroyDatabase,
+  addLoad,
+  getLoads,
 } from "./database.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
