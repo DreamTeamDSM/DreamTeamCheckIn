@@ -1,6 +1,5 @@
 import React from "react";
 const database = require("./database");
-import { destroyDatabase } from "./database.js";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -75,11 +74,11 @@ function App(props) {
             Initialize + Seed Database!
           </button>
           <button
-            onClick={() => loadDatabase().then((db) => saveDatabaseAsFile(db))}
+            onClick={() => database.loadDatabase().then((db) => database.saveDatabaseAsFile(db))}
           >
             Download DB as File
           </button>
-          <button onClick={() => destroyDatabase()}>Destroy DB</button>
+          <button onClick={() => database.destroyDatabase()}>Destroy DB</button>
         </main>
       </Container>
     </ThemeProvider>
