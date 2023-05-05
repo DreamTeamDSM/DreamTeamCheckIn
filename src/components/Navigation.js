@@ -4,9 +4,11 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 
+import { Search } from "./Search";
+
 import Logo from "../assets/logo";
 
-const Navigation = () => {
+const Navigation = (props) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -15,6 +17,8 @@ const Navigation = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Rides
           </Typography>
+
+          <Search searchHandler={props.searchHandler} />
         </Toolbar>
       </AppBar>
     </Box>

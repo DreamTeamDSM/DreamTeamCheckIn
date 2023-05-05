@@ -1,0 +1,12 @@
+.debug-bar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #4efc85;
+  padding: 10px;
+  text-align: center;
+}
+
+.debug-bar button {
+  margin-right: 10px;
+}

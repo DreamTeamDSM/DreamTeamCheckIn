@@ -1,24 +1,13 @@
 import React from "react";
-import {
-  createDatabase,
-  saveDatabase,
-  destroyDatabase,
-  loadDatabase,
-  saveDatabaseAsFile,
-  seedDatabase,
-} from "./database.js";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider } from "./theme.js";
 import Container from "@mui/material/Container";
 
 import { RideInfo } from "./components/RideInfo";
 import { Navigation } from "./components/Navigation";
-import { presentUserForToken } from "./auth.js";
+import DebugBar from "./components/DebugBar";
 
 function App(props) {
   const db = props.db;
-
-  const [riderCount, setRiderCount] = React.useState(0);
 
   const increaseRider = () => {
     setRiderCount((riderCount) => riderCount + 1);
@@ -28,37 +17,11 @@ function App(props) {
     setRiderCount((riderCount) => riderCount - 1);
   };
 
-  const handleClick = async () => {
-    const db = await createDatabase();
-
-    //TODO: Seed data here
-    await seedDatabase(db);
-
-    await saveDatabase(db);
-  };
-
-  const mdTheme = createTheme({
-    palette: {
-      primary: {
-        light: "#757ce8",
-        main: "#3f50b5",
-        dark: "#002884",
-        contrastText: "#fff",
-      },
-      secondary: {
-        light: "#ff7961",
-        main: "#f44336",
-        dark: "#ba000d",
-        contrastText: "#000",
-      },
-    },
-  });
-
-  const riders = [
+  const sampleRiders = [
     {
       id: 1,
       groupnumber: 1,
-      checkin: 0,
+      checkin: 1,
       checkout: 0,
       firstname: "Aaron",
       lastname: "Ayala",
@@ -67,7 +30,7 @@ function App(props) {
     {
       id: 2,
       groupnumber: 1,
-      checkin: 0,
+      checkin: 1,
       checkout: 0,
       firstname: "Addison",
       lastname: "Palmer",
@@ -75,7 +38,7 @@ function App(props) {
     },
     {
       id: 3,
-      groupnumber: 2,
+      groupnumber: 1,
       checkin: 0,
       checkout: 0,
       firstname: "Alayia",
@@ -87,12 +50,32 @@ function App(props) {
       groupnumber: 2,
       checkin: 0,
       checkout: 0,
+      firstname: "Billy",
+      lastname: "Jones",
+      ridertype: "New",
+    },
+    {
+      id: 5,
+      groupnumber: 2,
+      checkin: 0,
+      checkout: 0,
+      firstname: "Sam",
+      lastname: "Sibley",
+      ridertype: "Veteran",
+    },
+  ];
+  const mentors = [
+    {
+      id: 6,
+      groupnumber: 1,
+      checkin: 0,
+      checkout: 0,
       firstname: "Alex",
       lastname: "Erickson",
       ridertype: "Mentor",
     },
     {
-      id: 5,
+      id: 7,
       groupnumber: 2,
       checkin: 0,
       checkout: 0,
@@ -102,55 +85,75 @@ function App(props) {
     },
   ];
 
-  const testAuth = () => {
-    presentUserForToken((token) => {
-      try {
-        console.log("User authenticated. Updating token...", token);
-        gapi.client.setToken(token);
+  const [riders, setRiders] = React.useState(sampleRiders);
 
-        console.log("Fetching data...");
-        gapi.client.sheets.spreadsheets.values
-          .get({
-            spreadsheetId: "1MFzXHNw3-FOAKf0SUVQGXfWOWLCgXOSn_QW8sIu-ZvQ",
-            range: "A3:A12",
-          })
-          .then((response) => {
-            console.log("Response!");
-            const result = response.result;
-            const numRows = result.values ? result.values.length : 0;
-            console.log(`${numRows} rows retrieved: `, result.values);
-          });
-      } catch (err) {
-        console.log("Error fetching data: ", err);
+  const checkIn = (id) => {
+    const updatedRiders = riders.map((rider) => {
+      if (rider.id === id) {
+        // do db operation here?
+        increaseRider();
+        return { ...rider, checkin: 1 };
+      } else {
+        return rider;
       }
     });
+    setRiders(updatedRiders);
   };
 
+  const checkOut = (id) => {
+    const updatedRiders = riders.map((rider) => {
+      if (rider.id === id) {
+        // do db operation here?
+        return { ...rider, checkout: 1 };
+      } else {
+        return rider;
+      }
+    });
+    setRiders(updatedRiders);
+  };
+
+  const searchRiders = (searchInput) => {
+    console.log("searchInput", searchInput);
+  };
+
+  const reset = (id) => {
+    const updatedRiders = riders.map((rider) => {
+      if (rider.id === id) {
+        decreaseRider();
+        // do db operation here?
+        return { ...rider, checkin: 0 };
+      } else {
+        return rider;
+      }
+    });
+    setRiders(updatedRiders);
+  };
+
+  const startingCount = riders.reduce((acc, cur) => {
+    if (cur.checkin) acc++;
+    return acc;
+  }, 0);
+
+  const [riderCount, setRiderCount] = React.useState(startingCount);
+
   return (
-    <ThemeProvider theme={mdTheme}>
-      <CssBaseline />
+    <ThemeProvider>
       <header>
-        <Navigation />
+        <Navigation searchHandler={searchRiders} />
       </header>
       <Container maxWidth="lg">
         <main>
           <RideInfo
             riders={riders}
+            checkIn={checkIn}
+            checkOut={checkOut}
+            reset={reset}
             riderCount={riderCount}
-            increase={increaseRider}
-            decrease={decreaseRider}
           />
-          <button type="button" onClick={handleClick}>
-            Initialize + Seed Database!
-          </button>
-          <button
-            onClick={() => loadDatabase().then((db) => saveDatabaseAsFile(db))}
-          >
-            Download DB as File
-          </button>
-          <button onClick={() => destroyDatabase()}>Destroy DB</button>
-          <button onClick={() => testAuth()}>Test Auth</button>
         </main>
+        <footer>
+          <DebugBar />
+        </footer>
       </Container>
     </ThemeProvider>
   );
