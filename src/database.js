@@ -108,16 +108,6 @@ export async function saveDatabaseAsFile(db) {
   window.URL.revokeObjectURL(url);
 }
 
-// Returns null if the sqlite DB file doesn't exist.
-async function getDatabaseFile(dirHandle) {
-  for await (const [key, value] of dirHandle.entries()) {
-    if (key === SQLITE_DB_FILE) {
-      return value;
-    }
-  }
-  return null;
-}
-
 export async function seedDatabase(db) {
   try {
     // add a couple of user types
@@ -191,4 +181,24 @@ export async function seedDatabase(db) {
   }
 
   return;
+}
+
+export async function createEmptyDatabase() {
+  const SQL = await initSqlJs({
+    locateFile: (file) => `https://sql.js.org/dist/${file}`,
+  });
+
+  const db = new SQL.Database();
+
+  return db;
+}
+
+// Returns null if the sqlite DB file doesn't exist.
+async function getDatabaseFile(dirHandle) {
+  for await (const [key, value] of dirHandle.entries()) {
+    if (key === SQLITE_DB_FILE) {
+      return value;
+    }
+  }
+  return null;
 }
