@@ -26,15 +26,31 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+    <!-- Google API auth -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script type="text/javascript">
+      function onLogin(a, b, c) {
+        console.log("Login successful!", a, b, c);
+      }
+    </script>
+    <div
+      id="g_id_onload"
+      data-client_id="592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com"
+      data-context="signin"
+      data-ux_mode="popup"
+      data-callback="onLogin"
+      data-auto_select="true"
+      data-close_on_tap_outside="false"
+      data-itp_support="true"
+    ></div>
+    <div
+      class="g_id_signin"
+      data-type="icon"
+      data-shape="circle"
+      data-theme="outline"
+      data-text="signin"
+      data-size="large"
+    ></div>
   </body>
 </html>

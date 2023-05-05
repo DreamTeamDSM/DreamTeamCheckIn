@@ -1,13 +1,11 @@
 import React from "react";
-const database = require("./database");
-import { destroyDatabase } from "./database.js";
-
+import { createDatabase, saveDatabase, destroyDatabase, loadDatabase, saveDatabaseAsFile, seedDatabase } from "./database.js";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 
 import { RideInfo } from "./components/RideInfo";
-import { Navigation } from './components/Navigation'
+import { Navigation } from "./components/Navigation";
 
 function App(props) {
   const db = props.db;
@@ -22,11 +20,12 @@ function App(props) {
   };
 
   const handleClick = async () => {
-    const db = await database.createDatabase();
+    const db = await createDatabase();
 
     //TODO: Seed data here
+    await seedDatabase(db);
 
-    await database.saveDatabase(db);
+    await saveDatabase(db);
   };
 
   const mdTheme = createTheme({
