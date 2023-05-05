@@ -1,15 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import Container from "@mui/material/Container";
 
 import { RideInfo } from "./components/RideInfo";
 import { Navigation } from "./components/Navigation";
 import DebugBar from "./components/DebugBar";
 import { ThemeProvider } from "./theme";
+import { AppContext } from "./AppContext";
+import { importData } from "./hooks/import";
 
 import "@fontsource/inter";
+import { getRideById } from "./hooks/ride";
 
 function App(props) {
   const db = props.db;
+
+  const [ rides, setRides ] = useState([]);
+  const [ currentRide, setCurrentRide ] = useState(null);
 
   const increaseRider = () => {
     setRiderCount((riderCount) => riderCount + 1);
@@ -19,6 +25,14 @@ function App(props) {
     setRiderCount((riderCount) => riderCount - 1);
   };
 
+  const importDataSync = async () => {
+    await importData();
+    const fetchedRides = rides();
+    const fetchedCurrentRide = getRideById(fetchedRides[0].id);
+    setRides(fetchedRides);
+    setCurrentRide(fetchedCurrentRide);
+  }
+
   const tempRiders = [
     { id: 1, groupnumber: 1, checkin: 1, checkout: 0, firstname: "Aaron", lastname: "Ayala", ridertype: "New" },
     { id: 2, groupnumber: 1, checkin: 1, checkout: 0, firstname: "Addison", lastname: "Palmer", ridertype: "Veteran" },
@@ -26,6 +40,54 @@ function App(props) {
     { id: 4, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Billy", lastname: "Jones", ridertype: "New" },
     { id: 5, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Sam", lastname: "Sibley", ridertype: "Veteran" },
   ];
+
+  // const sampleRiders = [
+  //   {
+  //     id: 1,
+  //     groupnumber: 1,
+  //     checkin: 1,
+  //     checkout: 0,
+  //     firstname: "Aaron",
+  //     lastname: "Ayala",
+  //     ridertype: "New",
+  //   },
+  //   {
+  //     id: 2,
+  //     groupnumber: 1,
+  //     checkin: 1,
+  //     checkout: 0,
+  //     firstname: "Addison",
+  //     lastname: "Palmer",
+  //     ridertype: "Veteran",
+  //   },
+  //   {
+  //     id: 3,
+  //     groupnumber: 1,
+  //     checkin: 0,
+  //     checkout: 0,
+  //     firstname: "Alayia",
+  //     lastname: "White",
+  //     ridertype: "New",
+  //   },
+  //   {
+  //     id: 4,
+  //     groupnumber: 2,
+  //     checkin: 0,
+  //     checkout: 0,
+  //     firstname: "Billy",
+  //     lastname: "Jones",
+  //     ridertype: "New",
+  //   },
+  //   {
+  //     id: 5,
+  //     groupnumber: 2,
+  //     checkin: 0,
+  //     checkout: 0,
+  //     firstname: "Sam",
+  //     lastname: "Sibley",
+  //     ridertype: "Veteran",
+  //   },
+
 
   const sampleRiders = tempRiders.map((cur)=>{
     const fulltext = (cur.groupnumber + " " + cur.firstname + cur.lastname).toLowerCase();
@@ -121,6 +183,12 @@ function App(props) {
   const [riderCount, setRiderCount] = React.useState(startingCount);
 
   return (
+    <AppContext.Provider value={{
+      rides:       rides,
+      currentRide: currentRide,
+      setRides: setRides,
+      setCurrentRide: setCurrentRide,
+    }}>
     <ThemeProvider>
       <header>
         <Navigation searchHandler={setSearchText}/>
@@ -134,6 +202,7 @@ function App(props) {
             reset={reset}
             riderCount={riderCount}
             searchText={searchText}
+            // importDataSync={importDataSync}
           />
         </main>
       </Container>
@@ -141,6 +210,7 @@ function App(props) {
         <DebugBar />
       </footer>
     </ThemeProvider>
+    </AppContext.Provider>
   );
 }
 
