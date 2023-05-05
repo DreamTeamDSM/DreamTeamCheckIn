@@ -8,7 +8,7 @@ import {
   saveDatabaseAsFile,
   seedDatabase,
 } from "../database.js";
-import { getRides } from "../hooks/ride";
+import { getRides, getRideById } from "../hooks/ride";
 
 function DebugBar() {
   const handleClick = async () => {
@@ -56,6 +56,7 @@ function DebugBar() {
       </button>
       <button onClick={() => destroyDatabase()}>Destroy DB</button>
       <button onClick={() => getRides()}>Get Rides</button>
+      <button onClick={() => getRideById(12)}>Get Ride 12</button>
       <button onClick={() => testAuth()}>Test Auth</button>
     </div>
   );
