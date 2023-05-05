@@ -7,7 +7,7 @@ export default function Riders(props) {
 }
 */
 
-import React from 'react';
+import React, {useState} from 'react';
 import { makeStyles } from '@mui/styles';
 import {
   Table,
@@ -36,16 +36,7 @@ const handleChange = (event,info) => {
 const columns = [
     { field: 'id', headerName: 'ID', width: 90 },
     { field: 'groupnumber', headerName: 'Group #', width: 90 },
-    { field: 'checkin', headerName: 'Check In', width: 150,
-        renderCell: (info) => {
-            return (<Checkbox onChange={(event)=>handleChange(event,info)} />);
-        }
-    },
-    { field: 'checkout', headerName: 'Check Out', width: 120,
-        renderCell: (info) => {
-            return (<Checkbox onChange={(event)=>handleChange(event,info)} />);
-        }
-    },
+    { field: 'checkin', headerName: 'Check In/Out', width: 150, renderCell: renderButton},
     { field: 'firstname', headerName: 'First Name', width: 120 },
     { field: 'lastname', headerName: 'Last Name', width: 120 },
     { field: 'ridertype', headerName: 'Type', width: 150 },
@@ -80,3 +71,19 @@ const columns = [
       </div>
     );
   }
+
+  function renderButton(params) {
+    const [buttonText, setButtonText] = useState('Check In');
+    return (
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => {
+          setButtonText(buttonText === 'Check In' ? 'Check Out' : 'Check In');
+          console.log(`Clicked button for row with id: ${params.id}`);
+        }}
+      >
+        {buttonText}
+      </Button>
+    );}
+
