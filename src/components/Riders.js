@@ -28,7 +28,6 @@ const handleChange = (event,info) => {
 
   export default function Riders(props) {
 
-
     const columns = [
         { field: 'id', headerName: 'ID', width: 90 },
         { field: 'groupnumber', headerName: 'Group #', width: 90 },
@@ -39,12 +38,7 @@ const handleChange = (event,info) => {
         { field: 'ridertype', headerName: 'Type', width: 150 },
       ];
 
-      const rows = [
-        { id: 1, groupnumber: 1, checkin: 0, checkout: 0, firstname: "Aaron", lastname: "Ayala", ridertype: "New"},
-        { id: 2, groupnumber: 1, checkin: 0, checkout: 0, firstname: "Addison", lastname: "Palmer", ridertype: "Veteran"},
-        { id: 3, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Alayia", lastname: "White", ridertype: "New"},
-        { id: 4, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Alex", lastname: "Erickson", ridertype: "Mentor"},
-      ];
+      const rows = props.riders;
 
     function rednerAvatar(params) {
         return (

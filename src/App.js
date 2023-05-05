@@ -12,14 +12,14 @@ import { RideInfo } from "./components/RideInfo";
 function App(props) {
   const db = props.db;
 
-  const [riders, setRiders] = React.useState(0);
+  const [riderCount, setRiderCount] = React.useState(0);
 
   const increaseRider = () => {
-    setRiders((riders) => riders + 1);
+    setRiderCount((riderCount) => riderCount + 1);
   };
 
   const decreaseRider = () => {
-    setRiders((riders) => riders - 1);
+    setRiderCount((riderCount) => riderCount - 1);
   };
 
   const handleClick = async () => {
@@ -47,12 +47,15 @@ function App(props) {
     },
   });
 
-  /*
-    <ThemeProvider theme={theme}>
-      <div className="App">
-        <Riders />
-      </div>
-      */
+
+  const riders = [
+    { id: 1, groupnumber: 1, checkin: 0, checkout: 0, firstname: "Aaron", lastname: "Ayala", ridertype: "New"},
+    { id: 2, groupnumber: 1, checkin: 0, checkout: 0, firstname: "Addison", lastname: "Palmer", ridertype: "Veteran"},
+    { id: 3, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Alayia", lastname: "White", ridertype: "New"},
+    { id: 4, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Alex", lastname: "Erickson", ridertype: "Mentor"},
+    { id: 5, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Peter", lastname: "Parker", ridertype: "Mentor"},
+  ];
+
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -75,6 +78,7 @@ function App(props) {
         <main>
           <RideInfo
             riders={riders}
+            riderCount={riderCount}
             increase={increaseRider}
             decrease={decreaseRider}
           />

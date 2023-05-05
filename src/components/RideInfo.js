@@ -43,7 +43,7 @@ const RideInfo = (props) => {
                     <Divider orientation="vertical" flexItem />
                     <MetadataBox header={'# Members'} content={'8'} />
                     <Divider orientation="vertical" flexItem />
-                    <MetadataBox header={'# Riders'} content={props.riders} />
+                    <MetadataBox header={'# Riders'} content={props.riderCount} />
                     <Divider orientation="vertical" flexItem />
                     <MetadataBox header={'Miles'} content={'32'} />
                 </Box>
@@ -57,7 +57,7 @@ const RideInfo = (props) => {
                     </Tabs>
                 </Box>
                 <TabPanel value={value} index={0}>
-                    <Riders increase={props.increase} decrease={props.decrease} />
+                    <Riders riders={props.riders} increase={props.increase} decrease={props.decrease} />
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     Item Two
