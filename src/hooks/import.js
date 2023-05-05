@@ -99,7 +99,7 @@ const import_routes = async (importedDb) => {
     range: "'Stops'!A:C",
   })).result;
 
-  for (const row of routes.values) {
+  for (const row of stops.values) {
     // Skip header row
     if (row[0] === "ID") {
       continue;
@@ -108,10 +108,10 @@ const import_routes = async (importedDb) => {
     console.log("Stop row ", row);
 
     importedDb.run("INSERT INTO Stops VALUES (?, ?, ?, ?)", [
-      row[0],
-      row[1],
+      parseInt(row[1]),
+      parseInt(row[0]),
       row[2],
-      "",
+      0,
     ]);
   }
 };
