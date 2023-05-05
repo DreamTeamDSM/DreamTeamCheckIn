@@ -50,7 +50,7 @@ const import_users = (importedDb) => {
   gapi.client.sheets.spreadsheets.values
     .get({
       spreadsheetId: USER_ROUTE_SPREADSHEET_ID,
-      range: "'Users'!A:F",
+      range: "'Users'!A:G",
     })
     .then((response) => {
       const result = response.result;
@@ -60,13 +60,14 @@ const import_users = (importedDb) => {
           continue;
         }
 
-        importedDb.run("INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?)", [
+        importedDb.run("INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?)", [
           row[0],
           row[1],
           row[2],
-          "",
-          row[3],
+          "NULL", // TODO: row[3]
           row[4],
+          row[5],
+          row[6],
         ]);
       }
     });
@@ -75,7 +76,7 @@ const import_users = (importedDb) => {
 const import_routes = async (importedDb) => {
   const routes = (await gapi.client.sheets.spreadsheets.values.get({
     spreadsheetId: USER_ROUTE_SPREADSHEET_ID,
-    range: "'Routes'!A:D",
+    range: "'Routes'!A:H",
   })).result;
 
   for (const row of routes.values) {
@@ -86,11 +87,15 @@ const import_routes = async (importedDb) => {
 
     console.log("Route row ", row);
 
-    importedDb.run("INSERT INTO Routes VALUES (?, ?, ?, ?)", [
+    importedDb.run("INSERT INTO Routes VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [
       row[0],
       row[1],
       row[2],
       row[3],
+      row[4],
+      row[5],
+      row[6],
+      row[7],
     ]);
   }
 
@@ -116,10 +121,11 @@ const import_routes = async (importedDb) => {
   }
 };
 
-const import_groups = (importedDb) => {
-  //will have to create the group, then group assignments
-  //need users first
-  // TODO: pull from existing structure?
+const GROUP_SPREADSHEET_ID = "1MFzXHNw3-FOAKf0SUVQGXfWOWLCgXOSn_QW8sIu-ZvQ";
+
+const import_groups = async (importedDb) => {
+  // const spreadsheet = (await gapi.client.sheets.spreadsheets.get({spreadsheetId: GROUP_SPREADSHEET_ID})).result;
+  // console.log('Spreadsheet ', spreadsheet.sheets);
 };
 
 export async function import_data(handleImportedDb) {
