@@ -62,11 +62,8 @@ export async function createDatabase() {
   });
 
   const db = new SQL.Database();
-console.log('here1');
-  // TODO: initialize schema
-  //db.exec(fs.readFileSync(__dirname + '/sql/init_db.sql').toString());
 
-  await fetch('init_db.sql')
+  await fetch('sql/init_db.sql')
     .then(response => response.text())
     .then(data => {
       console.log("Executing create table scripts...");
