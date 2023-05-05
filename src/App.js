@@ -106,6 +106,10 @@ function App(props) {
     setRiders(updatedRiders);
   }
 
+  const searchRiders = (searchInput) => {
+    console.log("searchInput",searchInput);
+  }
+
   const startingCount = riders.reduce((acc, cur) => {
     if (cur.checkin) acc++;
     return acc;
@@ -117,7 +121,7 @@ function App(props) {
     <ThemeProvider theme={mdTheme}>
       <CssBaseline />
       <header>
-        <Navigation />
+        <Navigation searchHandler={searchRiders}/>
       </header>
       <Container maxWidth="lg">
         <main>

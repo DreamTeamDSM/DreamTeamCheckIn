@@ -9,7 +9,7 @@ import {Search} from './Search';
 
 import Logo from '../assets/logo';
 
-const Navigation = () => {
+const Navigation = (props) => {
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
@@ -19,7 +19,7 @@ const Navigation = () => {
                         Rides
                     </Typography>
 
-                    <Search />
+                    <Search searchHandler={props.searchHandler}/>
                 </Toolbar>
             </AppBar>
         </Box>

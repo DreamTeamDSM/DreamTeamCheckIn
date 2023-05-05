@@ -1,25 +1,4 @@
-/*
-import { TextField } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-
-/*
-function DeepChild() {
-  return <span>{`spacing ${theme.spacing}`}</span>;
-}
-*/
-
-/*
-const Search = (props) => {
-    const theme = useTheme();
-    console.log(theme);
-    return (
-        <TextField style={{backgroundColor: theme.palette.primary.light}} id="outlined-basic" label="Outlined" variant="outlined" />
-    );
-}
-export {Search};
-*/
-
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useState, useEffect } from "react";
 import {
   FormControl,
   InputAdornment,
@@ -39,18 +18,26 @@ const useStyles = makeStyles(() => {
   });
 });
 
-const Search = () => {
+const Search = (props) => {
   const { search } = useStyles();
   const theme = useTheme();
 
+  const [searchText,setSearchText] = useState("");
   const [showClearIcon, setShowClearIcon] = useState("none");
+
+  useEffect(()=>{
+    console.log("searchText",searchText);
+    props.searchHandler(searchText);
+  },[searchText]);
 
   const handleChange = (event) => {
     setShowClearIcon(event.target.value === "" ? "none" : "flex");
+    setSearchText(event.target.value);
   };
 
-  const handleClick = () => {
+  const handleClick = (event) => {
     // TODO: Clear the search input
+    console.log(event);
     console.log("clicked the clear icon...");
   };
 
