@@ -1,6 +1,8 @@
 import React from 'react';
+const database = require('./database');
 /*
 import './App.css';
+const database = require('./database');
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -28,6 +30,14 @@ import { RideInfo } from './components/RideInfo';
 
 
 function App() {
+  const handleClick = async () => {
+    const db = await database.createDatabase();
+
+    //TODO: Seed data here
+
+    await database.saveDatabase(db);
+  };
+
   const mdTheme = createTheme({
     palette: {
       primary: {
@@ -66,6 +76,10 @@ function App() {
         </header>
         <main>
           <RideInfo />
+          <Riders />
+          <button type="button" onClick={handleClick}>
+            Initialize + Seed Database!
+          </button>
         </main>
       </Container>
     </ThemeProvider>

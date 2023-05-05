@@ -19,6 +19,7 @@ import {
   Paper,
   Button,
   Checkbox,
+  Avatar
 } from '@mui/material';
 
 import { DataGrid } from '@mui/x-data-grid';
@@ -37,6 +38,7 @@ const columns = [
     { field: 'id', headerName: 'ID', width: 90 },
     { field: 'groupnumber', headerName: 'Group #', width: 90 },
     { field: 'checkin', headerName: 'Check In/Out', width: 150, renderCell: renderButton},
+    { field: 'avatar', headerName: 'Avatar', width: 150, renderCell: rednerAvatar},
     { field: 'firstname', headerName: 'First Name', width: 120 },
     { field: 'lastname', headerName: 'Last Name', width: 120 },
     { field: 'ridertype', headerName: 'Type', width: 150 },
@@ -50,10 +52,10 @@ const columns = [
   */
 
   const rows = [
-    { id: 1, groupnumber: 1, checkin: 0, checkout: 0, firstname: "Aaron", lastname: "Ayala", ridertype: "New"},
-    { id: 2, groupnumber: 1, checkin: 0, checkout: 0, firstname: "Addison", lastname: "Palmer", ridertype: "Veteran"},
-    { id: 3, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Alayia", lastname: "White", ridertype: "New"},
-    { id: 4, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Alex", lastname: "Erickson", ridertype: "Mentor"},
+    { id: 1, groupnumber: 1, firstname: "Aaron", lastname: "Ayala", ridertype: "New", avatar: "https://avatars.githubusercontent.com/u/100000?s=400&v=4"},
+    { id: 2, groupnumber: 1, firstname: "Addison", lastname: "Palmer", ridertype: "Veteran", avatar: "https://avatars.githubusercontent.com/u/100000?s=400&v=4"},
+    { id: 3, groupnumber: 2, firstname: "Alayia", lastname: "White", ridertype: "New"},
+    { id: 4, groupnumber: 2, firstname: "Alex", lastname: "Erickson", ridertype: "Mentor"},
   ];
 
   export default function Riders() {
@@ -70,6 +72,12 @@ const columns = [
         />
       </div>
     );
+  }
+
+  function rednerAvatar(params) {
+      return (
+          <Avatar src={params.value} alt="User Avatar"/>
+      )
   }
 
   function renderButton(params) {
