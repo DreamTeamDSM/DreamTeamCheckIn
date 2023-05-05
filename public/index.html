@@ -26,31 +26,25 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <script src="https://accounts.google.com/gsi/client"></script>
 
-    <!-- Google API auth -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script type="text/javascript">
-      function onLogin(a, b, c) {
-        console.log("Login successful!", a, b, c);
+      function gapiLoaded() {
+        gapi.load("client", initializeGapiClient);
+      }
+
+      async function initializeGapiClient() {
+        await gapi.client.init({
+          apiKey: "AIzaSyBGesbhVQKG4swLoaULpV5sjVwmbpcZxlU",
+          discoveryDocs: [
+            "https://sheets.googleapis.com/$discovery/rest?version=v4",
+          ],
+        });
       }
     </script>
-    <div
-      id="g_id_onload"
-      data-client_id="592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com"
-      data-context="signin"
-      data-ux_mode="popup"
-      data-callback="onLogin"
-      data-auto_select="true"
-      data-close_on_tap_outside="false"
-      data-itp_support="true"
-    ></div>
-    <div
-      class="g_id_signin"
-      data-type="icon"
-      data-shape="circle"
-      data-theme="outline"
-      data-text="signin"
-      data-size="large"
-    ></div>
+    <script
+      src="https://apis.google.com/js/api.js"
+      onload="gapiLoaded()"
+    ></script>
   </body>
 </html>

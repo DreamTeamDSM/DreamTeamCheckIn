@@ -1,4 +1,4 @@
-import { loadDatabase } from "../database";
+import { createDatabase, loadDatabase } from "../database";
 
 const isSynced = () => {
   //do not allow import if we have more recent changes to GroupAssignment or GroupCheck since last RideExport
@@ -40,32 +40,36 @@ const backup = () => {
   //save the current db file.. just incase. do we save this db file locally and just rename? or push it up to google? or both?
 };
 
-const import_users = () => {
+const import_users = (importedDb) => {
   //import user data here
   //no parent dependencies
 };
 
-const import_routes = () => {
+const import_routes = (importedDb) => {
   //import routes and stops here
   //no parent dependencies, add routes before stops
 };
 
-const import_ride_support = () => {
+const import_ride_support = (importedDb) => {
   //import ride support list here (this was not available in group sheet)
   //need users first, will have to match on name or id if available
 };
 
-const import_groups = () => {
+const import_groups = (importedDb) => {
   //will have to create the group, then group assignments
   //need users first
 };
 
-const import_data = () => {
-  import_users();
-  import_routes();
-  import_ride_support();
-  import_groups();
-};
+export async function import_data() {
+  const importedDb = await createDatabase();
+
+  import_users(importedDb);
+  import_routes(importedDb);
+  import_ride_support(importedDb);
+  import_groups(importedDb);
+
+  return importedDb;
+}
 
 const trigger_import = () => {
   if (!isSynced())

@@ -108,16 +108,6 @@ export async function saveDatabaseAsFile(db) {
   window.URL.revokeObjectURL(url);
 }
 
-// Returns null if the sqlite DB file doesn't exist.
-async function getDatabaseFile(dirHandle) {
-  for await (const [key, value] of dirHandle.entries()) {
-    if (key === SQLITE_DB_FILE) {
-      return value;
-    }
-  }
-  return null;
-}
-
 export async function seedDatabase(db) {
   try {
     // add a couple of user types
@@ -147,8 +137,9 @@ export async function seedDatabase(db) {
       //Route
       const distance = faker.random.numeric(2);
       const route_type = faker.helpers.arrayElement(['outAndBack','Loop']);
+      const route_name = faker.random.word();
 
-      const sqlRoute = "INSERT INTO Routes VALUES (" + route_id + ',' + distance + ',"' + route_type + '");';
+      const sqlRoute = "INSERT INTO Routes VALUES (" + route_id + ',"' + route_name + '",' + distance + ',"' + route_type + '");';
       console.log(sqlRoute);
       db.exec(sqlRoute);
 
@@ -160,7 +151,8 @@ export async function seedDatabase(db) {
       db.exec(sqlRide);
 
       //Group
-      const sqlGroup = "INSERT INTO Groups VALUES (" + group_id + ',' + ride_id + ');';
+      const group_name = faker.random.word();
+      const sqlGroup = "INSERT INTO Groups VALUES (" + group_id + ',"' + group_name + '",' + ride_id + ');';
       console.log(sqlGroup);
       db.exec(sqlGroup);
 
@@ -189,4 +181,24 @@ export async function seedDatabase(db) {
   }
 
   return;
+}
+
+export async function createEmptyDatabase() {
+  const SQL = await initSqlJs({
+    locateFile: (file) => `https://sql.js.org/dist/${file}`,
+  });
+
+  const db = new SQL.Database();
+
+  return db;
+}
+
+// Returns null if the sqlite DB file doesn't exist.
+async function getDatabaseFile(dirHandle) {
+  for await (const [key, value] of dirHandle.entries()) {
+    if (key === SQLITE_DB_FILE) {
+      return value;
+    }
+  }
+  return null;
 }

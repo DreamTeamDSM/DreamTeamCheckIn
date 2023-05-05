@@ -6,6 +6,7 @@ import {
 import Replay from '@mui/icons-material/Replay';
 import { DataGrid, GridLogicOperator } from '@mui/x-data-grid';
 import { Button } from './Button'
+import { lighten } from 'polished';
 
 const CHECKIN = "Check In";
 const CHECKOUT = "Check Out";
@@ -45,6 +46,52 @@ export default function Riders(props) {
     )
   }
 
+  function getChipStyles(label) {
+    switch (label) {
+      case CHECKIN:
+        return {
+          backgroundColor: '#849CC2',
+          color: '#FFF',
+          '&:hover': {
+            backgroundColor: lighten(0.1, '#849CC2'),
+          },
+          '& .MuiChip-deleteIcon': {
+            color: 'white',
+            '&:hover': {
+              color: 'darkred',
+            }
+          }
+        };
+      case CHECKOUT:
+        return {
+          backgroundColor: '#188B54',
+          color: '#FFF',
+          '&:hover': {
+            backgroundColor: lighten(0.1, '#188B54'),
+          },
+          '& .MuiChip-deleteIcon': {
+            color: 'white',
+            '&:hover': {
+              color: 'darkred',
+            }
+          }
+        };
+      default:
+        return {
+          backgroundColor: '#0D2A57',
+          color: '#FFF',
+          '&:hover': {
+            backgroundColor: lighten(0.1, '#0D2A57'),
+          },
+          '& .MuiChip-deleteIcon': {
+            color: 'white',
+            '&:hover': {
+              color: 'darkred',
+            }
+          }
+        };
+    }
+  }
 
   function renderChip(params) {
     let defaultState = CHECKIN;
@@ -60,8 +107,8 @@ export default function Riders(props) {
     return (
       <Chip
         variant="contained"
-        color="primary"
         label={chipText}
+        sx={getChipStyles(chipText)}
 
         onClick={() => {
           if (chipText === CHECKIN) {
@@ -71,12 +118,10 @@ export default function Riders(props) {
           }
           console.log(`Clicked button for row with id: ${params.id}`);
         }}
-        onDelete={() => {
-          if (chipText !== CHECKIN) {
-            reset(setChipText, params.row.id);
-          }
+        onDelete={chipText === CHECKIN ? undefined : () => {
+          reset(setChipText, params.row.id);
         }}
-        deleteIcon={<Replay />}
+        deleteIcon={< Replay />}
       />
       // </Chip>
     );

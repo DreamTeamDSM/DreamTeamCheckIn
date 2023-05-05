@@ -3,13 +3,13 @@ import Container from "@mui/material/Container";
 
 import { RideInfo } from "./components/RideInfo";
 import { Navigation } from "./components/Navigation";
+import DebugBar from "./components/DebugBar";
 import { ThemeProvider } from "./theme";
-import DebugBar from './components/DebugBar';
 
+import "@fontsource/inter";
 
 function App(props) {
   const db = props.db;
-
 
   const increaseRider = () => {
     setRiderCount((riderCount) => riderCount + 1);
@@ -33,8 +33,24 @@ function App(props) {
   });
 
   const mentors = [
-    { id: 6, groupnumber: 1, checkin: 0, checkout: 0, firstname: "Alex", lastname: "Erickson", ridertype: "Mentor" },
-    { id: 7, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Peter", lastname: "Parker", ridertype: "Mentor" },
+    {
+      id: 6,
+      groupnumber: 1,
+      checkin: 0,
+      checkout: 0,
+      firstname: "Alex",
+      lastname: "Erickson",
+      ridertype: "Mentor",
+    },
+    {
+      id: 7,
+      groupnumber: 2,
+      checkin: 0,
+      checkout: 0,
+      firstname: "Peter",
+      lastname: "Parker",
+      ridertype: "Mentor",
+    },
   ];
 
   const [riders, setRiders] = React.useState(sampleRiders);
@@ -47,7 +63,7 @@ function App(props) {
   */
 
   const checkIn = (id) => {
-    const updatedRiders = riders.map(rider => {
+    const updatedRiders = riders.map((rider) => {
       if (rider.id === id) {
         // do db operation here?
         increaseRider();
@@ -57,10 +73,10 @@ function App(props) {
       }
     });
     setRiders(updatedRiders);
-  }
+  };
 
   const checkOut = (id) => {
-    const updatedRiders = riders.map(rider => {
+    const updatedRiders = riders.map((rider) => {
       if (rider.id === id) {
         // do db operation here?
         return { ...rider, checkout: 1 };
@@ -69,7 +85,7 @@ function App(props) {
       }
     });
     setRiders(updatedRiders);
-  }
+  };
 
   /*
   const searchRiders = (searchInput) => {
@@ -85,19 +101,19 @@ function App(props) {
   */
 
   const reset = (id) => {
-    const updatedRiders = riders.map(rider => {
+    const updatedRiders = riders.map((rider) => {
       if (rider.id === id) {
         decreaseRider();
         // do db operation here?
-        return {...rider, checkin: 0};
+        return { ...rider, checkin: 0 };
       } else {
         return rider;
       }
     });
     setRiders(updatedRiders);
-  }
+  };
 
-  const startingCount = riders.reduce((acc,cur)=>{
+  const startingCount = riders.reduce((acc, cur) => {
     if (cur.checkin) acc++;
     return acc;
   }, 0);
@@ -120,10 +136,10 @@ function App(props) {
             searchText={searchText}
           />
         </main>
-        <footer>
-          <DebugBar />
-        </footer>
       </Container>
+      <footer>
+        <DebugBar />
+      </footer>
     </ThemeProvider>
   );
 }
