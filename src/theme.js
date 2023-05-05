@@ -25,6 +25,13 @@ const mdTheme = createTheme({
         },
     },
     components: {
+        MuiTab: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: '#fff'
+                }
+            }
+        },
         MuiDataGrid: {
             styleOverrides: {
                 columnHeaders: {
