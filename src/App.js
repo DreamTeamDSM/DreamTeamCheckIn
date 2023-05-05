@@ -76,7 +76,6 @@ function App() {
         </header>
         <main>
           <RideInfo />
-          <Riders />
           <button type="button" onClick={handleClick}>
             Initialize + Seed Database!
           </button>
