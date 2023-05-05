@@ -15,6 +15,12 @@ CREATE TABLE IF NOT EXISTS "Route" (
 	PRIMARY KEY("route_id" AUTOINCREMENT)
 );
 
+CREATE TABLE IF NOT EXISTS "Ride" (
+	"ride_id"	INTEGER NOT NULL,
+	"date"	DATE,
+	PRIMARY KEY("ride_id")
+);
+
 CREATE TABLE IF NOT EXISTS "Group" (
 	"group_id"	INTEGER NOT NULL,
 	"ride_id"	INTEGER,
@@ -49,12 +55,6 @@ CREATE TABLE IF NOT EXISTS "GroupCheck" (
   "create_date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
   "update_date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY("group_id") REFERENCES "Group"("group_id")
-);
-
-CREATE TABLE IF NOT EXISTS "Ride" (
-	"ride_id"	INTEGER NOT NULL,
-	"date"	DATE,
-	PRIMARY KEY("ride_id")
 );
 
 CREATE TABLE IF NOT EXISTS "RideSupport" (

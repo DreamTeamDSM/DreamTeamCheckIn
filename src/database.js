@@ -1,3 +1,5 @@
+import { faker } from '@faker-js/faker';
+
 const initSqlJs = require("sql.js");
 
 const SQLITE_DB_FILE = "sqlite.db";
@@ -113,4 +115,70 @@ async function getDatabaseFile(dirHandle) {
     }
   }
   return null;
+}
+
+export async function seedDatabase(db) {
+  try {
+    for (let i = 0; i <= 100; i++) {
+      const user_id = i;
+      const ride_id = i+10;
+      const group_id = i+100;
+      const stop_id = i+1000;
+      const route_id = i+10000;
+
+      //User
+      const firstName = faker.name.firstName(); // Rowan
+      const lastName = faker.name.lastName(); // Nikolaus
+      const type = faker.helpers.arrayElement(['Rider','Support']);
+      const active = faker.helpers.arrayElement([0,1]);
+
+      const sqlUser = "INSERT INTO User VALUES (" + user_id + ', "' + firstName + '","' + lastName + '","","' + type + '",' + active + ");";
+      console.log("Executing:",sqlUser);
+      db.exec(sqlUser);
+
+      //Ride
+      const ride_date = faker.date.between('2023-01-01', '2023-05-05');
+
+      const sqlRide = "INSERT INTO Ride VALUES (" + ride_id + ',"' + ride_date + '");';
+      console.log(sqlRide);
+      db.exec(sqlRide);
+
+      //Route
+      const distance = faker.random.numeric(2);
+      const route_type = faker.helpers.arrayElement(['outAndBack','Loop']);
+
+      const sqlRoute = "INSERT INTO Route VALUES (" + route_id + ',' + distance + ',"' + route_type + '");';
+      console.log(sqlRoute);
+      db.exec(sqlRoute);
+
+      //Group
+      const sqlGroup = "INSERT INTO Group (group_id, ride_id) VALUES (" + group_id + ',' + ride_id + ");";
+      console.log(sqlGroup);
+      //db.exec(sqlGroup);
+
+      //GroupAssignment
+      const sqlGroupAssignment = "INSERT INTO GroupAssignment(user_id,group_id,check_in,check_out) VALUES (" + user_id + "," + group_id + ',0,0);';
+      console.log(sqlGroupAssignment);
+      db.exec(sqlGroupAssignment);
+
+      //Stop
+      const sqlStop = "INSERT INTO Stop VALUES (" + stop_id + "," + route_id + ',"' + faker.random.words(5) + '",0);';
+      console.log(sqlStop);
+      db.exec(sqlStop);
+
+      //GroupCheck
+      const sqlGroupCheck = "INSERT INTO GroupCheck (group_id,stop_id,check_in,check_out) VALUES (" + group_id + ',' + stop_id + ',0,0);';
+      console.log(sqlGroupCheck);
+      db.exec(sqlGroupCheck);
+
+      //RideSupport
+      const sqlRideSupport = "INSERT INTO RideSupport (user_id, ride_id, type) VALUES (" + user_id + ',' + ride_id + ',"' + 'adslfkj");';
+      console.log(sqlRideSupport);
+      db.exec(sqlRideSupport);
+    }
+  } catch (ex) {
+    console.log(ex);
+  }
+
+  return;
 }
