@@ -6,7 +6,7 @@ import Stack from '@mui/material/Stack';
 
 const MetadataBox = ({ header, content }) => {
     return (
-        <Stack>
+        <Stack margin={2}>
             <Typography variant='h5'> {header}</Typography>
             <Typography component="p" > {content}</Typography>
         </Stack>)
