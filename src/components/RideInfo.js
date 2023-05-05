@@ -9,6 +9,7 @@ import { useTheme, useMediaQuery } from '@mui/material';
 
 import { TabPanel } from './TabPanel.js';
 import Riders from './Riders.js';
+import Stops from './Stops.js';
 import { RideMetadata } from './RideMetadata.js';
 
 const a11yProps = (index) => {
@@ -54,7 +55,7 @@ const RideInfo = (props) => {
                             Item Two
                         </TabPanel>
                         <TabPanel value={value} index={2}>
-                            Item Three
+                            <Stops checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset} searchText={props.searchText}/>
                         </TabPanel>
                     </Box>
                 </Grid>
