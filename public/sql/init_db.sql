@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS "Users" (
 
 CREATE TABLE IF NOT EXISTS "Routes" (
 	"route_id"	INTEGER NOT NULL,
+	"route_name" TEXT,
 	"distance"	NUMERIC,
 	"type"	TEXT CHECK(type IN ('outAndBack','Loop')),
 	PRIMARY KEY("route_id" AUTOINCREMENT)
@@ -32,6 +33,7 @@ CREATE TABLE IF NOT EXISTS "Rides" (
 
 CREATE TABLE IF NOT EXISTS "Groups" (
 	"group_id"	INTEGER NOT NULL,
+	"group_name" TEXT,
 	"ride_id"	INTEGER,
 	PRIMARY KEY("group_id" AUTOINCREMENT),
 	FOREIGN KEY("ride_id") REFERENCES "Rides"("ride_id")
