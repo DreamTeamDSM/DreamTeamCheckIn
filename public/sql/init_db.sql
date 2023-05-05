@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS "Users" (
 	"photo"	BLOB,
 	"user_type_id" INTEGER,
 	"active"	INTEGER DEFAULT 0 CHECK("active" IN (0, 1)),
+	"isNew" INTEGER DEFAULT 0 CHECK("isNew" IN (0,1)),
 	PRIMARY KEY("user_id" AUTOINCREMENT),
 	FOREIGN KEY("user_type_id") REFERENCES "UserTypes"("user_type_id")
 );
