@@ -47,7 +47,7 @@ const import_users = () => {
 
 const import_routes = () => {
   //import routes and stops here
-  //no parent dependencies, add routes before stiops
+  //no parent dependencies, add routes before stops
 };
 
 const import_ride_support = () => {
@@ -70,6 +70,6 @@ const import_data = () => {
 const trigger_import = () => {
   if (!isSynced())
     return "Error: You have not exported all changed data. Triggering an import erases app data. Please export all data before importing.";
-  backup();
+  //   backup();
   import_data();
 };
