@@ -24,6 +24,7 @@ function App(props) {
     const db = await createDatabase();
 
     //TODO: Seed data here
+    await database.seedDatabase(db);
 
     await saveDatabase(db);
   };
