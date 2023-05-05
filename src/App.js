@@ -1,10 +1,12 @@
 import React from "react";
-import { ThemeProvider } from "./theme.js";
 import Container from "@mui/material/Container";
 
 import { RideInfo } from "./components/RideInfo";
 import { Navigation } from "./components/Navigation";
 import DebugBar from "./components/DebugBar";
+import { ThemeProvider } from "./theme";
+
+import "@fontsource/inter";
 
 function App(props) {
   const db = props.db;
