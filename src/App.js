@@ -1,11 +1,19 @@
 import React from "react";
-import { createDatabase, saveDatabase, destroyDatabase, loadDatabase, saveDatabaseAsFile, seedDatabase } from "./database.js";
+import {
+  createDatabase,
+  saveDatabase,
+  destroyDatabase,
+  loadDatabase,
+  saveDatabaseAsFile,
+  seedDatabase,
+} from "./database.js";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 
 import { RideInfo } from "./components/RideInfo";
 import { Navigation } from "./components/Navigation";
+import { presentUserForToken } from "./auth.js";
 
 function App(props) {
   const db = props.db;
@@ -94,6 +102,30 @@ function App(props) {
     },
   ];
 
+  const testAuth = () => {
+    presentUserForToken((token) => {
+      try {
+        console.log("User authenticated. Updating token...", token);
+        gapi.client.setToken(token);
+
+        console.log("Fetching data...");
+        gapi.client.sheets.spreadsheets.values
+          .get({
+            spreadsheetId: "1MFzXHNw3-FOAKf0SUVQGXfWOWLCgXOSn_QW8sIu-ZvQ",
+            range: "A3:A12",
+          })
+          .then((response) => {
+            console.log("Response!");
+            const result = response.result;
+            const numRows = result.values ? result.values.length : 0;
+            console.log(`${numRows} rows retrieved: `, result.values);
+          });
+      } catch (err) {
+        console.log("Error fetching data: ", err);
+      }
+    });
+  };
+
   return (
     <ThemeProvider theme={mdTheme}>
       <CssBaseline />
@@ -117,6 +149,7 @@ function App(props) {
             Download DB as File
           </button>
           <button onClick={() => destroyDatabase()}>Destroy DB</button>
+          <button onClick={() => testAuth()}>Test Auth</button>
         </main>
       </Container>
     </ThemeProvider>
