@@ -1,25 +1,5 @@
 import React from "react";
 const database = require("./database");
-/*
-import './App.css';
-const database = require('./database');
-
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-
-import { red } from '@mui/material/colors';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: red[500],
-    },
-  },
-});
-*/
 
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
