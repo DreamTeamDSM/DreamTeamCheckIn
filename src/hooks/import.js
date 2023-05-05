@@ -1,5 +1,8 @@
 import { createDatabase, loadDatabase } from "../database";
 
+const CLIENT_ID =
+  "592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com";
+
 const isSynced = () => {
   //do not allow import if we have more recent changes to GroupAssignment or GroupCheck since last RideExport
   const db = loadDatabase();
@@ -63,10 +66,25 @@ const import_groups = (importedDb) => {
 export async function import_data() {
   const importedDb = await createDatabase();
 
-  import_users(importedDb);
-  import_routes(importedDb);
-  import_ride_support(importedDb);
-  import_groups(importedDb);
+  const callback = (response) => {
+    const token = response.access_token;
+    gapi.client.setToken(token);
+
+    // TODO
+
+    import_users(importedDb);
+    import_routes(importedDb);
+    import_ride_support(importedDb);
+    import_groups(importedDb);
+  };
+
+  google.accounts.oauth2
+    .initTokenClient({
+      client_id: CLIENT_ID,
+      callback: callback,
+      scope: "https://www.googleapis.com/auth/spreadsheets",
+    })
+    .requestAccessToken();
 
   return importedDb;
 }
