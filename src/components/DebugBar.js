@@ -8,8 +8,8 @@ import {
   saveDatabaseAsFile,
   seedDatabase,
 } from "../database.js";
-import { getRides } from "../hooks/ride";
 import { import_data } from "../hooks/import";
+import { getRides, getRideById } from "../hooks/ride";
 
 function DebugBar() {
   const handleClick = async () => {
@@ -36,6 +36,7 @@ function DebugBar() {
       <button onClick={() => import_data(() => console.log("DONE!"))}>
         Perform Import
       </button>
+      <button onClick={() => getRideById(12)}>Get Ride 12</button>
     </div>
   );
 }

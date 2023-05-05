@@ -42,15 +42,13 @@ const RideInfo = (props) => {
                 </Grid>
                 <Grid item sm={12} lg={9}>
                     <Box sx={{ width: '100%' }} mt={isLargeScreen ? 0 : 2}>
-                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                            <Tabs value={value} onChange={handleChange}>
-                                <Tab label="Riders" {...a11yProps(0)} />
-                                <Tab label="Mentors" {...a11yProps(1)} />
-                                <Tab label="Groups" {...a11yProps(2)} />
-                            </Tabs>
-                        </Box>
+                        <Tabs value={value} onChange={handleChange}>
+                            <Tab label="Riders" {...a11yProps(0)} />
+                            <Tab label="Mentors" {...a11yProps(1)} />
+                            <Tab label="Groups" {...a11yProps(2)} />
+                        </Tabs>
                         <TabPanel value={value} index={0}>
-                            <Riders checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset}/>
+                            <Riders checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset} searchText={props.searchText}/>
                         </TabPanel>
                         <TabPanel value={value} index={1}>
                             Item Two
@@ -60,7 +58,7 @@ const RideInfo = (props) => {
                         </TabPanel>
                     </Box>
                 </Grid>
-            </Grid>
+            </Grid >
         </>
     )
 }

@@ -19,53 +19,19 @@ function App(props) {
     setRiderCount((riderCount) => riderCount - 1);
   };
 
-  const sampleRiders = [
-    {
-      id: 1,
-      groupnumber: 1,
-      checkin: 1,
-      checkout: 0,
-      firstname: "Aaron",
-      lastname: "Ayala",
-      ridertype: "New",
-    },
-    {
-      id: 2,
-      groupnumber: 1,
-      checkin: 1,
-      checkout: 0,
-      firstname: "Addison",
-      lastname: "Palmer",
-      ridertype: "Veteran",
-    },
-    {
-      id: 3,
-      groupnumber: 1,
-      checkin: 0,
-      checkout: 0,
-      firstname: "Alayia",
-      lastname: "White",
-      ridertype: "New",
-    },
-    {
-      id: 4,
-      groupnumber: 2,
-      checkin: 0,
-      checkout: 0,
-      firstname: "Billy",
-      lastname: "Jones",
-      ridertype: "New",
-    },
-    {
-      id: 5,
-      groupnumber: 2,
-      checkin: 0,
-      checkout: 0,
-      firstname: "Sam",
-      lastname: "Sibley",
-      ridertype: "Veteran",
-    },
+  const tempRiders = [
+    { id: 1, groupnumber: 1, checkin: 1, checkout: 0, firstname: "Aaron", lastname: "Ayala", ridertype: "New" },
+    { id: 2, groupnumber: 1, checkin: 1, checkout: 0, firstname: "Addison", lastname: "Palmer", ridertype: "Veteran" },
+    { id: 3, groupnumber: 1, checkin: 0, checkout: 0, firstname: "Alayia", lastname: "White", ridertype: "New" },
+    { id: 4, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Billy", lastname: "Jones", ridertype: "New" },
+    { id: 5, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Sam", lastname: "Sibley", ridertype: "Veteran" },
   ];
+
+  const sampleRiders = tempRiders.map((cur)=>{
+    const fulltext = (cur.groupnumber + " " + cur.firstname + cur.lastname).toLowerCase();
+    return {...cur, fulltext};
+  });
+
   const mentors = [
     {
       id: 6,
@@ -88,6 +54,13 @@ function App(props) {
   ];
 
   const [riders, setRiders] = React.useState(sampleRiders);
+  const [searchText, setSearchText] = React.useState("");
+
+  /*
+  React.useEffect(()=>{
+    console.log(riders);
+  },[riders])
+  */
 
   const checkIn = (id) => {
     const updatedRiders = riders.map((rider) => {
@@ -114,9 +87,18 @@ function App(props) {
     setRiders(updatedRiders);
   };
 
+  /*
   const searchRiders = (searchInput) => {
-    console.log("searchInput", searchInput);
-  };
+    console.log("searchInput",searchInput);
+
+    const temp = riders.filter((cur)=>{
+      return (cur.firstname.toLowerCase().indexOf(searchInput.toLowerCase()) > -1);
+    });
+
+    console.log(temp);
+    setRiders(temp);
+  }
+  */
 
   const reset = (id) => {
     const updatedRiders = riders.map((rider) => {
@@ -141,7 +123,7 @@ function App(props) {
   return (
     <ThemeProvider>
       <header>
-        <Navigation searchHandler={searchRiders} />
+        <Navigation searchHandler={setSearchText}/>
       </header>
       <Container maxWidth="lg">
         <main>
@@ -151,6 +133,7 @@ function App(props) {
             checkOut={checkOut}
             reset={reset}
             riderCount={riderCount}
+            searchText={searchText}
           />
         </main>
       </Container>
