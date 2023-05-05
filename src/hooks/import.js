@@ -46,36 +46,40 @@ const backup = () => {
 const import_users = (importedDb) => {
   //import user data here
   //no parent dependencies
+  // TODO: source of truth is currently phpBB?
 };
 
 const import_routes = (importedDb) => {
   //import routes and stops here
   //no parent dependencies, add routes before stops
+  // TODO: new source of truth in sheets?
 };
 
 const import_ride_support = (importedDb) => {
   //import ride support list here (this was not available in group sheet)
   //need users first, will have to match on name or id if available
+  // TODO: new source of truth in sheets?
 };
 
 const import_groups = (importedDb) => {
   //will have to create the group, then group assignments
   //need users first
+  // TODO: pull from existing structure?
 };
 
-export async function import_data() {
+export async function import_data(handleImportedDb) {
   const importedDb = await createDatabase();
 
   const callback = (response) => {
     const token = response.access_token;
     gapi.client.setToken(token);
 
-    // TODO
-
     import_users(importedDb);
     import_routes(importedDb);
     import_ride_support(importedDb);
     import_groups(importedDb);
+
+    handleImportedDb(importedDb);
   };
 
   google.accounts.oauth2
@@ -85,8 +89,6 @@ export async function import_data() {
       scope: "https://www.googleapis.com/auth/spreadsheets",
     })
     .requestAccessToken();
-
-  return importedDb;
 }
 
 const trigger_import = () => {
