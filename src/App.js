@@ -58,6 +58,10 @@ function App(props) {
     setRiders(updatedRiders);
   }
 
+  const searchRiders = (searchInput) => {
+    console.log("searchInput",searchInput);
+  }
+
   const reset = (id) => {
     const updatedRiders = riders.map(rider => {
       if (rider.id === id) {
@@ -81,7 +85,7 @@ function App(props) {
   return (
     <ThemeProvider>
       <header>
-        <Navigation />
+        <Navigation searchHandler={searchRiders}/>
       </header>
       <Container maxWidth="lg">
         <main>
