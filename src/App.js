@@ -1,12 +1,11 @@
 import React from "react";
-import { createDatabase, saveDatabase, destroyDatabase, loadDatabase, saveDatabaseAsFile, seedDatabase } from "./database.js";
 import Container from "@mui/material/Container";
 
 import { RideInfo } from "./components/RideInfo";
 import { Navigation } from "./components/Navigation";
 import { ThemeProvider } from "./theme";
+import DebugBar from './components/DebugBar';
 
-import { getRides } from "./hooks/ride";
 
 function App(props) {
   const db = props.db;
@@ -18,15 +17,6 @@ function App(props) {
 
   const decreaseRider = () => {
     setRiderCount((riderCount) => riderCount - 1);
-  };
-
-  const handleClick = async () => {
-    const db = await createDatabase();
-
-    //TODO: Seed data here
-    await seedDatabase(db);
-
-    await saveDatabase(db);
   };
 
   const sampleRiders = [
@@ -102,17 +92,10 @@ function App(props) {
             reset={reset}
             riderCount={riderCount}
           />
-          <button type="button" onClick={handleClick}>
-            Initialize + Seed Database!
-          </button>
-          <button
-            onClick={() => loadDatabase().then((db) => saveDatabaseAsFile(db))}
-          >
-            Download DB as File
-          </button>
-          <button onClick={() => destroyDatabase()}>Destroy DB</button>
-          <button onClick={() => getRides()}>Get Rides</button>
         </main>
+        <footer>
+          <DebugBar />
+        </footer>
       </Container>
     </ThemeProvider>
   );
