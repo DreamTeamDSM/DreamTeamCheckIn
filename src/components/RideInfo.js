@@ -2,6 +2,7 @@ import React from 'react';
 
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -17,6 +18,8 @@ const a11yProps = (index) => {
     };
 }
 
+const MetadataDivider = () => <Divider orientation="vertical" flexItem sx={{ marginTop: '16px', marginBottom: '16px' }} />
+
 const RideInfo = (props) => {
     const [value, setValue] = React.useState(0);
 
@@ -31,23 +34,23 @@ const RideInfo = (props) => {
                 color="inherit"
                 noWrap
                 sx={{ flexGrow: 1 }}> {'RIDES'}</Typography>
-            <Box border={1} borderRadius={'16px'} padding={2}>
+            <Paper border={1} padding={2} elevation={0} variant="outlined">
                 <Box display="flex"
                     flexWrap="wrap"
                     justifyContent="space-around"
                     alignItems="center"
                 >
-                    <MetadataBox header={'Today\'s Date'} content={'05/05/2023'} />
-                    <Divider orientation="vertical" flexItem />
+                    <MetadataBox header={'Ride Date'} content={'05/05/2023'} />
+                    <MetadataDivider />
                     <MetadataBox header={'Location'} content={'Bike World'} />
-                    <Divider orientation="vertical" flexItem />
-                    <MetadataBox header={'# Members'} content={'8'} />
-                    <Divider orientation="vertical" flexItem />
+                    <MetadataDivider />
+                    <MetadataBox header={'# Mentors'} content={'8'} />
+                    <MetadataDivider />
                     <MetadataBox header={'# Riders'} content={props.riderCount} />
-                    <Divider orientation="vertical" flexItem />
+                    <MetadataDivider />
                     <MetadataBox header={'Miles'} content={'32'} />
                 </Box>
-            </Box >
+            </Paper >
             <Box sx={{ width: '100%' }} mt={2}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={value} onChange={handleChange}>
