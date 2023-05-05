@@ -121,12 +121,10 @@ export default function Riders(props) {
           }
           console.log(`Clicked button for row with id: ${params.id}`);
         }}
-        onDelete={() => {
-          if (chipText !== CHECKIN) {
-            reset(setChipText, params.row.id);
-          }
+        onDelete={chipText === CHECKIN ? undefined : () => {
+          reset(setChipText, params.row.id);
         }}
-        deleteIcon={<Replay />}
+        deleteIcon={< Replay />}
       />
       // </Chip>
     );
