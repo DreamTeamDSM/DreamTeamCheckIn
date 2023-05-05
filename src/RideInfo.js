@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import { MetadataBox } from './MetadataBox.js'
 
 
-const RideInfo = () => {
+const RideInfo = (props) => {
     return (
         <>
             <Typography component="h1" variant="h4" mt={5}
@@ -28,7 +28,7 @@ const RideInfo = () => {
                     <Divider orientation="vertical" flexItem />
                     <MetadataBox header={'# Members'} content={'8'} />
                     <Divider orientation="vertical" flexItem />
-                    <MetadataBox header={'# Riders'} content={'12'} />
+                    <MetadataBox header={'# Riders'} content={props.riders} />
                     <Divider orientation="vertical" flexItem />
                     <MetadataBox header={'Miles'} content={'32'} />
                 </Box>

@@ -1,24 +1,5 @@
 import React from 'react';
 import logo from './logo.svg';
-/*
-import './App.css';
-
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-
-import { red } from '@mui/material/colors';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: red[500],
-    },
-  },
-});
-*/
 
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -30,6 +11,17 @@ import { RideInfo } from './RideInfo';
 import Riders from './components/Riders.js';
 
 function App() {
+
+  const [riders,setRiders] = React.useState(0);
+
+  const increaseRider = () => {
+    setRiders(riders=> riders+1);
+  }
+
+  const decreaseRider = () => {
+    setRiders(riders=> riders-1);
+  }
+
   const mdTheme = createTheme({
     palette: {
       primary: {
@@ -67,8 +59,8 @@ function App() {
             sx={{ flexGrow: 1 }}> {'Dream Team Check-in'}</Typography>
         </header>
         <main>
-          <RideInfo />
-          <Riders />
+          <RideInfo riders={riders}/>
+          <Riders increase={increaseRider} decrease={decreaseRider}/>
         </main>
       </Container>
     </ThemeProvider>
