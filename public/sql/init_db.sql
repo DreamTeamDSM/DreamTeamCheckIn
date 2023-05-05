@@ -17,8 +17,10 @@ CREATE TABLE IF NOT EXISTS "Route" (
 
 CREATE TABLE IF NOT EXISTS "Ride" (
 	"ride_id"	INTEGER NOT NULL,
+	"route_id" INTEGER NOT NULL,
 	"date"	DATE,
 	PRIMARY KEY("ride_id")
+	FOREIGN KEY("route_id") REFERENCES "Route"("route_id")
 );
 
 CREATE TABLE IF NOT EXISTS "Group" (

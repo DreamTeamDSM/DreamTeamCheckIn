@@ -136,13 +136,6 @@ export async function seedDatabase(db) {
       console.log("Executing:",sqlUser);
       db.exec(sqlUser);
 
-      //Ride
-      const ride_date = faker.date.between('2023-01-01', '2023-05-05');
-
-      const sqlRide = "INSERT INTO Ride VALUES (" + ride_id + ',"' + ride_date + '");';
-      console.log(sqlRide);
-      db.exec(sqlRide);
-
       //Route
       const distance = faker.random.numeric(2);
       const route_type = faker.helpers.arrayElement(['outAndBack','Loop']);
@@ -150,6 +143,13 @@ export async function seedDatabase(db) {
       const sqlRoute = "INSERT INTO Route VALUES (" + route_id + ',' + distance + ',"' + route_type + '");';
       console.log(sqlRoute);
       db.exec(sqlRoute);
+
+      //Ride
+      const ride_date = faker.date.between('2023-01-01', '2023-05-05');
+
+      const sqlRide = "INSERT INTO Ride VALUES (" + ride_id + ',' + route_id + ',"' + ride_date + '");';
+      console.log(sqlRide);
+      db.exec(sqlRide);
 
       //Group
       const sqlGroup = "INSERT INTO Group (group_id, ride_id) VALUES (" + group_id + ',' + ride_id + ");";
