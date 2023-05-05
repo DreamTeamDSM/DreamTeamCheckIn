@@ -57,7 +57,7 @@ const RideInfo = (props) => {
                     </Tabs>
                 </Box>
                 <TabPanel value={value} index={0}>
-                    <Riders checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} />
+                    <Riders checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     Item Two

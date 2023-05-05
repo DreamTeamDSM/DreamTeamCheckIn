@@ -85,6 +85,19 @@ function App(props) {
     setRiders(updatedRiders);
   }
 
+  const reset = (id) => {
+    const updatedRiders = riders.map(rider => {
+      if (rider.id === id) {
+        decreaseRider();
+        // do db operation here?
+        return {...rider, checkin: 0};
+      } else {
+        return rider;
+      }
+    });
+    setRiders(updatedRiders);
+  }
+
   const startingCount = riders.reduce((acc,cur)=>{
     if (cur.checkin) acc++;
     return acc;
@@ -104,6 +117,7 @@ function App(props) {
             riders={riders}
             checkIn={checkIn}
             checkOut={checkOut}
+            reset={reset}
             riderCount={riderCount}
           />
           <button type="button" onClick={handleClick}>
