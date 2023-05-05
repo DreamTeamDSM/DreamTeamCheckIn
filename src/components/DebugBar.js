@@ -9,7 +9,7 @@ import {
   seedDatabase,
   seedDatabase2,
 } from "../database.js";
-import { import_data } from "../hooks/import";
+import { importData } from "../hooks/import";
 import { getRides, getRideById } from "../hooks/ride";
 
 function DebugBar() {
@@ -42,7 +42,7 @@ function DebugBar() {
       </button>
       <button onClick={() => destroyDatabase()}>Destroy DB</button>
       <button onClick={() => getRides()}>Get Rides</button>
-      <button onClick={() => import_data(() => console.log("DONE!"))}>
+      <button onClick={() => importData(() => console.log("DONE!"))}>
         Perform Import
       </button>
       <button onClick={() => getRideById(12)}>Get Ride 12</button>
