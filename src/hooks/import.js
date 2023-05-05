@@ -1,4 +1,4 @@
-import { createDatabase, loadDatabase } from "../database";
+import { createDatabase, loadDatabase, saveDatabase } from "../database";
 
 const CLIENT_ID =
   "592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com";
@@ -44,20 +44,34 @@ const backup = () => {
 };
 
 const import_users = (importedDb) => {
-  //import user data here
-  //no parent dependencies
-  // TODO: source of truth is currently phpBB?
+  const USER_SPREADSHEET_ID = "1imhKCBAr6SbfcvMs_I3hqQHPCZxHANd7x0mFehFSleA";
+
+  gapi.client.sheets.spreadsheets.values
+    .get({
+      spreadsheetId: USER_SPREADSHEET_ID,
+      range: "A:F",
+    })
+    .then((response) => {
+      const result = response.result;
+      for (const row of result.values) {
+        // Skip header row
+        if (row[0] === "ID") {
+          continue;
+        }
+
+        console.log("Row ", row);
+
+        importedDb.exec(
+          `INSERT INTO Users VALUES ("${row[0]}", "${row[1]}",
+            "${row[2]}", "", "${row[3]}", "${row[4]}")`
+        );
+      }
+    });
 };
 
 const import_routes = (importedDb) => {
   //import routes and stops here
   //no parent dependencies, add routes before stops
-  // TODO: new source of truth in sheets?
-};
-
-const import_ride_support = (importedDb) => {
-  //import ride support list here (this was not available in group sheet)
-  //need users first, will have to match on name or id if available
   // TODO: new source of truth in sheets?
 };
 
@@ -68,27 +82,27 @@ const import_groups = (importedDb) => {
 };
 
 export async function import_data(handleImportedDb) {
-  const importedDb = await createDatabase();
+  await createDatabase((importedDb) => {
+    const callback = (response) => {
+      const token = response.access_token;
+      gapi.client.setToken(token);
 
-  const callback = (response) => {
-    const token = response.access_token;
-    gapi.client.setToken(token);
+      import_users(importedDb);
+      import_routes(importedDb);
+      import_groups(importedDb);
 
-    import_users(importedDb);
-    import_routes(importedDb);
-    import_ride_support(importedDb);
-    import_groups(importedDb);
+      saveDatabase(importedDb);
+      handleImportedDb(importedDb);
+    };
 
-    handleImportedDb(importedDb);
-  };
-
-  google.accounts.oauth2
-    .initTokenClient({
-      client_id: CLIENT_ID,
-      callback: callback,
-      scope: "https://www.googleapis.com/auth/spreadsheets",
-    })
-    .requestAccessToken();
+    google.accounts.oauth2
+      .initTokenClient({
+        client_id: CLIENT_ID,
+        callback: callback,
+        scope: "https://www.googleapis.com/auth/spreadsheets",
+      })
+      .requestAccessToken();
+  });
 }
 
 const trigger_import = () => {

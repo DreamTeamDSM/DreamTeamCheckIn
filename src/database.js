@@ -42,7 +42,7 @@ export async function loadDatabase() {
   return db;
 }
 
-export async function createDatabase() {
+export async function createDatabase(callback) {
   console.log("Creating new database...");
 
   const SQL = await initSqlJs({
@@ -57,6 +57,10 @@ export async function createDatabase() {
       console.log("Executing create table scripts...");
       db.exec(data);
       console.log("Successfully created db tables!");
+
+      if (callback) {
+        callback(db);
+      }
     })
     .catch(error => {
       console.error(error);
