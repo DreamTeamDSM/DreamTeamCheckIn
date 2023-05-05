@@ -11,8 +11,12 @@ import {
 } from "../database.js";
 import { importData } from "../hooks/import";
 import { getRides, getRideById } from "../hooks/ride";
+import { useAppContext } from "../AppContext";
+
 
 function DebugBar() {
+  const context = useAppContext()
+
   const handleClick = async () => {
     const db = await createDatabase();
 
@@ -29,6 +33,9 @@ function DebugBar() {
   };
   return (
     <div className="debug-bar">
+      <button type="button" onClick={() => context.importData()}>
+        import data into app (seed)
+      </button>
       <button type="button" onClick={handleClick}>
         Initialize + Seed Database!
       </button>

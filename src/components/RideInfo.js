@@ -20,7 +20,7 @@ const a11yProps = (index) => {
 }
 
 
-const RideInfo = (props) => {
+const RideInfo = ({ riderCount, checkIn, checkOut, riders, reset, searchText }) => {
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
 
@@ -39,7 +39,7 @@ const RideInfo = (props) => {
                 sx={{ flexGrow: 1 }}> {'RIDES'}</Typography>
             <Grid container spacing={2}>
                 <Grid item sm={12} lg={3}>
-                    <RideMetadata riderCount={props.riderCount} />
+                    <RideMetadata />
                 </Grid>
                 <Grid item sm={12} lg={9}>
                     <Box sx={{ width: '100%' }} mt={isLargeScreen ? 0 : 2}>
@@ -49,7 +49,7 @@ const RideInfo = (props) => {
                             <Tab label="Groups" {...a11yProps(2)} />
                         </Tabs>
                         <TabPanel value={value} index={0}>
-                            <Riders checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset} searchText={props.searchText}/>
+                            {/* <Riders checkIn={checkIn} checkOut={checkOut} riders={riders} reset={reset} searchText={searchText}/> */}
                         </TabPanel>
                         <TabPanel value={value} index={1}>
                             Item Two

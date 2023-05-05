@@ -8,14 +8,20 @@ import { ThemeProvider } from "./theme";
 import { AppContext } from "./AppContext";
 import { importData } from "./hooks/import";
 
+import {
+  createDatabase,
+  saveDatabase,
+  seedDatabase2,
+} from "./database.js";
+
 import "@fontsource/inter";
-import { getRideById } from "./hooks/ride";
+import { getRideById, getRides } from "./hooks/ride";
 
 function App(props) {
   const db = props.db;
 
-  const [ rides, setRides ] = useState([]);
-  const [ currentRide, setCurrentRide ] = useState(null);
+  const [rides, setRides] = useState([]);
+  const [currentRide, setCurrentRide] = useState(null);
 
   const increaseRider = () => {
     setRiderCount((riderCount) => riderCount + 1);
@@ -24,6 +30,21 @@ function App(props) {
   const decreaseRider = () => {
     setRiderCount((riderCount) => riderCount - 1);
   };
+
+  const importFromSeededData = async () => {
+    const db = await createDatabase();
+
+    await seedDatabase2(db);
+
+    await saveDatabase(db);
+
+    const fetchedRides = await getRides();
+
+    console.log(fetchedRides)
+    const fetchedCurrentRide = await getRideById(fetchedRides[0].ride_id);
+    setRides(fetchedRides);
+    setCurrentRide(fetchedCurrentRide);
+  }
 
   const importDataSync = async () => {
     await importData();
@@ -89,9 +110,9 @@ function App(props) {
   //   },
 
 
-  const sampleRiders = tempRiders.map((cur)=>{
+  const sampleRiders = tempRiders.map((cur) => {
     const fulltext = (cur.groupnumber + " " + cur.firstname + cur.lastname).toLowerCase();
-    return {...cur, fulltext};
+    return { ...cur, fulltext };
   });
 
   const mentors = [
@@ -184,32 +205,33 @@ function App(props) {
 
   return (
     <AppContext.Provider value={{
-      rides:       rides,
+      rides: rides,
       currentRide: currentRide,
       setRides: setRides,
       setCurrentRide: setCurrentRide,
+      importData: importFromSeededData
     }}>
-    <ThemeProvider>
-      <header>
-        <Navigation searchHandler={setSearchText}/>
-      </header>
-      <Container maxWidth="lg">
-        <main>
-          <RideInfo
-            riders={riders}
-            checkIn={checkIn}
-            checkOut={checkOut}
-            reset={reset}
-            riderCount={riderCount}
-            searchText={searchText}
+      <ThemeProvider>
+        <header>
+          <Navigation searchHandler={setSearchText} />
+        </header>
+        <Container maxWidth="lg">
+          <main>
+            <RideInfo
+            // riders={riders}
+            // checkIn={checkIn}
+            // checkOut={checkOut}
+            // reset={reset}
+            // riderCount={riderCount}
+            // searchText={searchText}
             // importDataSync={importDataSync}
-          />
-        </main>
-      </Container>
-      <footer>
-        <DebugBar />
-      </footer>
-    </ThemeProvider>
+            />
+          </main>
+        </Container>
+        <footer>
+          <DebugBar />
+        </footer>
+      </ThemeProvider>
     </AppContext.Provider>
   );
 }
