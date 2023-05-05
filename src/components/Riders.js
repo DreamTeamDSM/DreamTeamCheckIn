@@ -4,12 +4,8 @@ import {
   Avatar, Chip
 } from '@mui/material';
 import Replay from '@mui/icons-material/Replay';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridLogicOperator } from '@mui/x-data-grid';
 import { Button } from './Button'
-
-const handleChange = (event, info) => {
-  console.log("event + info", event, info);
-}
 
 const CHECKIN = "Check In";
 const CHECKOUT = "Check Out";
@@ -23,6 +19,7 @@ export default function Riders(props) {
     { field: 'avatar', headerName: 'Avatar', flex: 1, renderCell: rednerAvatar },
     { field: 'firstname', headerName: 'First Name', flex: 2 },
     { field: 'lastname', headerName: 'Last Name', flex: 2 },
+    { field: 'fulltext', headerName: 'Fulltext', flex: 0 },
   ];
 
   const rows = props.riders;
@@ -50,7 +47,6 @@ export default function Riders(props) {
 
 
   function renderChip(params) {
-    console.log(params);
     let defaultState = CHECKIN;
     if (params.row.checkin == 1 && params.row.checkout == 1) {
       defaultState = COMPLETE;
@@ -59,6 +55,7 @@ export default function Riders(props) {
     }
 
     const [chipText, setChipText] = useState(defaultState);
+
 
     return (
       <Chip
@@ -85,15 +82,31 @@ export default function Riders(props) {
     );
   }
 
+
+
+  React.useEffect(()=>{
+    setFilterModel({
+      items: [
+        { field: 'fulltext', operator: 'contains', value: props.searchText.toLowerCase() },
+      ]
+    })
+  },[props.searchText]);
+
+  const [filterModel, setFilterModel] = React.useState({
+    items: []
+  });
+
   return (
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid
+        filterModel={filterModel}
         rows={rows}
         columns={columns}
-        pageSize={5}
+        pageSize={10}
         rowsPerPageOptions={[5, 10, 20]}
         columnVisibilityModel={{
           id: false,
+          fulltext: false,
         }}
       />
     </div>
