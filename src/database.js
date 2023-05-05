@@ -5,6 +5,7 @@ const SQLITE_DB_FILE = "sqlite.db";
 export async function destroyDatabase() {
   console.log("Destroying database...");
   const dirHandle = await navigator.storage.getDirectory();
+  // eslint-disable-next-line no-unused-vars
   for await (const [key, value] of dirHandle.entries()) {
     console.log("Deleting file: " + key);
     await dirHandle.removeEntry(key);
