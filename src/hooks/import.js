@@ -43,13 +43,14 @@ const backup = () => {
   //save the current db file.. just incase. do we save this db file locally and just rename? or push it up to google? or both?
 };
 
-const import_users = (importedDb) => {
-  const USER_SPREADSHEET_ID = "1imhKCBAr6SbfcvMs_I3hqQHPCZxHANd7x0mFehFSleA";
+const USER_ROUTE_SPREADSHEET_ID =
+  "1imhKCBAr6SbfcvMs_I3hqQHPCZxHANd7x0mFehFSleA";
 
+const import_users = (importedDb) => {
   gapi.client.sheets.spreadsheets.values
     .get({
-      spreadsheetId: USER_SPREADSHEET_ID,
-      range: "A:F",
+      spreadsheetId: USER_ROUTE_SPREADSHEET_ID,
+      range: "'Users'!A:F",
     })
     .then((response) => {
       const result = response.result;
@@ -59,20 +60,60 @@ const import_users = (importedDb) => {
           continue;
         }
 
-        console.log("Row ", row);
-
-        importedDb.exec(
-          `INSERT INTO Users VALUES ("${row[0]}", "${row[1]}",
-            "${row[2]}", "", "${row[3]}", "${row[4]}")`
-        );
+        importedDb.run("INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?)", [
+          row[0],
+          row[1],
+          row[2],
+          "",
+          row[3],
+          row[4],
+        ]);
       }
     });
 };
 
-const import_routes = (importedDb) => {
-  //import routes and stops here
-  //no parent dependencies, add routes before stops
-  // TODO: new source of truth in sheets?
+const import_routes = async (importedDb) => {
+  const routes = (await gapi.client.sheets.spreadsheets.values.get({
+    spreadsheetId: USER_ROUTE_SPREADSHEET_ID,
+    range: "'Routes'!A:D",
+  })).result;
+
+  for (const row of routes.values) {
+    // Skip header row
+    if (row[0] === "ID") {
+      continue;
+    }
+
+    console.log("Route row ", row);
+
+    importedDb.run("INSERT INTO Routes VALUES (?, ?, ?, ?)", [
+      row[0],
+      row[1],
+      row[2],
+      row[3],
+    ]);
+  }
+
+  const stops = (await gapi.client.sheets.spreadsheets.values.get({
+    spreadsheetId: USER_ROUTE_SPREADSHEET_ID,
+    range: "'Stops'!A:C",
+  })).result;
+
+  for (const row of routes.values) {
+    // Skip header row
+    if (row[0] === "ID") {
+      continue;
+    }
+
+    console.log("Stop row ", row);
+
+    importedDb.run("INSERT INTO Stops VALUES (?, ?, ?, ?)", [
+      row[0],
+      row[1],
+      row[2],
+      "",
+    ]);
+  }
 };
 
 const import_groups = (importedDb) => {
