@@ -8,13 +8,6 @@ import { DataGrid } from '@mui/x-data-grid';
 
 import { Button } from './Button'
 
-const useStyles = makeStyles({
-  tableHeader: {
-    backgroundColor: '#EAEAE7'
-  },
-});
-
-
 const handleChange = (event, info) => {
   console.log("event + info", event, info);
 }
@@ -24,8 +17,6 @@ const CHECKOUT = "Check Out";
 const COMPLETE = "Complete";
 
 export default function Riders(props) {
-  const styles = useStyles();
-
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
     { field: 'groupnumber', headerName: 'Group #', flex: 1 },
@@ -85,7 +76,6 @@ export default function Riders(props) {
   return (
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid
-        headerClassName={styles.tableHeader}
         rows={rows}
         columns={columns}
         pageSize={5}
