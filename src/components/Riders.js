@@ -1,15 +1,7 @@
 import React, {useState} from 'react';
 import { makeStyles } from '@mui/styles';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Button,
-  Checkbox,
   Avatar
 } from '@mui/material';
 
@@ -35,7 +27,6 @@ const handleChange = (event,info) => {
         { field: 'avatar', headerName: 'Avatar', width: 150, renderCell: rednerAvatar},
         { field: 'firstname', headerName: 'First Name', width: 120 },
         { field: 'lastname', headerName: 'Last Name', width: 120 },
-        { field: 'ridertype', headerName: 'Type', width: 150 },
       ];
 
       const rows = props.riders;
@@ -47,19 +38,27 @@ const handleChange = (event,info) => {
     }
 
     function renderButton(params) {
-      const [buttonText, setButtonText] = useState('Check In');
+      console.log(params);
+      let defaultState = 'Check In';
+      if (params.row.checkin == 1 && params.row.checkout == 1) {
+        defaultState = 'Complete';
+      } else if (params.row.checkin == 1 && params.row.checkout == 0) {
+        defaultState = 'Check Out';
+      }
+
+      const [buttonText, setButtonText] = useState(defaultState);
       return (
         <Button
           variant="contained"
           color="primary"
           onClick={() => {
-            setButtonText(buttonText === 'Check In' ? 'Check Out' : 'Check In');
-            console.log(`Clicked button for row with id: ${params.id}`);
-            if (buttonText == "Check In") {
+            if (buttonText === 'Check In') {
+              setButtonText('Check Out');
               props.increase();
-            } else {
-              props.decrease();
+            } else if (buttonText === 'Check Out') {
+              setButtonText('Complete');
             }
+            console.log(`Clicked button for row with id: ${params.id}`);
           }}
         >
           {buttonText}

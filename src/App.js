@@ -49,11 +49,15 @@ function App(props) {
 
 
   const riders = [
-    { id: 1, groupnumber: 1, checkin: 0, checkout: 0, firstname: "Aaron", lastname: "Ayala", ridertype: "New"},
-    { id: 2, groupnumber: 1, checkin: 0, checkout: 0, firstname: "Addison", lastname: "Palmer", ridertype: "Veteran"},
-    { id: 3, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Alayia", lastname: "White", ridertype: "New"},
-    { id: 4, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Alex", lastname: "Erickson", ridertype: "Mentor"},
-    { id: 5, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Peter", lastname: "Parker", ridertype: "Mentor"},
+    { id: 1, groupnumber: 1, checkin: 1, checkout: 0, firstname: "Aaron", lastname: "Ayala", ridertype: "New"},
+    { id: 2, groupnumber: 1, checkin: 1, checkout: 0, firstname: "Addison", lastname: "Palmer", ridertype: "Veteran"},
+    { id: 3, groupnumber: 1, checkin: 0, checkout: 0, firstname: "Alayia", lastname: "White", ridertype: "New"},
+    { id: 4, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Billy", lastname: "Jones", ridertype: "New"},
+    { id: 5, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Sam", lastname: "Sibley", ridertype: "Veteran"},
+  ];
+  const mentors = [
+    { id: 6, groupnumber: 1, checkin: 0, checkout: 0, firstname: "Alex", lastname: "Erickson", ridertype: "Mentor"},
+    { id: 7, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Peter", lastname: "Parker", ridertype: "Mentor"},
   ];
 
 
