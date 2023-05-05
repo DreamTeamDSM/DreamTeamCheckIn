@@ -1,19 +1,35 @@
 import { loadDatabase } from "../database";
 
-const getRides = () => {
+const resultToObjArray = (result) => {
+
+  const ObjArray = result.values.map(value => {
+    let obj = {};
+    value.map((val, index) => {
+      obj[result.columns[index]]=val
+    })
+    return obj;
+  })
+
+  return ObjArray
+}
+
+export const getRides = async () => {
   //So we can populate ride list to select from
   //[{ID, Date, Destination}]
-  const db = loadDatabase();
+  const db = await loadDatabase();
 
   //get rides
-  const rides = db.exec(
+  const result = db.exec(
     "SELECT * FROM Rides"
   );
-  console.log(rides.values);
-  return rides.values
+  const rideData = resultToObjArray(result[0]);
+
+  console.log(rideData);
+
+  return rideData;
 };
 
-const getRide = (date, destination) => {
+export const getRide = (date, destination) => {
   //So we can populate page with info once ride is selected
   //{Date, Destination, # Members, # Riders, Miles, Riders [{ID, FN, LN, Photo, check_in_status}], Members [ID, FN, LN, Photo, check_in_status], Stops [{id, description, check_in_status}]}
 };

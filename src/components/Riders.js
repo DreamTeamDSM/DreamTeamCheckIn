@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import {
-  Button,
   Avatar, Chip
 } from '@mui/material';
 import Replay from '@mui/icons-material/Replay';
-
 import { DataGrid } from '@mui/x-data-grid';
-
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-});
-
+import { Button } from './Button'
 
 const handleChange = (event, info) => {
   console.log("event + info", event, info);
@@ -24,10 +17,6 @@ const CHECKOUT = "Check Out";
 const COMPLETE = "Complete";
 
 export default function Riders(props) {
-
-
-
-
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
     { field: 'groupnumber', headerName: 'Group #', flex: 1 },
