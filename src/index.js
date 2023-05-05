@@ -8,7 +8,6 @@ import {
   loadDatabase,
   createDatabase,
   saveDatabase,
-  destroyDatabase,
 } from "./database.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
