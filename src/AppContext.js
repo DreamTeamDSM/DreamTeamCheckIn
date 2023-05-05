@@ -6,7 +6,11 @@ export const AppContext = React.createContext(
         currentRide: null,
         setCurrentRide: () => { },
         setRides: () => { },
-        importData: () => { }
+        importData: () => { },
+        setLoading: () => { },
+        loading: false,
+        error: false,
+        setError: () => { }
     }
 );
 

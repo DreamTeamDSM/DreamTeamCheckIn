@@ -1,12 +1,13 @@
 import React, { useState } from "react";
+
 import Container from "@mui/material/Container";
 
-import { RideInfo } from "./components/RideInfo";
 import { Navigation } from "./components/Navigation";
 import DebugBar from "./components/DebugBar";
 import { ThemeProvider } from "./theme";
 import { AppContext } from "./AppContext";
 import { importData } from "./hooks/import";
+import { RidePanel } from "./components/RidePanel";
 
 import {
   createDatabase,
@@ -22,6 +23,8 @@ function App(props) {
 
   const [rides, setRides] = useState([]);
   const [currentRide, setCurrentRide] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const increaseRider = () => {
     setRiderCount((riderCount) => riderCount + 1);
@@ -32,18 +35,25 @@ function App(props) {
   };
 
   const importFromSeededData = async () => {
-    const db = await createDatabase();
+    setLoading(true)
+    try {
+      const db = await createDatabase();
 
-    await seedDatabase2(db);
+      await seedDatabase2(db);
 
-    await saveDatabase(db);
+      await saveDatabase(db);
 
-    const fetchedRides = await getRides();
+      const fetchedRides = await getRides();
 
-    console.log(fetchedRides)
-    const fetchedCurrentRide = await getRideById(fetchedRides[0].ride_id);
-    setRides(fetchedRides);
-    setCurrentRide(fetchedCurrentRide);
+      console.log(fetchedRides)
+      const fetchedCurrentRide = await getRideById(fetchedRides[0].ride_id);
+      setRides(fetchedRides);
+      setCurrentRide(fetchedCurrentRide);
+    } catch (err) {
+      setError(err)
+    }
+
+    setLoading(false)
   }
 
   const importDataSync = async () => {
@@ -209,25 +219,21 @@ function App(props) {
       currentRide: currentRide,
       setRides: setRides,
       setCurrentRide: setCurrentRide,
-      importData: importFromSeededData
+      importData: importFromSeededData,
+      loading,
+      setLoading,
+      error,
+      setError
     }}>
       <ThemeProvider>
         <header>
           <Navigation searchHandler={setSearchText} />
         </header>
-        <Container maxWidth="lg">
-          <main>
-            <RideInfo
-            // riders={riders}
-            // checkIn={checkIn}
-            // checkOut={checkOut}
-            // reset={reset}
-            // riderCount={riderCount}
-            // searchText={searchText}
-            // importDataSync={importDataSync}
-            />
-          </main>
-        </Container>
+        <main>
+          <Container maxWidth="lg">
+            <RidePanel />
+          </Container>
+        </main>
         <footer>
           <DebugBar />
         </footer>

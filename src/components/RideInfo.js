@@ -55,7 +55,7 @@ const RideInfo = ({ riderCount, checkIn, checkOut, riders, reset, searchText }) 
                             Item Two
                         </TabPanel>
                         <TabPanel value={value} index={2}>
-                            <Stops checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset} searchText={props.searchText}/>
+                            {/* <Stops checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset} searchText={props.searchText}/> */}
                         </TabPanel>
                     </Box>
                 </Grid>
