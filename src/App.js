@@ -27,6 +27,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 
 import { RideInfo } from './components/RideInfo';
+import { Navigation } from './components/Navigation'
 
 
 function App() {
@@ -66,14 +67,10 @@ function App() {
   return (
     <ThemeProvider theme={mdTheme}>
       <CssBaseline />
+      <header>
+        <Navigation />
+      </header>
       <Container maxWidth="lg">
-        <header>
-          <Typography component="h1" variant="h4" mt={5}
-            gutterBottom
-            color="inherit"
-            noWrap
-            sx={{ flexGrow: 1 }}> {'Dream Team Check-in'}</Typography>
-        </header>
         <main>
           <RideInfo />
           <button type="button" onClick={handleClick}>
