@@ -35,7 +35,6 @@ function DebugBar() {
       <button type="button" onClick={handleClick2}>
         Seed NEW!
       </button>
-      <button onClick={() => loadDatabase().then((db) => seedDatabase2(db))}>Seed NEW!</button>
       <button
         onClick={() => loadDatabase().then((db) => saveDatabaseAsFile(db))}
       >
