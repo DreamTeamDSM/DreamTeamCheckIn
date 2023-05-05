@@ -10,6 +10,7 @@ import {
   Paper,
   Button,
   Checkbox,
+  Avatar
 } from '@mui/material';
 
 import { DataGrid } from '@mui/x-data-grid';
@@ -32,6 +33,7 @@ const handleChange = (event,info) => {
         { field: 'id', headerName: 'ID', width: 90 },
         { field: 'groupnumber', headerName: 'Group #', width: 90 },
         { field: 'checkin', headerName: 'Check In/Out', width: 150, renderCell: renderButton},
+        { field: 'avatar', headerName: 'Avatar', width: 150, renderCell: rednerAvatar},
         { field: 'firstname', headerName: 'First Name', width: 120 },
         { field: 'lastname', headerName: 'Last Name', width: 120 },
         { field: 'ridertype', headerName: 'Type', width: 150 },
@@ -43,6 +45,12 @@ const handleChange = (event,info) => {
         { id: 3, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Alayia", lastname: "White", ridertype: "New"},
         { id: 4, groupnumber: 2, checkin: 0, checkout: 0, firstname: "Alex", lastname: "Erickson", ridertype: "Mentor"},
       ];
+
+    function rednerAvatar(params) {
+        return (
+            <Avatar src={params.value} alt="User Avatar"/>
+        )
+    }
 
     function renderButton(params) {
       const [buttonText, setButtonText] = useState('Check In');
@@ -78,6 +86,5 @@ const handleChange = (event,info) => {
       </div>
     );
   }
-
 
 

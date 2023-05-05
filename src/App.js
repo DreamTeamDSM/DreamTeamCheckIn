@@ -1,14 +1,14 @@
 import React from 'react';
 import logo from './logo.svg';
+const database = require('./database');
 
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-
 import Container from '@mui/material/Container';
-import { RideInfo } from './RideInfo';
 
-import Riders from './components/Riders.js';
+import { RideInfo } from './components/RideInfo';
+
 
 function App() {
 
@@ -21,6 +21,13 @@ function App() {
   const decreaseRider = () => {
     setRiders(riders=> riders-1);
   }
+  const handleClick = async () => {
+    const db = await database.createDatabase();
+
+    //TODO: Seed data here
+
+    await database.saveDatabase(db);
+  };
 
   const mdTheme = createTheme({
     palette: {
@@ -59,8 +66,10 @@ function App() {
             sx={{ flexGrow: 1 }}> {'Dream Team Check-in'}</Typography>
         </header>
         <main>
-          <RideInfo riders={riders}/>
-          <Riders increase={increaseRider} decrease={decreaseRider}/>
+          <RideInfo riders={riders} increase={increaseRider} decrease={decreaseRider}/>
+          <button type="button" onClick={handleClick}>
+            Initialize + Seed Database!
+          </button>
         </main>
       </Container>
     </ThemeProvider>
