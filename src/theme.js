@@ -20,6 +20,9 @@ const mdTheme = createTheme({
             dark: "#ba000d",
             contrastText: "#000",
         },
+        white: {
+            main: '#fff'
+        },
         typography: {
             fontFamily: 'Inter',
         },

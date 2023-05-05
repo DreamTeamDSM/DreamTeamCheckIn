@@ -6,6 +6,7 @@ import { Navigation } from "./components/Navigation";
 import { ThemeProvider } from "./theme";
 import DebugBar from './components/DebugBar';
 
+import "@fontsource/inter";
 
 function App(props) {
   const db = props.db;
