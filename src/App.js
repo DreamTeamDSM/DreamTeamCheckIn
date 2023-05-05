@@ -1,5 +1,6 @@
 import React from 'react';
 import logo from './logo.svg';
+const database = require('./database');
 /*
 import './App.css';
 const database = require('./database');
