@@ -84,6 +84,7 @@ export async function saveDatabase(db) {
 
   console.log("Writing database to file (" + binaryArray.length + " bytes)...");
   const writable = await fileHandle.createWritable();
+  //const buffer = Buffer.from(binaryArray);
   await writable.write(binaryArray);
   await writable.close();
 
@@ -119,6 +120,13 @@ async function getDatabaseFile(dirHandle) {
 
 export async function seedDatabase(db) {
   try {
+    // add a couple of user types
+    const sqlUserTypes =
+      'INSERT INTO UserTypes VALUES (' + 0 + ',"Rider"); \
+       INSERT INTO UserTypes VALUES (' + 1 + ',"Mentor");';
+    console.log(sqlUserTypes);
+    db.exec(sqlUserTypes);
+
     for (let i = 0; i <= 100; i++) {
       const user_id = i;
       const ride_id = i+10;
@@ -129,10 +137,10 @@ export async function seedDatabase(db) {
       //User
       const firstName = faker.name.firstName(); // Rowan
       const lastName = faker.name.lastName(); // Nikolaus
-      const type = faker.helpers.arrayElement(['Rider','Support']);
+      const user_type_id = faker.helpers.arrayElement([0,1]);
       const active = faker.helpers.arrayElement([0,1]);
 
-      const sqlUser = "INSERT INTO Users VALUES (" + user_id + ', "' + firstName + '","' + lastName + '","","' + type + '",' + active + ");";
+      const sqlUser = "INSERT INTO Users VALUES (" + user_id + ', "' + firstName + '","' + lastName + '","","' + user_type_id + '",' + active + ");";
       console.log("Executing:",sqlUser);
       db.exec(sqlUser);
 

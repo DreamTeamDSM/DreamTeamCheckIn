@@ -1,13 +1,11 @@
 import React from "react";
-import { createDatabase, saveDatabase, destroyDatabase, loadDatabase, saveDatabaseAsFile, seedDatabase } from "./database.js";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 
 import { RideInfo } from "./components/RideInfo";
 import { Navigation } from "./components/Navigation";
+import { ThemeProvider } from "./theme";
+import DebugBar from './components/DebugBar';
 
-import { getRides } from "./hooks/ride";
 
 function App(props) {
   const db = props.db;
@@ -20,52 +18,6 @@ function App(props) {
   const decreaseRider = () => {
     setRiderCount((riderCount) => riderCount - 1);
   };
-
-  const handleClick = async () => {
-    const db = await createDatabase();
-
-    //TODO: Seed data here
-    await seedDatabase(db);
-
-    await saveDatabase(db);
-  };
-
-  const mdTheme = createTheme({
-    palette: {
-      background: {
-        default: '#F9F9F9',
-        paper: '#fff'
-      },
-      primary: {
-        light: "#849CC2",
-        main: "#4C6285",
-        dark: "#002884",
-        contrastText: "#fff",
-      },
-      secondary: {
-        light: "#ff7961",
-        main: "#f44336",
-        dark: "#ba000d",
-        contrastText: "#000",
-      },
-      typography: {
-        fontFamily: 'Inter',
-      },
-    },
-    components: {
-      MuiDataGrid: {
-        styleOverrides: {
-          columnHeaders: {
-            backgroundColor: '#EAEAE7',
-          },
-          columnHeaderTitle: {
-            fontWeight: 800
-          }
-        }
-      },
-    }
-  });
-
 
   const sampleRiders = [
     { id: 1, groupnumber: 1, checkin: 1, checkout: 0, firstname: "Aaron", lastname: "Ayala", ridertype: "New" },
@@ -110,7 +62,20 @@ function App(props) {
     console.log("searchInput",searchInput);
   }
 
-  const startingCount = riders.reduce((acc, cur) => {
+  const reset = (id) => {
+    const updatedRiders = riders.map(rider => {
+      if (rider.id === id) {
+        decreaseRider();
+        // do db operation here?
+        return {...rider, checkin: 0};
+      } else {
+        return rider;
+      }
+    });
+    setRiders(updatedRiders);
+  }
+
+  const startingCount = riders.reduce((acc,cur)=>{
     if (cur.checkin) acc++;
     return acc;
   }, 0);
@@ -118,8 +83,7 @@ function App(props) {
   const [riderCount, setRiderCount] = React.useState(startingCount);
 
   return (
-    <ThemeProvider theme={mdTheme}>
-      <CssBaseline />
+    <ThemeProvider>
       <header>
         <Navigation searchHandler={searchRiders}/>
       </header>
@@ -129,19 +93,13 @@ function App(props) {
             riders={riders}
             checkIn={checkIn}
             checkOut={checkOut}
+            reset={reset}
             riderCount={riderCount}
           />
-          <button type="button" onClick={handleClick}>
-            Initialize + Seed Database!
-          </button>
-          <button
-            onClick={() => loadDatabase().then((db) => saveDatabaseAsFile(db))}
-          >
-            Download DB as File
-          </button>
-          <button onClick={() => destroyDatabase()}>Destroy DB</button>
-          <button onClick={() => getRides()}>Get Rides</button>
         </main>
+        <footer>
+          <DebugBar />
+        </footer>
       </Container>
     </ThemeProvider>
   );

@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import {
-  Avatar
+  Avatar, Chip
 } from '@mui/material';
-
+import Replay from '@mui/icons-material/Replay';
 import { DataGrid } from '@mui/x-data-grid';
-
 import { Button } from './Button'
 
 const handleChange = (event, info) => {
@@ -20,8 +19,8 @@ export default function Riders(props) {
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
     { field: 'groupnumber', headerName: 'Group #', flex: 1 },
-    { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: renderButton },
-    { field: 'avatar', headerName: 'Avatar', flex: 1, renderCell: renderAvatar },
+    { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: renderChip },
+    { field: 'avatar', headerName: 'Avatar', flex: 1, renderCell: rednerAvatar },
     { field: 'firstname', headerName: 'First Name', flex: 2 },
     { field: 'lastname', headerName: 'Last Name', flex: 2 },
   ];
@@ -38,14 +37,19 @@ export default function Riders(props) {
     props.checkOut(id);
   }
 
-  function renderAvatar(params) {
+  function reset(dispatch, id) {
+    dispatch(CHECKIN);
+    props.reset(id);
+  }
+
+  function rednerAvatar(params) {
     return (
       <Avatar src={params.value} alt="User Avatar" />
     )
   }
 
 
-  function renderButton(params) {
+  function renderChip(params) {
     console.log(params);
     let defaultState = CHECKIN;
     if (params.row.checkin == 1 && params.row.checkout == 1) {
@@ -54,22 +58,30 @@ export default function Riders(props) {
       defaultState = CHECKOUT;
     }
 
-    const [buttonText, setButtonText] = useState(defaultState);
+    const [chipText, setChipText] = useState(defaultState);
+
     return (
-      <Button
+      <Chip
         variant="contained"
         color="primary"
+        label={chipText}
+
         onClick={() => {
-          if (buttonText === CHECKIN) {
-            checkIn(setButtonText, params.row.id);
-          } else if (buttonText === 'Check Out') {
-            checkOut(setButtonText, params.row.id);
+          if (chipText === CHECKIN) {
+            checkIn(setChipText, params.row.id);
+          } else if (chipText === CHECKOUT) {
+            checkOut(setChipText, params.row.id);
           }
           console.log(`Clicked button for row with id: ${params.id}`);
         }}
-      >
-        {buttonText}
-      </Button>
+        onDelete={() => {
+          if (chipText !== CHECKIN) {
+            reset(setChipText, params.row.id);
+          }
+        }}
+        deleteIcon={<Replay />}
+      />
+      // </Chip>
     );
   }
 
