@@ -102,6 +102,23 @@ export async function saveDatabase(db) {
   console.log("Database saved.");
 }
 
+export async function saveDatabaseAsFile(db) {
+  const binaryArray = db.export();
+
+  const a = document.createElement("a");
+  document.body.appendChild(a);
+  a.style = "display: none";
+
+  const blob = new Blob(binaryArray, { type: "octet/stream" });
+  const url = window.URL.createObjectURL(blob);
+
+  a.href = url;
+  a.download = new Date().getTime() + "_sqlite.db";
+  a.click();
+
+  window.URL.revokeObjectURL(url);
+}
+
 // Returns null if the sqlite DB file doesn't exist.
 async function getDatabaseFile(dirHandle) {
   for await (const [key, value] of dirHandle.entries()) {
