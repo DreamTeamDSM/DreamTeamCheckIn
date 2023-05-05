@@ -97,10 +97,10 @@ function App(props) {
             riderCount={riderCount}
           />
         </main>
-        <footer>
-          <DebugBar />
-        </footer>
       </Container>
+      <footer>
+        <DebugBar />
+      </footer>
     </ThemeProvider>
   );
 }
