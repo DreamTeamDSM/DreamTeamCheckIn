@@ -128,7 +128,7 @@ const import_groups = async (importedDb) => {
   // console.log('Spreadsheet ', spreadsheet.sheets);
 };
 
-export async function import_data(handleImportedDb) {
+export async function importData(handleImportedDb) {
   await createDatabase((importedDb) => {
     const callback = (response) => {
       const token = response.access_token;
@@ -152,7 +152,7 @@ export async function import_data(handleImportedDb) {
   });
 }
 
-const trigger_import = () => {
+export const triggerImport = () => {
   if (!isSynced())
     return "Error: You have not exported all changed data. Triggering an import erases app data. Please export all data before importing.";
   //   backup();
