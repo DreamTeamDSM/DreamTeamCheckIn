@@ -6,7 +6,7 @@ import {
     saveDatabase,
 } from "./database.js";
 
-import { importData } from './hooks/import'
+import { importData, getSyncStatus } from './hooks/import';
 import { getRideById, getRides } from "./hooks/ride";
 import { check_in_participant, check_out_participant, reset_participant, check_in_group, check_out_group, reset_group } from "./hooks/check";
 import { delete_groupAssignment, updateGroupAssignment } from "./hooks/group.js";
@@ -36,6 +36,11 @@ const AppContext = React.createContext(
         refresh: () => { },
         exportLoading: false,
         setExportLoading: () => { },
+        syncStatuses: null,
+        setSyncStatues: () => {},
+        isSynced: true,
+        syncString: '',
+        setSyncString: () => {}
     }
 );
 
@@ -47,6 +52,9 @@ export const AppContextProvider = ({ children }) => {
     const [searchText, setSearchText] = useState("");
     const [exportLoading, setExportLoading] = useState(false);
     const { pushNotification } = useNotificationContext()
+    const [isSynced, setIsSynced] = useState(false);
+    const [syncStatuses, setSyncStatues] = useState(false);
+    const [syncString, setSyncString] = useState('');
 
     const getMostRecent = (fetchedRides) => {
         const today = new Date();
@@ -67,6 +75,24 @@ export const AppContextProvider = ({ children }) => {
 
     }
 
+    const updateSyncStatus = async (loadedRides) => {
+        const syncStatuses = await getSyncStatus(loadedRides);
+
+        const isSyncedResult = syncStatuses.some(function(status) {
+            return !status.isSynced;
+        });
+        let syncStringBuild ='These rides need to be synced:';
+        syncStatuses.forEach(status => {
+            if(status.isSynced){
+                syncStringBuild+= " " + status.date
+            }
+        });
+
+        setSyncStatues(syncStatuses);
+        setIsSynced(!isSyncedResult);
+        setSyncString(syncString);
+    }
+
     const refresh = async () => {
         if (!currentRide?.Ride?.ride_id) {
             console.error('Trying to refresh current ride, even though a current ride is not set. 🤔')
@@ -77,6 +103,7 @@ export const AppContextProvider = ({ children }) => {
 
         const refreshedRides = await getRides();
         const refreshedCurrentRide = await getRideById(currentRideId);
+        updateSyncStatus(refreshedRides);
 
         setRides(refreshedRides);
         setCurrentRide(refreshedCurrentRide);
@@ -99,6 +126,7 @@ export const AppContextProvider = ({ children }) => {
                 const mostRecentRide = getMostRecent(loadedRides);
                 const loadedCurrentRide = await getRideById(mostRecentRide.ride_id);
 
+                updateSyncStatus(loadedRides);
                 setRides(loadedRides);
                 setCurrentRide(loadedCurrentRide);
             }
@@ -191,7 +219,12 @@ export const AppContextProvider = ({ children }) => {
                     setLoading,
                     setError
                 )
-            }
+            },
+            isSynced,
+            syncStatuses,
+            setSyncStatues,
+            syncString,
+            setSyncString,
         }}>
             {children}
         </AppContext.Provider>

@@ -50,8 +50,6 @@ const RideInfo = () => {
         export_data(data.currentRide.Ride.ride_id, data.refresh, data.setExportLoading);
     }
 
-    console.log(data.currentRide.isSynced);
-
     return (
         <>
             <Box display={'flex'} justifyItems={'space-between'} mt={5} mb={'12px'}>

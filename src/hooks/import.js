@@ -1,10 +1,17 @@
 import { auth } from "../auth";
 import { createDatabase, loadDatabase, saveDatabase } from "../database";
 
-import { precacheAndRoute } from 'workbox-precaching';
+export const getSyncStatus = async (rides) => {
 
-export const isSynced = async () => {
-  //TODO - loop through isRideSynced for each ride, if any false - not synced
+  const statuses = [];
+
+  for (const ride of rides) {
+    const isSynced = await isRideSynced(ride.ride_id);
+
+    statuses.push({ride_id: ride.ride_id, date: ride.date, isSynced: isSynced})
+  }
+  console.log(statuses);
+  return statuses;
 };
 
 export const isRideSynced = async (id) => {

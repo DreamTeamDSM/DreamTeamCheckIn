@@ -11,7 +11,7 @@ import DialogActions from '@mui/material/DialogActions';
 import { useAppContext } from '../AppContext';
 
 const ImportButton = () => {
-    const { importData } = useAppContext()
+    const { importData, isSynced, syncString } = useAppContext()
     const [isDialogOpen, setDialogOpen] = React.useState(false);
 
     const handleDialogClose = () => {
@@ -40,6 +40,7 @@ const ImportButton = () => {
                     <Typography mb={'24px'}>
                         {'When importing from the Google Sheets, all data in this app will be deleted and refreshed with new data from the Google Sheet. Make sure you have exported the data and verify that it has exported successfully'}
                     </Typography>
+                    <Typography>{!isSynced ? syncString : ''}</Typography>
                     <DialogActions mt='24px'>
                         <Button variant='outline' onClick={handleDialogClose}>
                             {'Cancel'}

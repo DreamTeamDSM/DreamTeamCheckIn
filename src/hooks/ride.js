@@ -26,7 +26,7 @@ export const getRides = async () => {
   );
   const rideData = resultToObjArray(result[0]);
 
-  // console.log(rideData);
+  console.log(rideData);
 
   return rideData;
 };
