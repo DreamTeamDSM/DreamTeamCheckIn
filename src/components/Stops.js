@@ -23,9 +23,17 @@ export default function Stops({stops,groups,groupStops}) {
 
   const data = useAppContext();
 
-  const rows = groups.map((cur) =>{
-    return {...cur,id: cur.group_id};
+  const groupLookup = groups.reduce((acc,cur)=>{
+    acc[cur.group_id] = cur.group_name;
+    return acc;
+  },{});
+
+  const rows = groupStops.map((cur) =>{
+    const group_name = groupLookup[cur.group_id];
+    return {...cur,id: cur.stop_id + "_" + cur.group_id,group_name};
   });
+
+  console.log(rows);
 
   const groupColumns = [
     { field: 'id', headerName: 'Stop Group ID', flex: 1 },
@@ -34,14 +42,14 @@ export default function Stops({stops,groups,groupStops}) {
     { field: 'fulltext', headerName: 'Fulltext', flex: 1 },
   ];
 
-  function checkIn(dispatch, id) {
+  function checkIn(dispatch, stopId,groupId) {
     dispatch(CHECKOUT);
-    data.checkInStop(id);
+    data.checkInStop(stopId,groupId);
   }
 
-  function checkOut(dispatch, id) {
+  function checkOut(dispatch, stopId,groupId) {
     dispatch(COMPLETE);
-    data.checkOutStop(id);
+    data.checkOutStop(stopId,groupid);
   }
 
   function reset(dispatch, id) {
@@ -98,9 +106,9 @@ export default function Stops({stops,groups,groupStops}) {
 
   function renderChip(params) {
     let defaultState = CHECKIN;
-    if (params.row.checkin == 1 && params.row.checkout == 1) {
+    if (params.row.check_in == 1 && params.row.check_out == 1) {
       defaultState = COMPLETE;
-    } else if (params.row.checkin == 1 && params.row.checkout == 0) {
+    } else if (params.row.check_in == 1 && params.row.check_out == 0) {
       defaultState = CHECKOUT;
     }
 
@@ -115,9 +123,10 @@ export default function Stops({stops,groups,groupStops}) {
 
         onClick={() => {
           if (chipText === CHECKIN) {
-            checkIn(setChipText, params.row.id);
+            console.log(params.row);
+            checkIn(setChipText, params.row.stop_id,params.row.group_id);
           } else if (chipText === CHECKOUT) {
-            checkOut(setChipText, params.row.id);
+            checkOut(setChipText, params.row.stop_id,params.row.group_id);
           }
           console.log(`Clicked button for row with id: ${params.id}`);
         }}
@@ -147,7 +156,7 @@ export default function Stops({stops,groups,groupStops}) {
   return (
     <div>
       {stops.map((stop)=>{
-        return (<Accordion>
+        return (<Accordion key={stop.stop_id}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
@@ -156,7 +165,6 @@ export default function Stops({stops,groups,groupStops}) {
             <Typography>{stop.description}</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography>
               <div style={{ height: 400, width: '100%' }}>
                 <DataGrid
                   filterModel={filterModel}
@@ -170,7 +178,6 @@ export default function Stops({stops,groups,groupStops}) {
                   }}
                 />
               </div>
-            </Typography>
           </AccordionDetails>
         </Accordion>);
       })}
