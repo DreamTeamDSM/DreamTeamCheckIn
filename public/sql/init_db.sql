@@ -45,12 +45,14 @@ CREATE TABLE IF NOT EXISTS "Groups" (
 );
 
 CREATE TABLE IF NOT EXISTS "GroupAssignments" (
+	"group_assignment_id" INTEGER,
 	"user_id"	INTEGER,
 	"group_id"	INTEGER,
 	"check_in"	INTEGER DEFAULT 0 CHECK(check_in IN (0,1)),
 	"check_out"	INTEGER DEFAULT 0 CHECK(check_out IN (0,1)),
-  "create_date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
-  "update_date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
+    "create_date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
+    "update_date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY("group_assignment_id" AUTOINCREMENT),
 	FOREIGN KEY("group_id") REFERENCES "Groups"("group_id"),
 	FOREIGN KEY("user_id") REFERENCES "Users"("user_id")
 );
