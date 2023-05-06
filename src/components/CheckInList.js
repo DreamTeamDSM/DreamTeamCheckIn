@@ -368,7 +368,11 @@ export default function CheckInList({
         rowsPerPageOptions={[5, 10, 20]}
         hideFooter={true}
         columnVisibilityModel={visibility}
-        sortModel={[{field: 'first_name',sort: 'asc'}]}
+        initialState={{
+          sorting: {
+            sortModel: [{ field: 'first_name', sort: 'asc' }],
+          },
+        }}
       />
     </div>
   );
