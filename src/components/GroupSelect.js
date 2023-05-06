@@ -18,8 +18,8 @@ const GroupSelect = ({ groups, userId, defaultGroupId, changeGroup }) => {
     };
 
     const currentGroup = groups.find((group) => group.group_id === selectedGroupId)
-    const currentGroupId = currentGroup.group_id
-    const currentGroupLabel = currentGroup.group_name
+    const currentGroupId = currentGroup?.group_id
+    const currentGroupLabel = currentGroup?.group_name
 
     const handleSelectChange = (value) => {
         setSelectedGroupId(value);

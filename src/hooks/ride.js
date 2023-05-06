@@ -58,11 +58,11 @@ export const getRideById = async (id) => {
   const mentorsObjArray = resultToObjArray(mentors);
   // console.log(mentorsObjArray);
   const riders = db.exec(
-    `SELECT * FROM ` +
+    `SELECT *, Users.user_id FROM ` +
     `Users ` +
     `LEFT JOIN GroupAssignments on Users.user_id=GroupAssignments.user_id ` +
     `LEFT JOIN Groups on GroupAssignments.group_id=Groups.group_id ` +
-    `WHERE Groups.ride_id=${id} AND Users.user_type_id=(SELECT user_type_id FROM UserTypes WHERE type='Rider')`
+    `WHERE (Groups.ride_id=${id} OR Groups.ride_id IS NULL) AND Users.user_type_id=(SELECT user_type_id FROM UserTypes WHERE type='Rider')`
   )[0];
   // console.log(riders);
   const ridersObjArray = resultToObjArray(riders);
