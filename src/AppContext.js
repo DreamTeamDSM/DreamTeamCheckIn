@@ -8,7 +8,7 @@ import {
 
 import { importData } from './hooks/import'
 import { getRideById, getRides } from "./hooks/ride";
-import { check_in_participant, check_out_participant, reset_participant } from "./hooks/check";
+import { check_in_participant, check_out_participant, reset_participant, check_in_group, check_out_group, reset_group} from "./hooks/check";
 import { delete_groupAssignment, updateGroupAssignment } from "./hooks/group.js";
 
 const AppContext = React.createContext(
@@ -117,15 +117,21 @@ export const AppContextProvider = ({ children }) => {
     };
 
     const checkInStop = async (stopId, groupId) => {
-        console.log("check in stop", stopId, groupId);
+        console.log("check in stop", stopId, groupId)
+        await check_in_group(groupId,stopId)
+        await refresh()
     };
 
     const checkOutStop = async (stopId, groupId) => {
         console.log("check out stop", stopId, groupId);
+        await check_out_group(groupId,stopId);
+        await refresh()
     };
 
     const resetCheckInStop = async (stopId, groupId) => {
         console.log("reset checkin stop", stopId, groupId);
+        await reset_group(groupId,stopId)
+        await refresh()
     };
 
     return (
