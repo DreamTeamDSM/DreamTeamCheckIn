@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import {
-  Avatar, Chip
+  Avatar, Chip, Select, FormControl, InputLabel, MenuItem
 } from '@mui/material';
 import Replay from '@mui/icons-material/Replay';
 import { DataGrid, GridLogicOperator } from '@mui/x-data-grid';
@@ -15,7 +15,7 @@ const COMPLETE = "Complete";
 export default function Riders(props) {
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
-    { field: 'groupnumber', headerName: 'Group #', flex: 1 },
+    { field: 'groupnumber', headerName: 'Group #', flex: 1, renderCell: renderGroupSelect},
     { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: renderChip },
     { field: 'avatar', headerName: 'Avatar', flex: 1, renderCell: rednerAvatar },
     { field: 'firstname', headerName: 'First Name', flex: 2 },
@@ -127,6 +127,26 @@ export default function Riders(props) {
     );
   }
 
+  const renderGroupSelect = () => {
+
+    return (
+      <FormControl fullWidth>
+  <InputLabel id="demo-simple-select-label">Age</InputLabel>
+  <Select
+    labelId="demo-simple-select-label"
+    id="demo-simple-select"
+    value={age}
+    label="Age"
+    onChange={handleChange}
+  >
+    <MenuItem value={10}>Ten</MenuItem>
+    <MenuItem value={20}>Twenty</MenuItem>
+    <MenuItem value={30}>Thirty</MenuItem>
+  </Select>
+</FormControl>
+
+    );
+  }
 
 
   React.useEffect(()=>{

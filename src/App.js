@@ -22,7 +22,7 @@ function App(props) {
   const db = props.db;
 
   const [rides, setRides] = useState([]);
-  const [currentRide, setCurrentRide] = useState(null);
+  const [currentRide, setCurrentRide] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
