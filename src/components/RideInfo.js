@@ -57,8 +57,7 @@ const RideInfo = () => {
                         <Tabs value={value} onChange={handleChange}>
                             <Tab label="Riders" {...a11yProps(0)} />
                             <Tab label="Mentors" {...a11yProps(1)} />
-                            <Tab label="Support" {...a11yProps(2)} />
-                            <Tab label="Stops" {...a11yProps(3)} />
+                            <Tab label="Stops" {...a11yProps(2)} />
                         </Tabs>
                         <TabPanel value={value} index={0}>
                             <CheckInList users={data?.currentRide?.Riders || []} groups={data?.currentRide?.Groups || []} />
@@ -67,9 +66,6 @@ const RideInfo = () => {
                             <CheckInList users={data?.currentRide?.Mentors || []} groups={data?.currentRide?.Groups || []} oneStepCheckIn />
                         </TabPanel>
                         <TabPanel value={value} index={2}>
-                            <CheckInList users={data?.currentRide?.Mentors || []} groups={data?.currentRide?.Groups || []} oneStepCheckIn hideGroup />
-                        </TabPanel>
-                        <TabPanel value={value} index={3}>
                             <Stops stops={data?.currentRide?.Stops || []} groupStops={data?.currentRide?.GroupStops || []} groups={data?.currentRide?.Groups || []} />
                         </TabPanel>
                     </Box>
