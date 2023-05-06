@@ -57,9 +57,6 @@ const Paperize = ({ children }) => (
 const RideMetadata = ({ ...props }) => {
     const { currentRide } = useAppContext()
 
-    console.log(currentRide)
-    if (!currentRide) return <></>
-
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
 

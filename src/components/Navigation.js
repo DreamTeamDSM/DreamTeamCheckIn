@@ -65,7 +65,7 @@ const Navigation = (props) => {
                         >
                             {rides.map((ride) => {
                                 return (
-                                    <MenuItem selected={currentRideId === ride.ride_id} onClick={handleClose} ride-id={ride.ride_id}>{ride.date}</MenuItem>
+                                    <MenuItem key={ride.ride_id} selected={currentRideId === ride.ride_id} onClick={handleClose} ride-id={ride.ride_id}>{ride.date}</MenuItem>
                                 )
                             })}
                         </Menu>
