@@ -25,7 +25,7 @@ function DebugBar() {
       <button onClick={() => importData(() => console.log("Imported!"))}>
         Sync FROM Drive
       </button>
-      <button onClick={() => export_data(currentRide.Ride[0], () => console.log("Exported!"))}>
+      <button onClick={() => export_data(currentRide.Ride.ride_id, () => console.log("Exported!"))}>
         Sync TO Drive
       </button>
       <button onClick={() => getRideById(12)}>Get Ride 12</button>

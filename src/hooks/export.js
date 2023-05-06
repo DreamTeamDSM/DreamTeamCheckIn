@@ -10,12 +10,12 @@ const GROUP_CHECKS_SHEET = 'Group Checks';
 export async function export_data(rideId, onDbExported) {
   console.log("Exporting data to Google Drive for ride", rideId, "...");
   const callback = async (response) => {
-    const db = loadDatabase();
+    const db = await loadDatabase();
 
     const token = response.access_token;
     gapi.client.setToken(token);
 
-    await exportGroupChecks(db);
+    await exportGroupChecks(db, rideId);
     await exportUserChecks(db);
 
     onDbExported();
@@ -30,6 +30,20 @@ export async function export_data(rideId, onDbExported) {
     .requestAccessToken();
 }
 
-async function exportGroupChecks(db, rideId) {}
+async function exportGroupChecks(db, rideId) {
+  getGroupChecks(db, rideId);
+}
 
 async function exportUserChecks(db, rideId) {}
+
+function getGroupChecks(db, rideId) {
+  const result = db.exec(
+    "SELECT Groups.group_name, Stops.description, check_in, check_out FROM GroupCheck " +
+    "INNER JOIN Groups ON GroupCheck.group_id = Groups.group_id " +
+    "INNER JOIN Stops ON GroupCheck.stop_id = Stops.stop_id " +
+    "WHERE Groups.ride_id = ?",
+    [rideId],
+  );
+
+  console.log('Group checks:', result);
+}
