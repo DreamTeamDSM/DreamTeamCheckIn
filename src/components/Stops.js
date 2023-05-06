@@ -41,7 +41,6 @@ export default function Stops({stops,groups,groupStops}) {
     { field: 'id', headerName: 'Stop Group ID', flex: 1 },
     { field: 'group_name', headerName: 'Description', flex: 1 },
     { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: renderChip },
-    { field: 'fulltext', headerName: 'Fulltext', flex: 1 },
   ];
 
   function checkIn(dispatch, stopId,groupId) {
@@ -141,21 +140,6 @@ export default function Stops({stops,groups,groupStops}) {
     );
   }
 
-
-
-  React.useEffect(()=>{
-    setFilterModel({
-      items: [
-        { field: 'fulltext', operator: 'contains', value: data.searchText.toLowerCase() },
-      ]
-    })
-  },[data.searchText]);
-
-  const [filterModel, setFilterModel] = React.useState({
-    items: []
-  });
-
-  console.log(stops);
   return (
     <div>
       {stops.map((stop)=>{
@@ -191,7 +175,6 @@ export default function Stops({stops,groups,groupStops}) {
           <AccordionDetails>
               <div style={{ width: '100%' }}>
                 <DataGrid
-                  filterModel={filterModel}
                   rows={filteredRows}
                   columns={groupColumns}
                   pageSize={15}
