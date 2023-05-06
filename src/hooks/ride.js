@@ -47,7 +47,7 @@ export const getRideById = async (id) => {
   // const routeId = route.values[0][0];
   const routeDistance = route.values[0][1];
   const rideSupport = db.exec(
-    `SELECT * FROM Users WHERE user_id IN (SELECT user_id FROM RideSupport WHERE ride_id=${rideId})`
+    `SELECT * FROM Users WHERE user_id IN (SELECT user_id FROM RideSupport WHERE ride_id=${id})`
   )[0];
   console.log(rideSupport);
   const mentors = db.exec(
