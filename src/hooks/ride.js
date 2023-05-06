@@ -83,7 +83,7 @@ export const getRideById = async (id) => {
   const groupStopsObjArray = resultToObjArray(groupStops);
   // console.log(groupStopsObjArray);
   const groups = db.exec(
-    'SELECT * FROM Groups'
+    `SELECT * FROM Groups where ride_id=${id}`
   )[0];
   // console.log(groups);
   const groupsObjArray = resultToObjArray(groups);
