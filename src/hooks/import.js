@@ -123,7 +123,7 @@ const import_routes = async (importedDb) => {
 const GROUP_SPREADSHEET_ID = "1gsbV8BB5H9XpjgTmy-pOy4h7xp2209p_rH8vFk5mNLQ";
 const SPREADSHEET_HEADER_ROW_COUNT = 2;
 const GROUP_ROW_COUNT = 3;
-const GROUP_ROW_SPACING = 11;
+const GROUP_ROW_SPACING = 13;
 const GROUP_COLUMN_COUNT = 5;
 
 const import_groups = async (importedDb) => {
@@ -140,7 +140,7 @@ const import_groups = async (importedDb) => {
     const rows = (
       await gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: GROUP_SPREADSHEET_ID,
-        range: `${sheetName}!A:F`, // todo: can't handle spaces
+        range: `${sheetName}!A:F`,
       })
     ).result.values;
 
