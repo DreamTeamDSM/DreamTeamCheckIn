@@ -30,7 +30,7 @@ export const AppContextProvider = ({ children }) => {
     const [currentRide, setCurrentRide] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
-    const [searchText,setSearchText] = useState("");
+    const [searchText, setSearchText] = useState("");
 
     const importFromSeededData = async () => {
         setLoading(true)

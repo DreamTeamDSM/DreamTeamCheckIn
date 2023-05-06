@@ -7,7 +7,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 
-import {makeStyles, createStyles} from '@mui/styles';
+import { makeStyles, createStyles } from '@mui/styles';
 import { useTheme } from '@mui/material/styles';
 
 const useStyles = makeStyles(() => {
@@ -22,13 +22,12 @@ const Search = (props) => {
   const { search } = useStyles();
   const theme = useTheme();
 
-  const [searchText,setSearchText] = useState("");
+  const [searchText, setSearchText] = useState("");
   const [showClearIcon, setShowClearIcon] = useState("none");
 
-  useEffect(()=>{
-    console.log("searchText",searchText);
+  useEffect(() => {
     props.searchHandler(searchText);
-  },[searchText]);
+  }, [searchText]);
 
   const handleChange = (event) => {
     setShowClearIcon(event.target.value === "" ? "none" : "flex");
@@ -48,7 +47,7 @@ const Search = (props) => {
           size="small"
           variant="outlined"
           onChange={handleChange}
-          style={{backgroundColor: '#fff'}}
+          style={{ backgroundColor: '#fff' }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
