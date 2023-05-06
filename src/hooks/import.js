@@ -1,9 +1,6 @@
 import { auth } from "../auth";
 import { createDatabase, loadDatabase, saveDatabase } from "../database";
 
-const CLIENT_ID =
-  "592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com";
-
 export const isSynced = async () => {
   //TODO - loop through isRideSynced for each ride, if any false - not synced
 };
