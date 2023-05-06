@@ -211,7 +211,7 @@ export const AppContextProvider = ({ children }) => {
             importData: async () => {
                 setLoading(true)
                 await importData(
-                    pushNotification,
+                    () => {}, //pushNotification,
                     async () => {
                         setError(false)
                         await performInitialLoad()
