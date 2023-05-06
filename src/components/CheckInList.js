@@ -252,8 +252,7 @@ export default function CheckInList({
       flex: .75,
       renderCell: renderAvatar,
     },
-    { field: "first_name", headerName: "First Name", flex: 1.5 },
-    { field: "last_name", headerName: "Last Name", flex: 2 },
+    { field: "name", headerName: "Name", flex: 1.5 },
     { field: "fulltext", headerName: "Fulltext", flex: 0 },
   ];
 
@@ -263,7 +262,7 @@ export default function CheckInList({
       cur.first_name +
       cur.last_name
     ).toLowerCase();
-    return { ...cur, id: cur.user_id, fulltext };
+    return { ...cur, id: cur.user_id, name: cur.first_name + " " + cur.last_name, fulltext };
   });
 
   function checkIn(userId) {
