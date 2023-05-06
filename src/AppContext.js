@@ -81,16 +81,16 @@ export const AppContextProvider = ({ children }) => {
         const isSyncedResult = syncStatuses.some(function(status) {
             return !status.isSynced;
         });
-        let syncStringBuild ='These rides need to be synced:';
+        let syncStringBuild ='These rides need to be synced: ';
         syncStatuses.forEach(status => {
             if(status.isSynced){
-                syncStringBuild+= " " + status.date
+                syncStringBuild += status.date + ' '
             }
         });
-
+        console.log(syncStringBuild);
         setSyncStatues(syncStatuses);
         setIsSynced(!isSyncedResult);
-        setSyncString(syncString);
+        setSyncString(syncStringBuild);
     }
 
     const refresh = async () => {
