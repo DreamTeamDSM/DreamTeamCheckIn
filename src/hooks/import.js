@@ -166,6 +166,13 @@ const import_groups = async (importedDb, stops) => {
       continue;
     }
 
+    const filteredStops = [];
+    for (var i = 1; i < stops.length; i++) {
+      if (parseInt(stops[i][0]) === matchingRouteId) {
+        filteredStops.push(stops[i]);
+      }
+    }
+
     const rideId = createRide(importedDb, matchingRouteId, new Date(date).toLocaleDateString());
     for (var groupRow = 0; groupRow < GROUP_ROW_COUNT; groupRow++) {
       const headerRowIndex = SPREADSHEET_HEADER_ROW_COUNT + groupRow * GROUP_ROW_SPACING;
@@ -188,13 +195,7 @@ const import_groups = async (importedDb, stops) => {
 
         if (headerValue.indexOf("Group") > -1) {
           const groupId = createGroup(importedDb, headerValue, rideId);
-          for (var i = 1; i < stops.length; i++) {
-            const stop = stops[i];
-
-            if (parseInt(stop[1]) !== matchingRouteId) {
-              continue;
-            }
-
+          for (const stop in filteredStops) {
             createGroupCheck(importedDb, groupId, stop[0]);
           }
 
