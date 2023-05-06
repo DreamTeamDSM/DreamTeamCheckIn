@@ -60,12 +60,20 @@ const import_users = (importedDb) => {
           continue;
         }
 
+        const userTypeId = getUserTypeIdByName(importedDb, row[4]);
+        if (!userTypeId) {
+          console.error(`User type ${row[4]} not found`);
+          continue;
+        }
+
+        console.log('USER TYPE ', userTypeId);
+
         importedDb.run("INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?)", [
           row[0],
           row[1],
           row[2],
           "NULL", // TODO: row[3]
-          row[4],
+          userTypeId,
           row[5],
           row[6],
         ]);
@@ -306,6 +314,17 @@ function getUserIdByName(db, fullName) {
 
   if (result.length === 0) return null;
   if (result[0].values.length === 0) return null;
+  if (result[0].values[0].length === 0) return null;
 
-  return result[0].values[0];
+  return result[0].values[0][0];
+}
+
+function getUserTypeIdByName(db, name) {
+  const result = db.exec("SELECT * FROM UserTypes WHERE type = ?", [name]);
+
+  if (result.length === 0) return null;
+  if (result[0].values.length === 0) return null;
+  if (result[0].values[0].length === 0) return null;
+
+  return result[0].values[0][0];
 }

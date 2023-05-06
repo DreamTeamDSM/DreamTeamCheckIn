@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import {
     createDatabase,
+    loadDatabase,
     saveDatabase,
     seedDatabase,
     seedDatabase2,
@@ -37,6 +38,11 @@ export const AppContextProvider = ({ children }) => {
 
     const performInitialLoad = async () => {
         try {
+            const db = await loadDatabase();
+            if (!db) {
+                saveDatabase(await createDatabase());
+            }
+
             const loadedRides = await getRides();
             const loadedCurrentRide = await getRideById(loadedRides[0].ride_id);
 

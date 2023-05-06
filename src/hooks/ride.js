@@ -66,7 +66,6 @@ export const getRideById = async (id) => {
   )[0];
   // console.log(riders);
   const ridersObjArray = resultToObjArray(riders);
-  // console.log(ridersObjArray);
   const stops = db.exec(
     `SELECT * FROM Stops WHERE route_id=${routeObj.route_id}`
   )[0];
