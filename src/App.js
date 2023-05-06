@@ -1,7 +1,7 @@
 import React from "react";
-
 import Container from "@mui/material/Container";
 
+import { RideInfo } from "./components/RideInfo";
 import { Navigation } from "./components/Navigation";
 import DebugBar from "./components/DebugBar";
 import { ThemeProvider } from "./theme";
@@ -21,7 +21,6 @@ function App() {
   const decreaseRider = () => {
     setRiderCount((riderCount) => riderCount - 1);
   };
-
 
   // const checkIn = (id) => {
   //   const updatedRiders = riders.map((rider) => {
@@ -90,9 +89,7 @@ function App() {
               />
         </header>
         <main>
-          <Container maxWidth="lg">
-            <RidePanel />
-          </Container>
+          <RidePanel />
         </main>
         <footer>
           <DebugBar />

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import {
     createDatabase,
     saveDatabase,
+    seedDatabase,
     seedDatabase2,
 } from "./database.js";
 
@@ -18,7 +19,12 @@ const AppContext = React.createContext(
         setLoading: () => { },
         loading: false,
         error: false,
-        setError: () => { }
+        setError: () => { },
+        setSearchText: () => { },
+        searchText: "",
+        checkIn: () => { },
+        checkOut: () => { },
+        changeGroup: () => { },
     }
 );
 
@@ -27,6 +33,7 @@ export const AppContextProvider = ({ children }) => {
     const [currentRide, setCurrentRide] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
+    const [searchText, setSearchText] = useState("");
 
     const performInitialLoad = async () => {
         try {
@@ -36,11 +43,24 @@ export const AppContextProvider = ({ children }) => {
             setRides(loadedRides);
             setCurrentRide(loadedCurrentRide);
         } catch (err) {
+            console.error(err)
             setError(err)
         }
     };
 
     useEffect(() => performInitialLoad(), []);
+
+    const checkIn = async () => {
+        console.log("check in");
+    };
+
+    const checkOut = async() => {
+        console.log("check out");
+    };
+
+    const changeGroup = async() => {
+        console.log("change group");
+    }
 
     return (
         <AppContext.Provider value={{
@@ -51,7 +71,12 @@ export const AppContextProvider = ({ children }) => {
             loading,
             setLoading,
             error,
-            setError
+            setError,
+            setSearchText,
+            searchText,
+            checkIn,
+            checkOut,
+            changeGroup,
         }}>
             {children}
         </AppContext.Provider>

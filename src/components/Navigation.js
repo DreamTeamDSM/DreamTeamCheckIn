@@ -11,16 +11,28 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Search } from "./Search";
 
 import Logo from "../assets/logo";
+import { useAppContext } from '../AppContext';
+import { getRideById } from '../hooks/ride';
+
 const Navigation = (props) => {
+    const { currentRide, setCurrentRide, rides, setSearchText } = useAppContext()
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
-    const handleClose = (event) => {
-        console.log('selected', event.currentTarget.getAttribute('ride-id'))
+    const disabled = Boolean(!rides.length)
+    const currentRideId = currentRide ? currentRide.Ride.ride_id : undefined
+
+    const handleClose = async (event) => {
+        const rideId = event.currentTarget.getAttribute('ride-id')
 
         setAnchorEl(null);
+
+        if (!rideId) return
+        const nextRide = await getRideById(rideId);
+
+        setCurrentRide(nextRide)
     };
 
     return (
@@ -37,6 +49,7 @@ const Navigation = (props) => {
                             aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined}
                             onClick={handleClick}
+                            disabled={disabled}
                             endIcon={<ArrowDropDownIcon />}
                         >
                             {'Rides'}
@@ -50,11 +63,15 @@ const Navigation = (props) => {
                                 'aria-labelledby': 'rides-button',
                             }}
                         >
-                            <MenuItem onClick={handleClose} ride-id='ride-id-something-or-other'>{'5/6/23 Cumming to Walnut Ridge'}</MenuItem>
+                            {rides.map((ride) => {
+                                return (
+                                    <MenuItem key={ride.ride_id} selected={currentRideId === ride.ride_id} onClick={handleClose} ride-id={ride.ride_id}>{ride.date}</MenuItem>
+                                )
+                            })}
                         </Menu>
                     </div>
-                    <div style={{marginLeft: 'auto'}}>
-                        <Search searchHandler={props.searchHandler} />
+                    <div style={{ marginLeft: 'auto' }}>
+                        <Search searchHandler={setSearchText} />
                     </div>
                 </Toolbar>
             </AppBar>

@@ -21,7 +21,8 @@ const a11yProps = (index) => {
 }
 
 
-const RideInfo = ({ riderCount, checkIn, checkOut, riders, reset, searchText }) => {
+//const RideInfo = ({ riderCount, checkIn, checkOut, riders, reset, searchText }) => {
+const RideInfo = () => {
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
 
@@ -50,10 +51,14 @@ const RideInfo = ({ riderCount, checkIn, checkOut, riders, reset, searchText }) 
                             <Tab label="Groups" {...a11yProps(2)} />
                         </Tabs>
                         <TabPanel value={value} index={0}>
-                            {/* <Riders checkIn={checkIn} checkOut={checkOut} riders={riders} reset={reset} searchText={searchText}/> */}
+                            <Riders />
                         </TabPanel>
                         <TabPanel value={value} index={1}>
+<<<<<<< HEAD
                             <Mentors checkIn={checkIn} checkOut={checkOut} riders={riders} reset={reset} searchText={searchText}/>
+=======
+                            {/*<Mentors checkIn={checkIn} checkOut={checkOut} riders={riders} reset={reset} searchText={searchText}/>*/}
+>>>>>>> 6a3f5b0c1a9bcb1e3bc904079be24e9a858a23b2
                         </TabPanel>
                         <TabPanel value={value} index={2}>
                             {/* <Stops checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset} searchText={props.searchText}/> */}
