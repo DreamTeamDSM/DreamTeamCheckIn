@@ -11,9 +11,11 @@ import { useAppContext } from "../AppContext";
 import { export_data } from "../hooks/export";
 
 function DebugBar() {
+  const queryParams = new URLSearchParams(location.search);
+  const isDebugMode = queryParams.get('debug');
   const { currentRide } = useAppContext();
 
-  return (
+  return isDebugMode && (
     <div className="debug-bar">
       <button
         onClick={() => loadDatabase().then((db) => saveDatabaseAsFile(db))}
