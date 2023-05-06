@@ -30,7 +30,7 @@ const CompactMetadata = ({ ride, ...props }) => (
     </Box>
 )
 
-const FullSizeMetadata = ({ ...props }) => (
+const FullSizeMetadata = ({ ride, ...props }) => (
     <Box
         display="flex"
         flexWrap="wrap"
@@ -57,6 +57,7 @@ const Paperize = ({ children }) => (
 const RideMetadata = ({ ...props }) => {
     const { currentRide } = useAppContext()
 
+    console.log(currentRide)
     if (!currentRide) return <></>
 
     const theme = useTheme();
