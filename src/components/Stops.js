@@ -28,6 +28,8 @@ export default function Stops({stops,groups,groupStops}) {
     return acc;
   },{});
 
+  console.log("groupStops", groupStops);
+
   const rows = groupStops.map((cur) =>{
     const group_name = groupLookup[cur.group_id];
     return {...cur,id: cur.stop_id + "_" + cur.group_id,group_name};
@@ -153,9 +155,15 @@ export default function Stops({stops,groups,groupStops}) {
     items: []
   });
 
+  console.log(stops);
   return (
     <div>
       {stops.map((stop)=>{
+
+        const filteredRows = rows.filter((cur)=>{
+          return (stop.stop_id == cur.stop_id);
+        });
+
         return (<Accordion key={stop.stop_id}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -168,7 +176,7 @@ export default function Stops({stops,groups,groupStops}) {
               <div style={{ height: 400, width: '100%' }}>
                 <DataGrid
                   filterModel={filterModel}
-                  rows={rows}
+                  rows={filteredRows}
                   columns={groupColumns}
                   pageSize={10}
                   rowsPerPageOptions={[5, 10, 20]}

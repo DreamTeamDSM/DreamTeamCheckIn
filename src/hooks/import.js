@@ -3,41 +3,40 @@ import { createDatabase, loadDatabase, saveDatabase } from "../database";
 const CLIENT_ID =
   "592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com";
 
-const isSynced = () => {
-  //do not allow import if we have more recent changes to GroupAssignment or GroupCheck since last RideExport
-  const db = loadDatabase();
-  let isSynced = true;
+  export const isSynced = async () => {
+    //do not allow import if we have more recent changes to GroupAssignment or GroupCheck since last RideExport
+    const db = await loadDatabase();
+    let isSynced = true;
 
-  //get latest export for each ride
-  const latest_exports = db.exec(
-    "SELECT TOP 1 ride_id, created_at FROM RideExport GROUP BY ride_id ORDER BY created_at DESC"
-  );
+    //get latest export for each ride
+    const latestExports = db.exec(
+      "SELECT ride_id, date FROM RideExports GROUP BY ride_id ORDER BY date DESC LIMIT 1"
+    )[0];
 
-  //get group assignments for each group ride where updated at is greater than last ride export
-  latest_exports.values.array.forEach((latest_export) => {
-    const not_exported_assignments = db.exec(
-      `SELECT * from GroupAssignment WHERE group_id IN (SELECT group_id FROM Group WHERE ride_id = ${latest_export[0]}) AND updated_at > (${latest_export[created_at]})`
-    );
-    if (not_exported_assignments.length() > 0) isSynced = false;
-  });
+    //get group assignments for each group ride where updated at is greater than last ride export
+    if(!latestExports?.values?.length) return false;
 
-  //select group check for each ride where updated at is greater than last ride export
-  latest_exports.values.array.forEach((latest_export) => {
-    const not_exported_group_checks = db.exec(
-      `SELECT * FROM GroupCheck WHERE group_id IN (SELECT group_id from Group where ride_id = ${latest_export[0]}) AND updated_at > (${latest_export[created_at]})`
-    );
-    if (not_exported_group_checks.length() > 0) isSynced = false;
-  });
+    latestExports.values.forEach((latestExport) => {
+      const notExportedAssignments = db.exec(
+        `SELECT * from GroupAssignments WHERE group_id IN (SELECT group_id FROM Groups WHERE ride_id = ${latestExport[0]}) AND update_date > '${latestExport[1]}'`
+      );
+      console.log(notExportedAssignments);
+      if (notExportedAssignments.length > 0) isSynced = false;
+    });
 
-  //if any of the above is not zero... tell user which rides have not been exported or just false for now....
-  return isSynced;
+    //select group check for each ride where updated at is greater than last ride export
+    latestExports.values.forEach((latestExport) => {
+      const notExportedGroupChecks = db.exec(
+        `SELECT * FROM GroupCheck WHERE group_id IN (SELECT group_id FROM Groups WHERE ride_id = ${latestExport[0]}) AND update_date > '${latestExport[1]}'`
+      );
+      console.log(notExportedGroupChecks);
+      if (notExportedGroupChecks.length > 0) isSynced = false;
+    });
 
-  /* example output from db.exec
-  [
-    {columns:['a','b'], values:[[0,'hello'],[1,'world']]}
-  ]
-  */
-};
+    //if any of the above is not zero... tell user which rides have not been exported or just false for now....
+    return isSynced;
+
+  };
 
 const backup = () => {
   //save the current db file.. just incase. do we save this db file locally and just rename? or push it up to google? or both?
@@ -148,8 +147,8 @@ const import_groups = async (importedDb, stops) => {
     ).result.values;
 
     const iterateRange = (startRow, stopRow, startCol, stopCol, fn) => {
-      for (let row = startRow; row <= Math.min(rows.length-1, stopRow); row++) {
-        for (let col = startCol; col <= Math.min(rows[row].length-1, stopCol); col++) {
+      for (let row = startRow; row <= Math.min(rows.length - 1, stopRow); row++) {
+        for (let col = startCol; col <= Math.min(rows[row].length - 1, stopCol); col++) {
           fn(rows[row][col], row, col);
         }
       }
@@ -232,21 +231,35 @@ const import_groups = async (importedDb, stops) => {
   }
 };
 
-export async function importData(handleImportedDb) {
+export async function importData(handleImportedDb, setLoading = () => { }, setError = () => { }) {
   await createDatabase((importedDb) => {
     const callback = async (response) => {
-      const token = response.access_token;
-      gapi.client.setToken(token);
+      try {
+        if (response.error) {
+          setError(response.error)
+          setLoading(false)
+          return
+        }
 
-      console.log('Performing import...');
-      await import_users(importedDb);
-      const stops = await import_routes(importedDb);
-      console.log('Stops 2', stops);
-      await import_groups(importedDb, stops);
+        const token = response.access_token;
+        gapi.client.setToken(token);
 
-      console.log('Saving imported database...');
-      saveDatabase(importedDb);
-      handleImportedDb(importedDb);
+        console.log('Performing import...');
+        await import_users(importedDb);
+        const stops = await import_routes(importedDb);
+        console.log('Stops 2', stops);
+        await import_groups(importedDb, stops);
+
+        console.log('Saving imported database...');
+        saveDatabase(importedDb);
+
+        await handleImportedDb(importedDb);
+      } catch (err) {
+        console.error(err)
+        setError(err)
+      } finally {
+        setLoading(false)
+      }
     };
 
     google.accounts.oauth2

@@ -1,4 +1,4 @@
-import { loadDatabase } from "../database.js";
+import { loadDatabase, saveDatabase } from "../database.js";
 
 const CLIENT_ID =
   "592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com";
@@ -19,6 +19,8 @@ export async function export_data(rideId, onDbExported) {
     await exportUserChecks(db);
 
     onDbExported();
+
+    await saveExport(db, rideId);
   };
 
   google.accounts.oauth2
@@ -46,4 +48,9 @@ function getGroupChecks(db, rideId) {
   );
 
   console.log('Group checks:', result);
+}
+
+const saveExport = async (db, ride_id) => {
+  db.exec("INSERT INTO RideExports (ride_id) VALUES (?)", [ride_id]);
+  await saveDatabase(db);
 }

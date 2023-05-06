@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 
 import { Search } from "./Search";
-import { ConfigMenu } from './ConfigMenu';
+import { ImportButton } from './ImportButton';
 
 import Logo from "../assets/logo";
 import { useAppContext } from '../AppContext';
@@ -26,7 +26,7 @@ const Navigation = (props) => {
                     >
                         <RidesMenu />
                         <Box display={'flex'}>
-                            <ConfigMenu />
+                            <ImportButton />
                             <Search searchHandler={setSearchText} />
                         </Box>
                     </Box>

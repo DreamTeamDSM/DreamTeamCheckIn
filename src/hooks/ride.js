@@ -1,4 +1,5 @@
 import { loadDatabase } from "../database";
+import { isSynced } from "./import";
 
 const resultToObjArray = (result) => {
   if (!result?.values || !result.values.length === 0) return null;
@@ -25,7 +26,7 @@ export const getRides = async () => {
   );
   const rideData = resultToObjArray(result[0]);
 
-  console.log(rideData);
+  // console.log(rideData);
 
   return rideData;
 };
@@ -90,20 +91,23 @@ export const getRideById = async (id) => {
   const groupsObjArray = resultToObjArray(groups);
   // console.log(groupsObjArray)
 
+  const isSyncedResult = await isSynced(id);
+
   const allTheData = {
     Ride: rideObj,
     Route: routeObj,
-    Date: rideObj.date,
-    Destination: routeObj.route_name,
+    Date: rideObj?.date,
+    Destination: routeObj?.route_name,
     NumMentors: mentorsObjArray?.length ?? 0,
     NumRiders: ridersObjArray?.length,
-    Miles: routeObj.distance,
+    Miles: routeObj?.distance,
     Riders: ridersObjArray,
     Mentors: mentorsObjArray,
     Support: rideSupport,
     Stops: stopsObjArray,
     GroupStops: groupStopsObjArray,
     Groups: groupsObjArray,
+    IsSynced: isSyncedResult,
   };
 
   console.log(allTheData);

@@ -70,8 +70,8 @@ CREATE TABLE IF NOT EXISTS "GroupCheck" (
 	"stop_id"	INTEGER,
 	"check_in"	INTEGER DEFAULT 0 CHECK(check_in IN (0,1)),
 	"check_out"	INTEGER DEFAULT 0 CHECK(check_out IN (0,1)),
-  "create_date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
-  "update_date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
+    "create_date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
+    "update_date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY("group_id") REFERENCES "Groups"("group_id"),
 	FOREIGN KEY("stop_id") REFERENCES "Stops"("stop_id")
 );
@@ -86,8 +86,8 @@ CREATE TABLE IF NOT EXISTS "RideSupport" (
 
 CREATE TABLE IF NOT EXISTS "RideExports" (
   "ride_id" INTEGER NOT NULL,
-  "date"	DATE,
-	FOREIGN KEY("ride_id") REFERENCES "Rides"("ride_id")
+  "date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY("ride_id") REFERENCES "Rides"("ride_id")
 );
 
 
