@@ -55,6 +55,10 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
     data.changeGroup(userId, rideId, groupId);
   }
 
+  const unassignGroup = (groupAssignmentId) => {
+    data.removeFromGroup(groupAssignmentId)
+  }
+
   function rednerAvatar(params) {
     return (
       <Avatar src={params.value} alt="User Avatar" />
@@ -182,8 +186,17 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
   }
 
   function renderGroupSelect(params) {
+    const user = users.find((user) => user.user_id === params.row.id)
+
     return (
-      <GroupSelect groups={groups} userId={params.row.id} defaultGroupId={params.row.group_id} changeGroup={changeGroup} />);
+      <GroupSelect
+        groups={groups}
+        userId={params.row.id}
+        defaultGroupId={params.row.group_id}
+        groupAssignmentId={user.group_assignment_id}
+        changeGroup={changeGroup}
+        unassignGroup={unassignGroup}
+      />);
   }
 
   React.useEffect(() => {

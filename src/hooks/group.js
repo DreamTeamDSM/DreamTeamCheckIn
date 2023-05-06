@@ -53,3 +53,11 @@ export const updateGroupAssignment = async (user_id, ride_id, new_group_id) => {
 
   return;
 };
+
+export const delete_groupAssignment = async (groupAssignmentId) => {
+  const db = await loadDatabase();
+  db.exec(
+    `DELETE FROM GroupAssignments WHERE group_assignment_id = ${groupAssignmentId}`
+  );
+  await saveDatabase(db);
+}
