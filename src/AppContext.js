@@ -35,7 +35,7 @@ export const AppContextProvider = ({ children }) => {
     const [error, setError] = useState(false);
     const [searchText, setSearchText] = useState("");
 
-    const getMostRecent = () => {
+    const getMostRecent = (fetchedRides) => {
         const today = new Date();
 
         return fetchedRides.reduce((mostRecent, current) => {
@@ -58,11 +58,11 @@ export const AppContextProvider = ({ children }) => {
             await saveDatabase(db);
 
             const fetchedRides = await getRides();
-            const mostRecentRide = getMostRecent();
+            const mostRecentRide = getMostRecent(fetchedRides);
 
             console.log(fetchedRides[0]);
 
-            const fetchedCurrentRide = await getRideById(fetchedRides[0].ride_id);
+            const fetchedCurrentRide = await getRideById(mostRecentRide.ride_id);
 
             console.log(fetchedCurrentRide);
 
