@@ -57,6 +57,13 @@ CREATE TABLE IF NOT EXISTS "GroupAssignments" (
 	FOREIGN KEY("user_id") REFERENCES "Users"("user_id")
 );
 
+CREATE TRIGGER [UPDATE_GA_DT]
+    AFTER UPDATE ON GroupAssignments FOR EACH ROW
+    WHEN OLD.update_date = NEW.update_date
+BEGIN
+    UPDATE GroupAssignments SET update_date=CURRENT_TIMESTAMP WHERE group_assignment_id=NEW.group_assignment_id;
+END;
+
 CREATE TABLE IF NOT EXISTS "Stops" (
 	"stop_id"	INTEGER NOT NULL,
 	"route_id"	INTEGER,
@@ -66,15 +73,24 @@ CREATE TABLE IF NOT EXISTS "Stops" (
 );
 
 CREATE TABLE IF NOT EXISTS "GroupCheck" (
+    "group_check_id" INTEGER,
 	"group_id"	INTEGER,
 	"stop_id"	INTEGER,
 	"check_in"	INTEGER DEFAULT 0 CHECK(check_in IN (0,1)),
 	"check_out"	INTEGER DEFAULT 0 CHECK(check_out IN (0,1)),
     "create_date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
     "update_date"	DATETIME DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY("group_check_id" AUTOINCREMENT),
 	FOREIGN KEY("group_id") REFERENCES "Groups"("group_id"),
 	FOREIGN KEY("stop_id") REFERENCES "Stops"("stop_id")
 );
+
+CREATE TRIGGER [UPDATE_GC_DT]
+    AFTER UPDATE ON GroupCheck FOR EACH ROW
+    WHEN OLD.update_date = NEW.update_date
+BEGIN
+    UPDATE GroupCheck SET update_date=CURRENT_TIMESTAMP WHERE group_check_id=NEW.group_check_id;
+END;
 
 CREATE TABLE IF NOT EXISTS "RideSupport" (
 	"user_id"	INTEGER,
