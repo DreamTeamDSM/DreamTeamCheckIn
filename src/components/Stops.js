@@ -49,12 +49,12 @@ export default function Stops({stops,groups,groupStops}) {
 
   function checkOut(dispatch, stopId,groupId) {
     dispatch(COMPLETE);
-    data.checkOutStop(stopId,groupid);
+    data.checkOutStop(stopId,groupId);
   }
 
-  function reset(dispatch, id) {
+  function reset(dispatch, stopId,groupId) {
     dispatch(CHECKIN);
-    data.reset(id);
+    data.resetCheckInStop(stopId,groupId);
   }
 
   function getChipStyles(label) {
@@ -131,7 +131,7 @@ export default function Stops({stops,groups,groupStops}) {
           console.log(`Clicked button for row with id: ${params.id}`);
         }}
         onDelete={chipText === CHECKIN ? undefined : () => {
-          reset(setChipText, params.row.id);
+          reset(setChipText, params.row.stop_id,params.row.group_id);
         }}
         deleteIcon={< Replay />}
       />
