@@ -195,7 +195,8 @@ const import_groups = async (importedDb, stops) => {
 
         if (headerValue.indexOf("Group") > -1) {
           const groupId = createGroup(importedDb, headerValue, rideId);
-          for (const stop in filteredStops) {
+          for (const stop of filteredStops) {
+            console.log(stop);
             createGroupCheck(importedDb, groupId, stop[0]);
           }
 
@@ -295,6 +296,7 @@ function createGroupAssignment(db, userId, groupId) {
 }
 
 function createGroupCheck(db, groupId, stopId) {
+  console.log('createGRoupCheck called with', groupId, stopId);
   db.run(
     "INSERT INTO GroupCheck (group_id, stop_id, check_in, check_out) VALUES (?, ?, ?, ?)",
     [groupId, stopId, 0, 0]
