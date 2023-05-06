@@ -14,6 +14,7 @@ import { useAppContext } from "../AppContext";
 const CHECKIN = "Check In";
 const CHECKOUT = "Check Out";
 const COMPLETE = "Complete";
+const sortOrder = [CHECKIN,CHECKOUT,COMPLETE]
 
 const darken = (color, amount) => {
   let r = parseInt(color.substr(1, 2), 16);
@@ -264,6 +265,18 @@ export default function CheckInList({
       headerName: "Check In/Out",
       flex: 2,
       renderCell: oneStepCheckIn ? renderOneStepChip : renderTwoStepChip,
+      valueGetter: (params) => {
+        if (params.row.check_in == 1 && params.row.check_out == 1) {
+          return(COMPLETE);
+        } else if (params.row.check_in == 1 && params.row.check_out == 0) {
+          return(CHECKOUT);
+        } else {
+          return(CHECKIN);
+        }
+      },
+      sortComparator: (v1, v2, param1, param2) => {
+        return sortOrder.indexOf(param1.value) - sortOrder.indexOf(param2.value)
+      }
     },
     {
       field: "avatar",
