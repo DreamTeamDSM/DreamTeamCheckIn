@@ -30,7 +30,7 @@ const mdTheme = createTheme({
         darkBlue: {
             light: lighten(0.1, "#0D2A57"),
             main: "#0D2A57",
-            dark: darken(0.1, "#0D2A57"),
+            dark: lighten(0.2, "#0D2A57"),
             contrastText: "#fff",
         },
         green: {
