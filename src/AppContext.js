@@ -58,6 +58,7 @@ export const AppContextProvider = ({ children }) => {
 
     const performInitialLoad = async () => {
         try {
+            setLoading(true)
             const db = await loadDatabase();
             if (!db) {
                 saveDatabase(await createDatabase());
@@ -72,6 +73,8 @@ export const AppContextProvider = ({ children }) => {
         } catch (err) {
             console.error(err)
             setError(err)
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -138,9 +141,13 @@ export const AppContextProvider = ({ children }) => {
             changeGroup,
             checkInStop,
             checkOutStop,
-            importData,
             resetCheckIn,
             resetCheckInStop,
+            importData: async () => {
+                setLoading(true)
+                await importData()
+                setLoading(false)
+            }
         }}>
             {children}
         </AppContext.Provider>

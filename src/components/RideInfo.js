@@ -22,7 +22,6 @@ const a11yProps = (index) => {
 }
 
 
-//const RideInfo = ({ riderCount, checkIn, checkOut, riders, reset, searchText }) => {
 const RideInfo = () => {
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));

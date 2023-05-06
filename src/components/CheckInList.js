@@ -14,13 +14,13 @@ const CHECKIN = "Check In";
 const CHECKOUT = "Check Out";
 const COMPLETE = "Complete";
 
-export default function CheckInList({users,groups,oneStepCheckIn = false,hideGroup = false}) {
+export default function CheckInList({ users, groups, oneStepCheckIn = false, hideGroup = false }) {
   const data = useAppContext();
 
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
-    { field: 'group_id', headerName: 'Group #', flex: 2, renderCell: renderGroupSelect},
-    { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: (oneStepCheckIn) ? renderOneStepChip: renderTwoStepChip },
+    { field: 'group_id', headerName: 'Group #', flex: 2, renderCell: renderGroupSelect },
+    { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: (oneStepCheckIn) ? renderOneStepChip : renderTwoStepChip },
     { field: 'avatar', headerName: 'Avatar', flex: 1, renderCell: rednerAvatar },
     { field: 'first_name', headerName: 'First Name', flex: 2 },
     { field: 'last_name', headerName: 'Last Name', flex: 2 },
@@ -46,9 +46,9 @@ export default function CheckInList({users,groups,oneStepCheckIn = false,hideGro
     data.resetCheckIn(id);
   }
 
-  function changeGroup(id,groupId) {
-    console.log(id,groupId);
-    data.changeGroup(id,groupId);
+  function changeGroup(id, groupId) {
+    console.log(id, groupId);
+    data.changeGroup(id, groupId);
   }
 
   function rednerAvatar(params) {
@@ -174,17 +174,18 @@ export default function CheckInList({users,groups,oneStepCheckIn = false,hideGro
   }
 
   function renderGroupSelect(params) {
-    return (<GroupSelect groups={groups} userId={params.row.id} defaultGroupId={params.row.group_id} changeGroup={changeGroup} />);
+    return (
+      <GroupSelect groups={groups} userId={params.row.id} defaultGroupId={params.row.group_id} changeGroup={changeGroup} />);
   }
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     console.log(data.searchText);
     setFilterModel({
       items: [
         { field: 'fulltext', operator: 'contains', value: data.searchText.toLowerCase() },
       ]
     })
-  },[data.searchText]);
+  }, [data.searchText]);
 
   const [filterModel, setFilterModel] = React.useState({
     items: []
