@@ -119,6 +119,8 @@ const import_routes = async (importedDb) => {
       0,
     ]);
   }
+
+  return stops.values;
 };
 
 const GROUP_SPREADSHEET_ID = "1gsbV8BB5H9XpjgTmy-pOy4h7xp2209p_rH8vFk5mNLQ";
@@ -127,7 +129,7 @@ const GROUP_ROW_COUNT = 3;
 const GROUP_ROW_SPACING = 11;
 const GROUP_COLUMN_COUNT = 5;
 
-const import_groups = async (importedDb) => {
+const import_groups = async (importedDb, stops) => {
   const spreadsheet = (
     await gapi.client.sheets.spreadsheets.get({
       spreadsheetId: GROUP_SPREADSHEET_ID,
@@ -186,7 +188,11 @@ const import_groups = async (importedDb) => {
 
         if (headerValue.indexOf("Group") > -1) {
           const groupId = createGroup(importedDb, headerValue, rideId);
-          createGroupCheck(importedDb, groupId, rideId);
+          for (var i = 1; i < stops.length; i++) {
+            const stop = stops[i];
+            createGroupCheck(importedDb, groupId, stop[0]);
+          }
+
           iterateGroupUsers((cell) => {
             if (!cell || cell.length === 0) return;
 
@@ -227,8 +233,9 @@ export async function importData(handleImportedDb) {
 
       console.log('Performing import...');
       await import_users(importedDb);
-      await import_routes(importedDb);
-      await import_groups(importedDb);
+      const stops = await import_routes(importedDb);
+      console.log('Stops 2', stops);
+      await import_groups(importedDb, stops);
 
       console.log('Saving imported database...');
       saveDatabase(importedDb);
