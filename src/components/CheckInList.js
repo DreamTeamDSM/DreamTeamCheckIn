@@ -4,6 +4,9 @@ import {
   Button,
   ButtonGroup,
   Box,
+  Dialog,
+  DialogTitle,
+  IconButton,
 } from "@mui/material";
 import Replay from "@mui/icons-material/Replay";
 import Badge from "@mui/material/Badge";
@@ -15,7 +18,7 @@ import { darken, stringToColor } from "../utils/colors";
 const CHECKIN = "Check In";
 const CHECKOUT = "Check Out";
 const COMPLETE = "Complete";
-const sortOrder = [CHECKIN,CHECKOUT,COMPLETE]
+const sortOrder = [CHECKIN, CHECKOUT, COMPLETE]
 
 const stringAvatar = (firstName, lastName) => {
   return {
@@ -26,15 +29,25 @@ const stringAvatar = (firstName, lastName) => {
   };
 };
 
-const PersonAvatar = ({ value, firstName, lastName }) => {
+const PersonAvatarButton = ({ value, firstName, lastName, onClick }) => {
   if (value) {
-    return <Avatar alt="User Avatar" src={value} {...stringAvatar(firstName, lastName)} />;
+    return <IconButton onClick={onClick}>
+      <Avatar alt="User Avatar" src={value} {...stringAvatar(firstName, lastName)} />
+    </IconButton>
   } else {
-    return <Avatar {...stringAvatar(firstName, lastName)} />;
+    return <IconButton onClick={onClick}><Avatar {...stringAvatar(firstName, lastName)} /></IconButton>
   }
 };
 
-const renderAvatar = (params) => {
+const PersonAvatar = ({ value, firstName, lastName }) => {
+  if (value) {
+    return <Avatar style={{ width: 300, height: 300 }} alt="User Avatar" src={value} {...stringAvatar(firstName, lastName)} />
+  } else {
+    return <Avatar style={{ width: 300, height: 300 }} {...stringAvatar(firstName, lastName)} />
+  }
+};
+
+const renderAvatar = (avatarClickHandler) => (params) => {
   const { row } = params;
   const firstName = row.first_name;
   const lastName = row.last_name;
@@ -48,17 +61,18 @@ const renderAvatar = (params) => {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         badgeContent={"⭐"}
       >
-        <PersonAvatar
+        <PersonAvatarButton
           value={photoUrl}
           firstName={firstName}
           lastName={lastName}
+          onClick={() => avatarClickHandler(firstName, lastName, photoUrl)}
         />
       </Badge>
     );
   }
 
   return (
-    <PersonAvatar value={photoUrl} firstName={firstName} lastName={lastName} />
+    <PersonAvatarButton value={photoUrl} firstName={firstName} lastName={lastName} onClick={() => avatarClickHandler(firstName, lastName, photoUrl)} />
   );
 };
 
@@ -68,6 +82,22 @@ export default function CheckInList({
   oneStepCheckIn = false,
   hideGroup = false,
 }) {
+  const [isAvatarModalOpen, setAvatarModalOpen] = React.useState(false);
+  const [activeAvatarInfo, setActiveAvatarInfo] = React.useState(null);
+
+  const handleAvatarModalClose = () => {
+    setActiveAvatarInfo(() => {
+      setAvatarModalOpen(false)
+
+      return null
+    })
+  }
+
+  const handleAvatarClick = (firstName, lastName, photoUrl) => {
+    setActiveAvatarInfo({ firstName, lastName, photoUrl })
+    setAvatarModalOpen(true)
+  }
+
   const data = useAppContext();
 
   const renderTwoStepChip = (params) => {
@@ -235,11 +265,11 @@ export default function CheckInList({
       renderCell: oneStepCheckIn ? renderOneStepChip : renderTwoStepChip,
       valueGetter: (params) => {
         if (params.row.check_in == 1 && params.row.check_out == 1) {
-          return(COMPLETE);
+          return (COMPLETE);
         } else if (params.row.check_in == 1 && params.row.check_out == 0) {
-          return(CHECKOUT);
+          return (CHECKOUT);
         } else {
-          return(CHECKIN);
+          return (CHECKIN);
         }
       },
       sortComparator: (v1, v2, param1, param2) => {
@@ -250,7 +280,7 @@ export default function CheckInList({
       field: "avatar",
       headerName: "Avatar",
       flex: .75,
-      renderCell: renderAvatar,
+      renderCell: renderAvatar(handleAvatarClick),
     },
     { field: "name", headerName: "Name", flex: 1.5 },
     { field: "fulltext", headerName: "Fulltext", flex: 0 },
@@ -349,6 +379,18 @@ export default function CheckInList({
           },
         }}
       />
+      <Dialog onClose={handleAvatarModalClose} open={isAvatarModalOpen && activeAvatarInfo}>
+        {
+          activeAvatarInfo && (
+            <>
+              <DialogTitle sx={{ textAlign: 'center', fontWeight: 500 }}>{`${activeAvatarInfo?.firstName} ${activeAvatarInfo?.lastName}`}</DialogTitle>
+              <Box mx={8} mb={'16px'}>
+                <PersonAvatar value={activeAvatarInfo?.photoUrl} firstName={activeAvatarInfo?.firstName} lastName={activeAvatarInfo?.lastName} />
+              </Box>
+            </>
+          )
+        }
+      </Dialog>
     </Box>
   );
 }
