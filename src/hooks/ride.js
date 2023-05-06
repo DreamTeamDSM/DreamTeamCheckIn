@@ -94,7 +94,7 @@ export const getRideById = async (id) => {
     Date: rideObj.date,
     Destination: routeObj.route_name,
     NumMentors: mentorsObjArray?.length ?? 0,
-    NumRiders: ridersObjArray.length,
+    NumRiders: ridersObjArray?.length,
     Miles: routeObj.distance,
     Riders: ridersObjArray,
     Mentors: mentorsObjArray,
