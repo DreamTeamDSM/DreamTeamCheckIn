@@ -118,8 +118,6 @@ const import_routes = async (importedDb) => {
       0,
     ]);
   }
-
-  return stops.values;
 };
 
 const GROUP_SPREADSHEET_ID = "1gsbV8BB5H9XpjgTmy-pOy4h7xp2209p_rH8vFk5mNLQ";
@@ -128,7 +126,7 @@ const GROUP_ROW_COUNT = 3;
 const GROUP_ROW_SPACING = 11;
 const GROUP_COLUMN_COUNT = 5;
 
-const import_groups = async (importedDb, stops) => {
+const import_groups = async (importedDb) => {
   const spreadsheet = (
     await gapi.client.sheets.spreadsheets.get({
       spreadsheetId: GROUP_SPREADSHEET_ID,
@@ -165,12 +163,7 @@ const import_groups = async (importedDb, stops) => {
       continue;
     }
 
-    const filteredStops = [];
-    for (var i = 1; i < stops.length; i++) {
-      if (parseInt(stops[i][0]) === matchingRouteId) {
-        filteredStops.push(stops[i]);
-      }
-    }
+    const stopIds = getStopIdsForRouteId(importedDb, matchingRouteId);
 
     const rideId = createRide(importedDb, matchingRouteId, new Date(date).toLocaleDateString());
     for (var groupRow = 0; groupRow < GROUP_ROW_COUNT; groupRow++) {
@@ -194,9 +187,8 @@ const import_groups = async (importedDb, stops) => {
 
         if (headerValue.indexOf("Group") > -1) {
           const groupId = createGroup(importedDb, headerValue, rideId);
-          for (const stop of filteredStops) {
-            console.log(stop);
-            createGroupCheck(importedDb, groupId, stop[0]);
+          for (const stopId of stopIds) {
+            createGroupCheck(importedDb, groupId, stopId);
           }
 
           iterateGroupUsers((cell) => {
@@ -246,9 +238,8 @@ export async function importData(handleImportedDb, setLoading = () => { }, setEr
 
         console.log('Performing import...');
         await import_users(importedDb);
-        const stops = await import_routes(importedDb);
-        console.log('Stops 2', stops);
-        await import_groups(importedDb, stops);
+        await import_routes(importedDb);
+        await import_groups(importedDb);
 
         console.log('Saving imported database...');
         saveDatabase(importedDb);
@@ -345,4 +336,15 @@ function getUserTypeIdByName(db, name) {
   if (result[0].values[0].length === 0) return null;
 
   return result[0].values[0][0];
+}
+
+function getStopIdsForRouteId(db, routeId) {
+  const result = db.exec("SELECT * FROM Stops " +
+    "INNER JOIN Routes ON Routes.route_id = Stops.route_id " +
+    "WHERE Routes.route_id = ?", [routeId]);
+
+  if (result.length === 0) return null;
+  if (result[0].values.length === 0) return null;
+
+  return result[0].values.map((row) => row[0]);
 }
