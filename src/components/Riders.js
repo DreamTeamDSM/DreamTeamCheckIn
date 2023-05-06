@@ -6,6 +6,7 @@ import {
 import Replay from '@mui/icons-material/Replay';
 import { DataGrid, GridLogicOperator } from '@mui/x-data-grid';
 import { Button } from './Button'
+import { GroupSelect } from './GroupSelect'
 import { lighten } from 'polished';
 
 const CHECKIN = "Check In";
@@ -15,12 +16,27 @@ const COMPLETE = "Complete";
 export default function Riders(props) {
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
-    { field: 'groupnumber', headerName: 'Group #', flex: 1, renderCell: renderGroupSelect},
+    { field: 'group_id', headerName: 'Group #', flex: 2, renderCell: renderGroupSelect},
     { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: renderChip },
     { field: 'avatar', headerName: 'Avatar', flex: 1, renderCell: rednerAvatar },
     { field: 'firstname', headerName: 'First Name', flex: 2 },
     { field: 'lastname', headerName: 'Last Name', flex: 2 },
     { field: 'fulltext', headerName: 'Fulltext', flex: 0 },
+  ];
+
+  const groups = [
+    {id: 0, name: "Select"},
+    {id: 2000, name: "Group 1"},
+    {id: 2001, name: "Group 2"},
+    {id: 2002, name: "Group 3"},
+    {id: 2003, name: "Group 4"},
+    {id: 2004, name: "Group 5"},
+    {id: 2005, name: "Group 6"},
+    {id: 2006, name: "Group 7"},
+    {id: 2007, name: "Group 8"},
+    {id: 2008, name: "Group 9"},
+    {id: 2009, name: "Group 10"},
+    {id: 2010, name: "Group 11"},
   ];
 
   const rows = props.riders;
@@ -38,6 +54,10 @@ export default function Riders(props) {
   function reset(dispatch, id) {
     dispatch(CHECKIN);
     props.reset(id);
+  }
+
+  function changeGroup(id,groupId) {
+    console.log(id,groupId);
   }
 
   function rednerAvatar(params) {
@@ -127,27 +147,37 @@ export default function Riders(props) {
     );
   }
 
-  const renderGroupSelect = () => {
+  function renderGroupSelect(params) {
+    return (<GroupSelect groups={groups} userId={params.row.id} defaultGroupId={params.row.group_id} changeGroup={changeGroup} />);
+
+    /*
+    console.log(params);
+
+    const [selectedOption, setSelectedOption] = useState(params.row.group_id);
+
+    const handleSelectChange = (event) => {
+      changeGroup(setSelectedOption,params.row.id,event.target.value);
+    };
 
     return (
-      <FormControl fullWidth>
-  <InputLabel id="demo-simple-select-label">Age</InputLabel>
-  <Select
-    labelId="demo-simple-select-label"
-    id="demo-simple-select"
-    value={age}
-    label="Age"
-    onChange={handleChange}
-  >
-    <MenuItem value={10}>Ten</MenuItem>
-    <MenuItem value={20}>Twenty</MenuItem>
-    <MenuItem value={30}>Thirty</MenuItem>
-  </Select>
-</FormControl>
-
+      <FormControl>
+        <InputLabel id="group-select-label">Group</InputLabel>
+        <Select
+          labelId="group-select-label"
+          id="group-select"
+          value={selectedOption}
+          onChange={handleSelectChange}
+        >
+          {groups.map((group) => (
+            <MenuItem key={group.id} value={group.id}>
+              {group.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     );
+    */
   }
-
 
   React.useEffect(()=>{
     setFilterModel({

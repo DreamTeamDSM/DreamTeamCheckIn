@@ -50,10 +50,10 @@ const RideInfo = ({ riderCount, checkIn, checkOut, riders, reset, searchText }) 
                             <Tab label="Groups" {...a11yProps(2)} />
                         </Tabs>
                         <TabPanel value={value} index={0}>
-                            {/* <Riders checkIn={checkIn} checkOut={checkOut} riders={riders} reset={reset} searchText={searchText}/> */}
+                            <Riders checkIn={checkIn} checkOut={checkOut} riders={riders} reset={reset} searchText={searchText}/>
                         </TabPanel>
                         <TabPanel value={value} index={1}>
-                            <Mentors checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset} searchText={props.searchText}/>
+                            <Mentors checkIn={checkIn} checkOut={checkOut} riders={riders} reset={reset} searchText={searchText}/>
                         </TabPanel>
                         <TabPanel value={value} index={2}>
                             {/* <Stops checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset} searchText={props.searchText}/> */}
