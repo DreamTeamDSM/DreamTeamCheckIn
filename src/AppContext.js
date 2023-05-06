@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
     createDatabase,
@@ -28,26 +28,19 @@ export const AppContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
 
-    const importFromSeededData = async () => {
-        setLoading(true)
+    const performInitialLoad = async () => {
         try {
-            const db = await createDatabase();
+            const loadedRides = await getRides();
+            const loadedCurrentRide = await getRideById(loadedRides[0].ride_id);
 
-            await seedDatabase2(db);
-
-            await saveDatabase(db);
-
-            const fetchedRides = await getRides();
-
-            const fetchedCurrentRide = await getRideById(fetchedRides[0].ride_id);
-            setRides(fetchedRides);
-            setCurrentRide(fetchedCurrentRide);
+            setRides(loadedRides);
+            setCurrentRide(loadedCurrentRide);
         } catch (err) {
             setError(err)
         }
+    };
 
-        setLoading(false)
-    }
+    useEffect(() => performInitialLoad(), []);
 
     return (
         <AppContext.Provider value={{
@@ -55,7 +48,6 @@ export const AppContextProvider = ({ children }) => {
             currentRide,
             setRides,
             setCurrentRide,
-            importData: importFromSeededData,
             loading,
             setLoading,
             error,

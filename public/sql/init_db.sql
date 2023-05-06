@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS "Routes" (
 	"climb" NUMERIC,
 	"hours" NUMERIC,
 	"difficulty" TEXT,
-	"type"	TEXT CHECK(type IN ('outAndBack','Loop')),
+	"type"	TEXT,
 	PRIMARY KEY("route_id" AUTOINCREMENT)
 );
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS "Rides" (
 	"ride_id"	INTEGER NOT NULL,
 	"route_id" INTEGER NOT NULL,
 	"date"	DATE,
-	PRIMARY KEY("ride_id"),
+	PRIMARY KEY("ride_id" AUTOINCREMENT),
 	FOREIGN KEY("route_id") REFERENCES "Routes"("route_id")
 );
 
