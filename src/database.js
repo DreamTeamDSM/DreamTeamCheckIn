@@ -133,7 +133,7 @@ export async function seedDatabase2(db) {
 
   // Seed data for Users table
   db.exec(`
-    INSERT INTO Users (user_id, first_name, last_name, photo, user_type_id, active) VALUES
+    INSERT INTO Users (user_id, first_name, last_name, photo_url, user_type_id, active) VALUES
     (1,'John', 'Doe', NULL, 0, 1),
     (2,'Jane', 'Doe', NULL, 0, 1),
     (3,'Bob', 'Smith', NULL, 0, 1),
