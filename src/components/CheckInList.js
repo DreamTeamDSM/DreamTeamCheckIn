@@ -137,8 +137,12 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
     data.changeGroup(userId, rideId, groupId);
   }
 
-  const unassignGroup = (groupAssignmentId) => {
-    data.removeFromGroup(groupAssignmentId)
+  const unassignGroup = async (groupAssignmentId, groupId, userId) => {
+    // TODO: test this, cant check in mentors yet
+    if (!oneStepCheckIn) {
+      await data.resetCheckIn(userId, groupId);
+    }
+    await data.removeFromGroup(groupAssignmentId)
   }
 
   function getChipStyles(label) {
@@ -189,14 +193,21 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
   }
 
   function renderTwoStepChip(params) {
-    let defaultState = CHECKIN;
-    if (params.row.check_in == 1 && params.row.check_out == 1) {
-      defaultState = COMPLETE;
-    } else if (params.row.check_in == 1 && params.row.check_out == 0) {
-      defaultState = CHECKOUT;
-    }
+    const [chipText, setChipText] = useState(CHECKIN);
 
-    const [chipText, setChipText] = useState(defaultState);
+    // This varies from the one step, because we want to be able to
+    // check out a rider when they aren't in a group -- which is required.
+    // Mentors (one step) are allowed to not be in a group.
+    React.useEffect(() => {
+      if (params.row.check_in == 1 && params.row.check_out == 1) {
+        setChipText(COMPLETE);
+      } else if (params.row.check_in == 1 && params.row.check_out == 0) {
+        setChipText(CHECKOUT);
+      } else {
+        setChipText(CHECKIN)
+      }
+    }, [params.row.check_in, params.row.check_out])
+
     const user = users.find((user) => user.user_id === params.row.id)
 
     return (

@@ -10,6 +10,9 @@ import { ClickAwayListener } from "@mui/base";
 
 const GroupSelect = ({ groups, userId, groupAssignmentId, defaultGroupId, changeGroup, unassignGroup }) => {
     const [selectedGroupId, setSelectedGroupId] = useState(defaultGroupId);
+    React.useEffect(() => {
+        setSelectedGroupId(defaultGroupId)
+    }, [defaultGroupId])
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const popperId = open ? "simple-popper" : undefined;
@@ -25,7 +28,7 @@ const GroupSelect = ({ groups, userId, groupAssignmentId, defaultGroupId, change
         setSelectedGroupId(value);
 
         if (value === -1) {
-            unassignGroup(groupAssignmentId)
+            unassignGroup(groupAssignmentId, value, userId)
         } else {
             changeGroup(userId, value);
         }

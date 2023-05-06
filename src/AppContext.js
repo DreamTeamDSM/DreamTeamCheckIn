@@ -90,6 +90,7 @@ export const AppContextProvider = ({ children }) => {
 
     useEffect(() => performInitialLoad(), []);
 
+    // TODO: mentors cant be checked in at the moment
     const checkIn = async (userId, groupId) => {
         await check_in_participant(userId, groupId)
         await refresh()
