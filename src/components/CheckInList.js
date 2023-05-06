@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@mui/styles';
 import {
-  Avatar, Chip, Select, FormControl, InputLabel, MenuItem
+  Avatar, Chip
 } from '@mui/material';
 import Replay from '@mui/icons-material/Replay';
-import { DataGrid, GridLogicOperator } from '@mui/x-data-grid';
-import { Button } from './Button'
+import { DataGrid } from '@mui/x-data-grid';
 import { GroupSelect } from './GroupSelect'
 import { lighten } from 'polished';
 import { useAppContext } from '../AppContext';
@@ -227,6 +225,7 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[5, 10, 20]}
+        hideFooter={true}
         columnVisibilityModel={visibility}
       />
     </div>
