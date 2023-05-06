@@ -6,19 +6,23 @@ const CHECK_DOCUMENT = "1126HuVhvZ8dSiNW3DRs6nPyIsJtNje4oysBVKkPdJ3c";
 const USER_CHECKS_SHEET = "Users";
 const GROUP_CHECKS_SHEET = "Groups";
 
-export async function export_data(rideId, onDbExported) {
-  const callback = async () => {
+export async function export_data(rideId, onDbExported, setLoading) {
+  setLoading(true);
+  const callback = async (response) => {
     const db = await loadDatabase();
 
     console.log("Exporting data to Google Drive for ride", rideId, "...");
     await exportGroupChecks(db, rideId);
     await exportUserChecks(db, rideId);
 
+
+
     if (onDbExported) {
       onDbExported();
     }
 
     await saveExport(db, rideId);
+    setLoading(false);
   };
 
   auth(callback);

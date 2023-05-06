@@ -33,7 +33,9 @@ const AppContext = React.createContext(
         resetCheckIn: () => { },
         resetCheckInStop: () => { },
         removeFromGroup: () => { },
-        refresh: () => {}
+        refresh: () => {},
+        exportLoading: false,
+        setExportLoading: () => {},
     }
 );
 
@@ -43,6 +45,7 @@ export const AppContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [searchText, setSearchText] = useState("");
+    const [exportLoading, setExportLoading] = useState(false);
 
     const getMostRecent = (fetchedRides) => {
         const today = new Date();
@@ -149,6 +152,8 @@ export const AppContextProvider = ({ children }) => {
             setCurrentRide,
             loading,
             setLoading,
+            exportLoading,
+            setExportLoading,
             error,
             setError,
             setSearchText,
