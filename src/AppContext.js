@@ -71,8 +71,24 @@ export const AppContextProvider = ({ children }) => {
 
     useEffect(() => performInitialLoad(), []);
 
-    const checkIn = async () => {
-        console.log("check in");
+    const checkIn = async (userId) => {
+        console.log("check in",userId);
+
+        /*
+        const list = currentRide?.Riders || [];
+        console.log(list);
+
+        const updatedRiders = list.map((rider) => {
+            if (rider.id === userId) {
+                // do db operation here?
+                return { ...rider, check_in: 1 };
+            } else {
+                return rider;
+            }
+        });
+        currentRide.Riders = updatedRiders;
+        setCurrentRide(updatedRiders);
+        */
     };
 
     const checkOut = async() => {
