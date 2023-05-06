@@ -64,7 +64,7 @@ const RideInfo = () => {
                             <CheckInList users={data?.currentRide?.Mentors || []} groups={data?.currentRide?.Groups || []} oneStepCheckIn hideGroup/>
                         </TabPanel>
                         <TabPanel value={value} index={3}>
-                            <Stops stops={data?.currentRide?.Stops || []} groups={data?.currentRide?.Groups || []}/>
+                            <Stops stops={data?.currentRide?.Stops || []} groupStops={data?.currentRide?.GroupStops || []} groups={data?.currentRide?.Groups || []}/>
                         </TabPanel>
                     </Box>
                 </Grid>

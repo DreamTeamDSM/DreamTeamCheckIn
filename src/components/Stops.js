@@ -19,7 +19,7 @@ const CHECKIN = "Check In";
 const CHECKOUT = "Check Out";
 const COMPLETE = "Complete";
 
-export default function Stops({stops,groups}) {
+export default function Stops({stops,groups,groupStops}) {
 
   const data = useAppContext();
 
