@@ -91,7 +91,7 @@ function App(props) {
               />
         </header>
         <main>
-          <RideInfo />
+          <RidePanel />
         </main>
         <footer>
           <DebugBar />
