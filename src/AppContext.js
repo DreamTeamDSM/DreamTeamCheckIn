@@ -8,7 +8,7 @@ import {
 
 import { importData } from './hooks/import'
 import { getRideById, getRides } from "./hooks/ride";
-import { check_in_participant, check_out_participant } from "./hooks/check";
+import { check_in_participant, check_out_participant, reset_participant } from "./hooks/check";
 import { updateGroupAssignment } from "./hooks/group.js";
 
 const AppContext = React.createContext(
@@ -55,6 +55,16 @@ export const AppContextProvider = ({ children }) => {
         );
     }
 
+    const refresh = async () => {
+        const currentRideId = currentRide.Ride.ride_id
+
+        const refreshedRides = await getRides();
+        const refreshedCurrentRide = await getRideById(currentRideId);
+
+        setRides(refreshedRides);
+        setCurrentRide(refreshedCurrentRide);
+    }
+
     const performInitialLoad = async () => {
         try {
             setLoading(true)
@@ -81,18 +91,22 @@ export const AppContextProvider = ({ children }) => {
 
     const checkIn = async (userId, groupId) => {
         await check_in_participant(userId, groupId)
+        await refresh()
     };
 
     const checkOut = async (userId, groupId) => {
         await check_out_participant(userId, groupId)
+        await refresh()
     };
 
     const changeGroup = async (userId, rideId, newGroupId) => {
         await updateGroupAssignment(userId, rideId, newGroupId)
+        await refresh()
     }
 
-    const resetCheckIn = async (userId) => {
-        console.log("reset checkin", userId);
+    const resetCheckIn = async (userId, groupId) => {
+        await reset_participant(userId, groupId)
+        await refresh()
     };
 
     const checkInStop = async (stopId, groupId) => {
