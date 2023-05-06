@@ -59,7 +59,7 @@ const RideInfo = () => {
                     color="inherit"
                     noWrap
                     sx={{ flexGrow: 1 }}> {'RIDES'}</Typography>
-                  <Button variant='outlined' startIcon={data.isExportLoading ? <CircularProgress/> : (isSynced ? <CloudDoneIcon/> : <CloudUploadIcon />)} onClick={handleExport}>{isSyncedText}</Button>
+                  <Button color={isSynced ? "lightBlue" : "green"} variant='outlined' startIcon={data.isExportLoading ? <CircularProgress/> : (isSynced ? <CloudDoneIcon/> : <CloudUploadIcon />)} onClick={handleExport}>{isSyncedText}</Button>
 
             </Box>
 

@@ -1,5 +1,4 @@
-const CLIENT_ID =
-  "592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com";
+import { CLIENT_ID } from './config';
 
 const getTokenCallback = (callback) => {
     return async (response) => {

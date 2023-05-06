@@ -10,6 +10,7 @@ import { importData } from './hooks/import'
 import { getRideById, getRides } from "./hooks/ride";
 import { check_in_participant, check_out_participant, reset_participant, check_in_group, check_out_group, reset_group } from "./hooks/check";
 import { delete_groupAssignment, updateGroupAssignment } from "./hooks/group.js";
+import { useNotificationContext } from "./components/NotificationContext.js";
 
 const AppContext = React.createContext(
     {
@@ -45,6 +46,7 @@ export const AppContextProvider = ({ children }) => {
     const [error, setError] = useState(false);
     const [searchText, setSearchText] = useState("");
     const [exportLoading, setExportLoading] = useState(false);
+    const { pushNotification } = useNotificationContext()
 
     const getMostRecent = (fetchedRides) => {
         const today = new Date();
@@ -99,8 +101,6 @@ export const AppContextProvider = ({ children }) => {
 
                 setRides(loadedRides);
                 setCurrentRide(loadedCurrentRide);
-
-                return
             }
         } catch (err) {
             console.error(err)
@@ -182,10 +182,15 @@ export const AppContextProvider = ({ children }) => {
             removeFromGroup,
             importData: async () => {
                 setLoading(true)
-                await importData(async () => {
-                    setError(false)
-                    await performInitialLoad()
-                }, setLoading, setError)
+                await importData(
+                    pushNotification,
+                    async () => {
+                        setError(false)
+                        await performInitialLoad()
+                    },
+                    setLoading,
+                    setError
+                )
             }
         }}>
             {children}
