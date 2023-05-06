@@ -218,7 +218,7 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
   }
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
+    <div style={{ width: '100%' }}>
       <DataGrid
         filterModel={filterModel}
         rows={rows}
