@@ -149,8 +149,8 @@ export const AppContextProvider = ({ children }) => {
             removeFromGroup,
             importData: async () => {
                 setLoading(true)
-                await importData(() => {
-                    refresh()
+                await importData(async () => {
+                    await refresh()
                 }, setLoading, setError)
             }
         }}>

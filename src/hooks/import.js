@@ -245,7 +245,8 @@ export async function importData(handleImportedDb, setLoading = () => { }, setEr
 
         console.log('Saving imported database...');
         saveDatabase(importedDb);
-        handleImportedDb(importedDb);
+
+        await handleImportedDb(importedDb);
       } catch (err) {
         console.error(err)
         setError(err)
