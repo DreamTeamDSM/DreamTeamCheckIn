@@ -186,7 +186,7 @@ export default function Stops({stops,groups,groupStops}) {
             id="panel1a-header"
           >
             <Typography>{stop.description}</Typography>
-            <Typography style={{marginLeft: "auto"}}>{checkInCount}/{checkOutCount}/{completeCount}</Typography>
+            <Typography style={{marginLeft: "auto"}}>{checkInCount} / {checkOutCount} / {completeCount}</Typography>
           </AccordionSummary>
           <AccordionDetails>
               <div style={{ height: 400, width: '100%' }}>
