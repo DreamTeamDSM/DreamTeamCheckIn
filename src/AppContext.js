@@ -10,6 +10,7 @@ import { importData } from './hooks/import'
 import { getRideById, getRides } from "./hooks/ride";
 import { check_in_participant, check_out_participant, reset_participant, check_in_group, check_out_group, reset_group} from "./hooks/check";
 import { delete_groupAssignment, updateGroupAssignment } from "./hooks/group.js";
+import { setRef } from "@mui/material";
 
 const AppContext = React.createContext(
     {
@@ -31,7 +32,8 @@ const AppContext = React.createContext(
         checkOutStop: () => { },
         resetCheckIn: () => { },
         resetCheckInStop: () => { },
-        removeFromGroup: () => { }
+        removeFromGroup: () => { },
+        refresh: () => {}
     }
 );
 
@@ -153,6 +155,7 @@ export const AppContextProvider = ({ children }) => {
             checkOutStop,
             resetCheckIn,
             resetCheckInStop,
+            refresh,
             removeFromGroup,
             importData: async () => {
                 setLoading(true)
