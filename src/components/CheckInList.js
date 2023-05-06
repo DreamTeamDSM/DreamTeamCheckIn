@@ -149,7 +149,8 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
     );
   }
 
-
+  // TODO: do we want to disable the check in for mentors when they aren't
+  //  in a group because they might be in a support role instead
   function renderOneStepChip(params) {
     let defaultState;
     if (params.row.check_in == 1) {
