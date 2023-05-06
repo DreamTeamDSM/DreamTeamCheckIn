@@ -1,42 +1,39 @@
+import { auth } from "../auth";
 import { createDatabase, loadDatabase, saveDatabase } from "../database";
 
-const CLIENT_ID =
-  "592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com";
+export const isSynced = async () => {
+  //do not allow import if we have more recent changes to GroupAssignment or GroupCheck since last RideExport
+  const db = await loadDatabase();
+  let isSynced = true;
 
-  export const isSynced = async () => {
-    //do not allow import if we have more recent changes to GroupAssignment or GroupCheck since last RideExport
-    const db = await loadDatabase();
-    let isSynced = true;
+  //get latest export for each ride
+  const latestExports = db.exec(
+    "SELECT ride_id, date FROM RideExports GROUP BY ride_id ORDER BY date DESC LIMIT 1"
+  )[0];
 
-    //get latest export for each ride
-    const latestExports = db.exec(
-      "SELECT ride_id, date FROM RideExports GROUP BY ride_id ORDER BY date DESC LIMIT 1"
-    )[0];
+  //get group assignments for each group ride where updated at is greater than last ride export
+  if (!latestExports?.values?.length) return false;
 
-    //get group assignments for each group ride where updated at is greater than last ride export
-    if(!latestExports?.values?.length) return false;
+  latestExports.values.forEach((latestExport) => {
+    const notExportedAssignments = db.exec(
+      `SELECT * from GroupAssignments WHERE group_id IN (SELECT group_id FROM Groups WHERE ride_id = ${latestExport[0]}) AND update_date > '${latestExport[1]}'`
+    );
+    console.log(notExportedAssignments);
+    if (notExportedAssignments.length > 0) isSynced = false;
+  });
 
-    latestExports.values.forEach((latestExport) => {
-      const notExportedAssignments = db.exec(
-        `SELECT * from GroupAssignments WHERE group_id IN (SELECT group_id FROM Groups WHERE ride_id = ${latestExport[0]}) AND update_date > '${latestExport[1]}'`
-      );
-      console.log(notExportedAssignments);
-      if (notExportedAssignments.length > 0) isSynced = false;
-    });
+  //select group check for each ride where updated at is greater than last ride export
+  latestExports.values.forEach((latestExport) => {
+    const notExportedGroupChecks = db.exec(
+      `SELECT * FROM GroupCheck WHERE group_id IN (SELECT group_id FROM Groups WHERE ride_id = ${latestExport[0]}) AND update_date > '${latestExport[1]}'`
+    );
+    console.log(notExportedGroupChecks);
+    if (notExportedGroupChecks.length > 0) isSynced = false;
+  });
 
-    //select group check for each ride where updated at is greater than last ride export
-    latestExports.values.forEach((latestExport) => {
-      const notExportedGroupChecks = db.exec(
-        `SELECT * FROM GroupCheck WHERE group_id IN (SELECT group_id FROM Groups WHERE ride_id = ${latestExport[0]}) AND update_date > '${latestExport[1]}'`
-      );
-      console.log(notExportedGroupChecks);
-      if (notExportedGroupChecks.length > 0) isSynced = false;
-    });
-
-    //if any of the above is not zero... tell user which rides have not been exported or just false for now....
-    return isSynced;
-
-  };
+  //if any of the above is not zero... tell user which rides have not been exported or just false for now....
+  return isSynced;
+};
 
 const backup = () => {
   //save the current db file.. just incase. do we save this db file locally and just rename? or push it up to google? or both?
@@ -145,8 +142,16 @@ const import_groups = async (importedDb) => {
     ).result.values;
 
     const iterateRange = (startRow, stopRow, startCol, stopCol, fn) => {
-      for (let row = startRow; row <= Math.min(rows.length - 1, stopRow); row++) {
-        for (let col = startCol; col <= Math.min(rows[row].length - 1, stopCol); col++) {
+      for (
+        let row = startRow;
+        row <= Math.min(rows.length - 1, stopRow);
+        row++
+      ) {
+        for (
+          let col = startCol;
+          col <= Math.min(rows[row].length - 1, stopCol);
+          col++
+        ) {
           fn(rows[row][col], row, col);
         }
       }
@@ -165,9 +170,14 @@ const import_groups = async (importedDb) => {
 
     const stopIds = getStopIdsForRouteId(importedDb, matchingRouteId);
 
-    const rideId = createRide(importedDb, matchingRouteId, new Date(date).toLocaleDateString());
+    const rideId = createRide(
+      importedDb,
+      matchingRouteId,
+      new Date(date).toLocaleDateString()
+    );
     for (var groupRow = 0; groupRow < GROUP_ROW_COUNT; groupRow++) {
-      const headerRowIndex = SPREADSHEET_HEADER_ROW_COUNT + groupRow * GROUP_ROW_SPACING;
+      const headerRowIndex =
+        SPREADSHEET_HEADER_ROW_COUNT + groupRow * GROUP_ROW_SPACING;
       const headerRow = rows[headerRowIndex];
 
       const processGroup = (groupCol) => {
@@ -196,7 +206,9 @@ const import_groups = async (importedDb) => {
 
             const userId = getUserIdByName(importedDb, cell);
             if (!userId) {
-              console.error(`No matching user "${cell}" for rider/mentor assignment in group ${headerValue}`);
+              console.error(
+                `No matching user "${cell}" for rider/mentor assignment in group ${headerValue}`
+              );
               return;
             }
 
@@ -216,7 +228,9 @@ const import_groups = async (importedDb) => {
 
             const userId = getUserIdByName(importedDb, cell);
             if (!userId) {
-              console.error(`No matching user "${cell}" for support assignment in in group ${headerValue}`);
+              console.error(
+                `No matching user "${cell}" for support assignment in in group ${headerValue}`
+              );
               return;
             }
 
@@ -240,49 +254,37 @@ const import_groups = async (importedDb) => {
   }
 };
 
-export async function importData(handleImportedDb, setLoading = () => { }, setError = () => { }) {
+export async function importData(
+  handleImportedDb,
+  setLoading = () => {},
+  setError = () => {}
+) {
   await createDatabase((importedDb) => {
-    const callback = async (response) => {
+    const callback = async () => {
       try {
-        if (response.error) {
-          setError(response.error)
-          setLoading(false)
-          return
-        }
-
-        const token = response.access_token;
-        gapi.client.setToken(token);
-
-        console.log('Performing import...');
+        console.log("Performing import...");
         await import_users(importedDb);
         await import_routes(importedDb);
         await import_groups(importedDb);
 
-        console.log('Saving imported database...');
+        console.log("Saving imported database...");
         saveDatabase(importedDb);
 
         await handleImportedDb(importedDb);
       } catch (err) {
-        console.error(err)
-        setError(err)
+        console.error(err);
+        setError(err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     };
 
     const errorCallback = async (response) => {
-      setError(response)
-      setLoading(false)
-    }
+      setError(response);
+      setLoading(false);
+    };
 
-    google.accounts.oauth2
-      .initTokenClient({
-        client_id: CLIENT_ID,
-        callback: callback,
-        error_callback: errorCallback,
-        scope: "https://www.googleapis.com/auth/spreadsheets",
-      })
-      .requestAccessToken();
+    auth(callback, errorCallback);
   });
 }
 
@@ -311,7 +313,10 @@ function createRide(db, routeId, date) {
 }
 
 function createGroup(db, name, rideId) {
-  db.run("INSERT INTO Groups (group_name, ride_id) VALUES (?, ?)", [name, rideId]);
+  db.run("INSERT INTO Groups (group_name, ride_id) VALUES (?, ?)", [
+    name,
+    rideId,
+  ]);
   return db.exec("SELECT last_insert_rowid()")[0].values[0][0];
 }
 
@@ -361,9 +366,12 @@ function getUserTypeIdByName(db, name) {
 }
 
 function getStopIdsForRouteId(db, routeId) {
-  const result = db.exec("SELECT * FROM Stops " +
-    "INNER JOIN Routes ON Routes.route_id = Stops.route_id " +
-    "WHERE Routes.route_id = ?", [routeId]);
+  const result = db.exec(
+    "SELECT * FROM Stops " +
+      "INNER JOIN Routes ON Routes.route_id = Stops.route_id " +
+      "WHERE Routes.route_id = ?",
+    [routeId]
+  );
 
   if (result.length === 0) return null;
   if (result[0].values.length === 0) return null;

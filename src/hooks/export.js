@@ -1,20 +1,15 @@
+import { auth } from "../auth.js";
 import { loadDatabase, saveDatabase } from "../database.js";
-
-const CLIENT_ID =
-  "592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com";
 
 const CHECK_DOCUMENT = "1126HuVhvZ8dSiNW3DRs6nPyIsJtNje4oysBVKkPdJ3c";
 const USER_CHECKS_SHEET = "Users";
 const GROUP_CHECKS_SHEET = "Groups";
 
 export async function export_data(rideId, onDbExported) {
-  console.log("Exporting data to Google Drive for ride", rideId, "...");
-  const callback = async (response) => {
+  const callback = async () => {
     const db = await loadDatabase();
 
-    const token = response.access_token;
-    gapi.client.setToken({ access_token: token });
-
+    console.log("Exporting data to Google Drive for ride", rideId, "...");
     await exportGroupChecks(db, rideId);
     await exportUserChecks(db, rideId);
 
@@ -25,13 +20,7 @@ export async function export_data(rideId, onDbExported) {
     await saveExport(db, rideId);
   };
 
-  google.accounts.oauth2
-    .initTokenClient({
-      client_id: CLIENT_ID,
-      callback: callback,
-      scope: "https://www.googleapis.com/auth/spreadsheets",
-    })
-    .requestAccessToken();
+  auth(callback);
 }
 
 async function exportGroupChecks(db, rideId) {
