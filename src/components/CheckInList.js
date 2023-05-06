@@ -26,9 +26,9 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
     { field: 'last_name', headerName: 'Last Name', flex: 2 },
     { field: 'fulltext', headerName: 'Fulltext', flex: 0 },
   ];
-  const rows = users.map((cur)=>{
+  const rows = users.map((cur) => {
     const fulltext = (cur.first_name + cur.last_name).toLowerCase();
-    return {...cur,id: cur.user_id, fulltext};
+    return { ...cur, id: cur.user_id, fulltext };
   });
 
   function checkIn(dispatch, id) {
@@ -46,9 +46,10 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
     data.resetCheckIn(id);
   }
 
-  function changeGroup(id, groupId) {
-    console.log(id, groupId);
-    data.changeGroup(id, groupId);
+  function changeGroup(userId, groupId) {
+    const rideId = data.currentRide.Ride.ride_id
+
+    data.changeGroup(userId, rideId, groupId);
   }
 
   function rednerAvatar(params) {
