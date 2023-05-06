@@ -8,7 +8,7 @@ import {
 
 import { importData } from './hooks/import'
 import { getRideById, getRides } from "./hooks/ride";
-import { check_in_participant } from "./hooks/check";
+import { check_in_participant, check_out_participant } from "./hooks/check";
 import { updateGroupAssignment } from "./hooks/group.js";
 
 const AppContext = React.createContext(
@@ -79,28 +79,12 @@ export const AppContextProvider = ({ children }) => {
 
     useEffect(() => performInitialLoad(), []);
 
-    const checkIn = async (userId) => {
-        console.log("check in", userId);
-
-        /*
-        const list = currentRide?.Riders || [];
-        console.log(list);
-
-        const updatedRiders = list.map((rider) => {
-            if (rider.id === userId) {
-                // do db operation here?
-                return { ...rider, check_in: 1 };
-            } else {
-                return rider;
-            }
-        });
-        currentRide.Riders = updatedRiders;
-        setCurrentRide(updatedRiders);
-        */
+    const checkIn = async (userId, groupId) => {
+        await check_in_participant(userId, groupId)
     };
 
-    const checkOut = async () => {
-        console.log("check out");
+    const checkOut = async (userId, groupId) => {
+        await check_out_participant(userId, groupId)
     };
 
     const changeGroup = async (userId, rideId, newGroupId) => {
