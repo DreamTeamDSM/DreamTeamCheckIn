@@ -20,7 +20,7 @@ const GroupSelect = ({groups, userId, defaultGroupId, changeGroup}) => {
         onChange={handleSelectChange}
         >
         {groups.map((group) => (
-            <MenuItem key={group.id} value={group.id}>{group.name}</MenuItem>
+            <MenuItem key={group.group_id} value={group.group_id}>{group.group_name}</MenuItem>
         ))}
         </Select>
     </FormControl>

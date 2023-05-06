@@ -27,6 +27,7 @@ export default function Riders() {
     { field: 'fulltext', headerName: 'Fulltext', flex: 0 },
   ];
 
+  /*
   const groups = [
     {id: 0, name: "Select"},
     {id: 2000, name: "Group 1"},
@@ -41,13 +42,27 @@ export default function Riders() {
     {id: 2009, name: "Group 10"},
     {id: 2010, name: "Group 11"},
   ];
+  */
 
   const riders = data?.currentRide?.Riders || [];
+  const groups = data?.currentRide?.Groups || [];
+  console.log(groups);
+  const ids = []; // delete when data is real
 
   const rows = riders.map((cur)=>{
-    const fulltext = (cur.groupnumber + " " + cur.firstname + cur.lastname).toLowerCase();
+    //const fulltext = (cur.groupnumber + " " + cur.first_name + cur.last_name).toLowerCase();
+    // need to include group in the fulltext
+    const fulltext = (cur.first_name + cur.last_name).toLowerCase();
     return {...cur,id: cur.user_id, fulltext};
-  });
+  }).reduce((acc,cur)=>{ // same, remove this reduce when the data is real
+    if (ids.includes(cur.id) == false) {
+      acc.push(cur);
+      ids.push(cur.id);
+    }
+    return acc;
+  },[]);
+
+  console.log(rows);
 
   function checkIn(dispatch, id) {
     dispatch(CHECKOUT);
@@ -152,43 +167,15 @@ export default function Riders() {
         }}
         deleteIcon={< Replay />}
       />
-      // </Chip>
     );
   }
 
   function renderGroupSelect(params) {
     return (<GroupSelect groups={groups} userId={params.row.id} defaultGroupId={params.row.group_id} changeGroup={changeGroup} />);
-
-    /*
-    console.log(params);
-
-    const [selectedOption, setSelectedOption] = useState(params.row.group_id);
-
-    const handleSelectChange = (event) => {
-      changeGroup(setSelectedOption,params.row.id,event.target.value);
-    };
-
-    return (
-      <FormControl>
-        <InputLabel id="group-select-label">Group</InputLabel>
-        <Select
-          labelId="group-select-label"
-          id="group-select"
-          value={selectedOption}
-          onChange={handleSelectChange}
-        >
-          {groups.map((group) => (
-            <MenuItem key={group.id} value={group.id}>
-              {group.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    );
-    */
   }
 
   React.useEffect(()=>{
+    console.log(data.searchText);
     setFilterModel({
       items: [
         { field: 'fulltext', operator: 'contains', value: data.searchText.toLowerCase() },
