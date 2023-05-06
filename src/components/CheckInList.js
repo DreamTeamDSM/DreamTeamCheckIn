@@ -315,6 +315,7 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
         rowsPerPageOptions={[5, 10, 20]}
         hideFooter={true}
         columnVisibilityModel={visibility}
+        sortModel={[{field: 'first_name',sort: 'asc'}]}
       />
     </div>
   );
