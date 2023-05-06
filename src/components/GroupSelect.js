@@ -1,28 +1,61 @@
-import React, { useState } from 'react';
-import { Select, FormControl, InputLabel, MenuItem } from '@mui/material';
+import React, { useState } from "react";
 
-const GroupSelect = ({groups, userId, defaultGroupId, changeGroup}) => {
+import Popper from "@mui/material/Popper";
+import Paper from "@mui/material/Paper";
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import PeopleIcon from "@mui/icons-material/People";
+import Button from "@mui/material/Button";
+import { ClickAwayListener } from "@mui/base";
 
-    const [selectedOption, setSelectedOption] = useState(defaultGroupId);
+const GroupSelect = ({ groups, userId, defaultGroupId, changeGroup }) => {
+    const [selectedGroupId, setSelectedGroupId] = useState(defaultGroupId);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const popperId = open ? "simple-popper" : undefined;
+    const handleClick = (event) => {
+        setAnchorEl(anchorEl ? null : event.currentTarget);
+    };
 
-    const handleSelectChange = (event) => {
-        setSelectedOption(event.target.value);
-        changeGroup(userId,event.target.value);
+    const currentGroup = groups.find((group) => group.group_id === selectedGroupId)
+    const currentGroupId = currentGroup.group_id
+    const currentGroupLabel = currentGroup.group_name
+
+    const handleSelectChange = (value) => {
+        setSelectedGroupId(value);
+        changeGroup(userId, value);
+
+        setAnchorEl(null)
     };
 
     return (
-    <FormControl>
-        <Select
-        labelId="group-select-label"
-        id="group-select"
-        value={selectedOption}
-        onChange={handleSelectChange}
-        >
-        {groups.map((group) => (
-            <MenuItem key={group.group_id} value={group.group_id}>{group.group_name}</MenuItem>
-        ))}
-        </Select>
-    </FormControl>
+        <div>
+            <Button
+                aria-describedby={popperId}
+                color="primary"
+                startIcon={<PeopleIcon />}
+                onClick={handleClick}
+            >
+                {selectedGroupId ? currentGroupLabel : "Unassigned"}
+            </Button>
+            <Popper id={popperId} open={open} anchorEl={anchorEl}>
+                <Paper>
+                    <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+                        <List>
+                            {groups.map((group) => (
+                                <ListItemButton
+                                    selected={group.group_id === currentGroupId}
+                                    key={group.group_id}
+                                    onClick={() => handleSelectChange(group.group_id)}
+                                >
+                                    {group.group_name}
+                                </ListItemButton>
+                            ))}
+                        </List>
+                    </ClickAwayListener>
+                </Paper>
+            </Popper>
+        </div>
     );
-}
-export {GroupSelect};
+};
+export { GroupSelect };

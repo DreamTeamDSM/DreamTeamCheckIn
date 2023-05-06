@@ -30,6 +30,8 @@ const AppContext = React.createContext(
         changeGroup: () => { },
         checkInStop: () => { },
         checkOutStop: () => { },
+        resetCheckIn: () => { },
+        resetCheckInStop: () => { },
     }
 );
 
@@ -56,6 +58,7 @@ export const AppContextProvider = ({ children }) => {
 
     const performInitialLoad = async () => {
         try {
+            setLoading(true)
             const db = await loadDatabase();
             if (!db) {
                 saveDatabase(await createDatabase());
@@ -70,6 +73,8 @@ export const AppContextProvider = ({ children }) => {
         } catch (err) {
             console.error(err)
             setError(err)
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -103,12 +108,20 @@ export const AppContextProvider = ({ children }) => {
         console.log("change group");
     }
 
+    const resetCheckIn = async(userId) => {
+        console.log("reset checkin",userId);
+    };
+
     const checkInStop = async(stopId,groupId) => {
         console.log("check in stop",stopId,groupId);
     };
 
     const checkOutStop = async(stopId,groupId) => {
         console.log("check out stop",stopId,groupId);
+    };
+
+    const resetCheckInStop = async(stopId,groupId) => {
+        console.log("reset checkin stop", stopId, groupId);
     };
 
     return (
@@ -128,7 +141,13 @@ export const AppContextProvider = ({ children }) => {
             changeGroup,
             checkInStop,
             checkOutStop,
-            importData
+            resetCheckIn,
+            resetCheckInStop,
+            importData: async () => {
+                setLoading(true)
+                await importData()
+                setLoading(false)
+            }
         }}>
             {children}
         </AppContext.Provider>
