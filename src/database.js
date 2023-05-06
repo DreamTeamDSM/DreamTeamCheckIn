@@ -103,7 +103,7 @@ export async function saveDatabaseAsFile(db) {
   document.body.appendChild(a);
   a.style = "display: none";
 
-  const blob = new Blob(binaryArray, { type: "octet/stream" });
+  const blob = new Blob([binaryArray], { type: "application/octet-stream" });
   const url = window.URL.createObjectURL(blob);
 
   a.href = url;
