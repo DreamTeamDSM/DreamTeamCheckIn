@@ -53,7 +53,7 @@ const backup = () => {
 const USER_ROUTE_SPREADSHEET_ID =
   "1imhKCBAr6SbfcvMs_I3hqQHPCZxHANd7x0mFehFSleA";
 
-const import_users = (importedDb) => {
+const import_users = (importedDb, pushNotification) => {
   gapi.client.sheets.spreadsheets.values
     .get({
       spreadsheetId: USER_ROUTE_SPREADSHEET_ID,
@@ -70,7 +70,9 @@ const import_users = (importedDb) => {
 
         const userTypeId = getUserTypeIdByName(importedDb, row[4]);
         if (!userTypeId) {
-          console.error(`User type ${row[4]} not found`);
+          const error = `User type ${row[4]} not found`
+          pushNotification(message, 'error')
+          console.error(error);
           continue;
         }
 
@@ -112,7 +114,7 @@ const cache_urls = (inputUrls) => {
   }
 };
 
-const import_routes = async (importedDb) => {
+const import_routes = async (importedDb, pushNotification) => {
   const routes = (
     await gapi.client.sheets.spreadsheets.values.get({
       spreadsheetId: USER_ROUTE_SPREADSHEET_ID,
@@ -160,7 +162,7 @@ const GROUP_ROW_COUNT = 3;
 const GROUP_ROW_SPACING = 13;
 const GROUP_COLUMN_COUNT = 5;
 
-const import_groups = async (importedDb) => {
+const import_groups = async (importedDb, pushNotification) => {
   const spreadsheet = (
     await gapi.client.sheets.spreadsheets.get({
       spreadsheetId: GROUP_SPREADSHEET_ID,
@@ -201,7 +203,9 @@ const import_groups = async (importedDb) => {
     const matchingRouteId = getRouteIdByName(importedDb, routeName);
     if (!matchingRouteId) {
       // todo: better error feedback?
-      console.error(`No matching route for ${routeName}`);
+      const error = `No matching route for ${routeName}`
+      pushNotification(error, 'error')
+      console.error(error);
       continue;
     }
 
@@ -243,9 +247,10 @@ const import_groups = async (importedDb) => {
 
             const userId = getUserIdByName(importedDb, cell);
             if (!userId) {
-              console.error(
-                `No matching user "${cell}" for rider/mentor assignment in group ${headerValue}`
-              );
+              const error = `No matching user "${cell}" for rider/mentor assignment in group ${headerValue}`
+              console.error(error);
+              pushNotification(error, 'error')
+
               return;
             }
 
@@ -265,9 +270,9 @@ const import_groups = async (importedDb) => {
 
             const userId = getUserIdByName(importedDb, cell);
             if (!userId) {
-              console.error(
-                `No matching user "${cell}" for support assignment in in group ${headerValue}`
-              );
+              const error = `No matching user "${cell}" for support assignment in in group ${headerValue}`;
+              console.error(error);
+              pushNotification(error, 'error')
               return;
             }
 
@@ -291,14 +296,14 @@ const import_groups = async (importedDb) => {
   }
 };
 
-export async function importData(setSuccess = () => { }, setLoading = () => { }, setError = () => { }) {
+export async function importData(pushNotification = () => { }, setSuccess = () => { }, setLoading = () => { }, setError = () => { }) {
   await createDatabase((importedDb) => {
     const callback = async () => {
       try {
         console.log("Performing import...");
-        await import_users(importedDb);
-        await import_routes(importedDb);
-        await import_groups(importedDb);
+        await import_users(importedDb, pushNotification);
+        await import_routes(importedDb, pushNotification);
+        await import_groups(importedDb, pushNotification);
 
         console.log('Saving imported database...');
         await saveDatabase(importedDb);
@@ -401,8 +406,8 @@ function getUserTypeIdByName(db, name) {
 function getStopIdsForRouteId(db, routeId) {
   const result = db.exec(
     "SELECT * FROM Stops " +
-      "INNER JOIN Routes ON Routes.route_id = Stops.route_id " +
-      "WHERE Routes.route_id = ?",
+    "INNER JOIN Routes ON Routes.route_id = Stops.route_id " +
+    "WHERE Routes.route_id = ?",
     [routeId]
   );
 
