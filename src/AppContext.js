@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
     createDatabase,
+    loadDatabase,
     saveDatabase,
     seedDatabase,
     seedDatabase2,
@@ -45,39 +46,49 @@ export const AppContextProvider = ({ children }) => {
             } else {
                 return mostRecent;
             }
-            }, { date: "2000-01-01" });
+            }, { date: "2000-01-01" }
+        );
     }
 
-    const importFromSeededData = async () => {
-        setLoading(true)
+    const performInitialLoad = async () => {
         try {
-            const db = await createDatabase();
+            const db = await loadDatabase();
+            if (!db) {
+                saveDatabase(await createDatabase());
+            }
 
-            await seedDatabase2(db);
+            const loadedRides = await getRides();
+            const mostRecentRide = getMostRecent(loadedRides);
+            const loadedCurrentRide = await getRideById(mostRecentRide.ride_id);
 
-            await saveDatabase(db);
-
-            const fetchedRides = await getRides();
-            const mostRecentRide = getMostRecent(fetchedRides);
-
-            console.log(fetchedRides[0]);
-
-            const fetchedCurrentRide = await getRideById(mostRecentRide.ride_id);
-
-            console.log(fetchedCurrentRide);
-
-            setRides(fetchedRides);
-            setCurrentRide(fetchedCurrentRide);
+            setRides(loadedRides);
+            setCurrentRide(loadedCurrentRide);
         } catch (err) {
             console.error(err)
             setError(err)
         }
+    };
 
-        setLoading(false)
-    }
+    useEffect(() => performInitialLoad(), []);
 
-    const checkIn = async () => {
-        console.log("check in");
+    const checkIn = async (userId) => {
+        console.log("check in",userId);
+
+        /*
+        const list = currentRide?.Riders || [];
+        console.log(list);
+
+        const updatedRiders = list.map((rider) => {
+            if (rider.id === userId) {
+                // do db operation here?
+                return { ...rider, check_in: 1 };
+            } else {
+                return rider;
+            }
+        });
+        currentRide.Riders = updatedRiders;
+        setCurrentRide(updatedRiders);
+        */
     };
 
     const checkOut = async() => {
@@ -94,7 +105,6 @@ export const AppContextProvider = ({ children }) => {
             currentRide,
             setRides,
             setCurrentRide,
-            importData: importFromSeededData,
             loading,
             setLoading,
             error,

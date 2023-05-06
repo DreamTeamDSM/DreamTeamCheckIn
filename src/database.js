@@ -67,6 +67,13 @@ export async function createDatabase(callback) {
       console.error(error);
     });
 
+    // Seed data for UserTypes table
+    db.exec(`
+      INSERT INTO UserTypes (type) VALUES
+      ('Rider'),
+      ('Mentor');
+    `);
+
   return db;
 }
 

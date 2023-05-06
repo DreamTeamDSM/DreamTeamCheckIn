@@ -4,30 +4,13 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
-import { loadDatabase, createDatabase, saveDatabase } from "./database.js";
 
-async function setupDatabase() {
-  var db = await loadDatabase();
-  if (!db) {
-    console.log("No existing database found. Creating new one...");
-    db = await createDatabase();
-    await saveDatabase(db);
-    console.log("New database saved!");
-  } else {
-    console.log("Existing database loaded!");
-  }
-
-  return db;
-}
-
-setupDatabase().then((db) => {
-  ReactDOM.render(
-    <React.StrictMode>
-      <App db={db} />
-    </React.StrictMode>,
-    document.getElementById("root")
-  );
-});
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById("root")
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

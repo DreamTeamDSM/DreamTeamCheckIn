@@ -10,9 +10,7 @@ import { RidePanel } from "./components/RidePanel";
 
 import "@fontsource/inter";
 
-function App(props) {
-  const db = props.db;
-
+function App() {
   // TODO
   const setSearchText = () => {}
 

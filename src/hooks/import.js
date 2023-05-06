@@ -60,12 +60,20 @@ const import_users = (importedDb) => {
           continue;
         }
 
+        const userTypeId = getUserTypeIdByName(importedDb, row[4]);
+        if (!userTypeId) {
+          console.error(`User type ${row[4]} not found`);
+          continue;
+        }
+
+        console.log('USER TYPE ', userTypeId);
+
         importedDb.run("INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?)", [
           row[0],
           row[1],
           row[2],
           "NULL", // TODO: row[3]
-          row[4],
+          userTypeId,
           row[5],
           row[6],
         ]);
@@ -74,16 +82,15 @@ const import_users = (importedDb) => {
 };
 
 const import_routes = async (importedDb) => {
-  const routes = (await gapi.client.sheets.spreadsheets.values.get({
-    spreadsheetId: USER_ROUTE_SPREADSHEET_ID,
-    range: "'Routes'!A:H",
-  })).result;
+  const routes = (
+    await gapi.client.sheets.spreadsheets.values.get({
+      spreadsheetId: USER_ROUTE_SPREADSHEET_ID,
+      range: "'Routes'!A:H",
+    })
+  ).result;
 
-  for (const row of routes.values) {
-    // Skip header row
-    if (row[0] === "ID") {
-      continue;
-    }
+  for (var i = 1; i < routes.values.length; i++) {
+    const row = routes.values[i];
 
     console.log("Route row ", row);
 
@@ -99,16 +106,15 @@ const import_routes = async (importedDb) => {
     ]);
   }
 
-  const stops = (await gapi.client.sheets.spreadsheets.values.get({
-    spreadsheetId: USER_ROUTE_SPREADSHEET_ID,
-    range: "'Stops'!A:C",
-  })).result;
+  const stops = (
+    await gapi.client.sheets.spreadsheets.values.get({
+      spreadsheetId: USER_ROUTE_SPREADSHEET_ID,
+      range: "A:C",
+    })
+  ).result;
 
-  for (const row of stops.values) {
-    // Skip header row
-    if (row[0] === "ID") {
-      continue;
-    }
+  for (var i = 1; i < stops.values.length; i++) {
+    const row = stops.values[i];
 
     console.log("Stop row ", row);
 
@@ -121,23 +127,127 @@ const import_routes = async (importedDb) => {
   }
 };
 
-const GROUP_SPREADSHEET_ID = "1MFzXHNw3-FOAKf0SUVQGXfWOWLCgXOSn_QW8sIu-ZvQ";
+const GROUP_SPREADSHEET_ID = "1gsbV8BB5H9XpjgTmy-pOy4h7xp2209p_rH8vFk5mNLQ";
+const SPREADSHEET_HEADER_ROW_COUNT = 2;
+const GROUP_ROW_COUNT = 3;
+const GROUP_ROW_SPACING = 11;
+const GROUP_COLUMN_COUNT = 5;
 
 const import_groups = async (importedDb) => {
-  // const spreadsheet = (await gapi.client.sheets.spreadsheets.get({spreadsheetId: GROUP_SPREADSHEET_ID})).result;
-  // console.log('Spreadsheet ', spreadsheet.sheets);
+  const spreadsheet = (
+    await gapi.client.sheets.spreadsheets.get({
+      spreadsheetId: GROUP_SPREADSHEET_ID,
+    })
+  ).result;
+  const sheetNames = spreadsheet.sheets.map((sheet) => sheet.properties.title);
+
+  for (const sheetName of sheetNames) {
+    console.log("Importing sheet ", sheetName);
+
+    const rows = (
+      await gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: GROUP_SPREADSHEET_ID,
+        range: `${sheetName}!A:F`, // todo: can't handle spaces
+      })
+    ).result.values;
+
+    console.log('Data', rows);
+
+    // inclusive
+    const iterateRange = (startRow, stopRow, startCol, stopCol, fn) => {
+      console.log('Iterating range', startRow, stopRow, startCol, stopCol);
+      for (let row = startRow; row <= Math.min(rows.length-1, stopRow); row++) {
+        console.log('Row', row);
+        for (let col = startCol; col <= Math.min(rows[row].length-1, stopCol); col++) {
+          console.log('Col', col);
+          fn(rows[row][col], row, col);
+        }
+      }
+    };
+
+    const title = rows[0][0].split(" - ");
+    const date = new Date(title[0]);
+    const routeName = title[1];
+
+    const matchingRouteId = getRouteIdByName(importedDb, routeName);
+    if (!matchingRouteId) {
+      // todo: better error feedback?
+      console.error(`No matching route for ${routeName}`);
+      continue;
+    }
+
+    console.log('Ride date', date, 'route name', routeName, 'route id', matchingRouteId);
+    const rideId = createRide(importedDb, matchingRouteId, new Date(date).toLocaleDateString());
+    console.log('Ride created with id', rideId);
+
+    for (var groupRow = 0; groupRow < GROUP_ROW_COUNT; groupRow++) {
+      const headerRowIndex = SPREADSHEET_HEADER_ROW_COUNT + groupRow * GROUP_ROW_SPACING;
+      const headerRow = rows[headerRowIndex];
+
+      for (var groupCol = 0; groupCol < GROUP_COLUMN_COUNT; groupCol++) {
+        const headerValue = headerRow[groupCol];
+        if (!headerValue || headerValue.length === 0) {
+          continue;
+        }
+
+        const iterateGroupUsers = (fn) =>
+          iterateRange(
+            headerRowIndex + 1,
+            headerRowIndex + GROUP_ROW_SPACING,
+            groupCol,
+            groupCol,
+            fn
+          );
+
+        if (headerValue.indexOf("Group") > -1) {
+          console.log('Creating group', headerValue, rideId);
+          const groupId = createGroup(importedDb, headerValue, rideId);
+          iterateGroupUsers((cell) => {
+            if (!cell || cell.length === 0) return;
+
+            const userId = getUserIdByName(importedDb, cell);
+            if (!userId) {
+              console.error(`No matching user for ${cell}`); // todo: better error feedback?
+              return;
+            }
+
+            console.log('Creating group assignment for user', userId, 'group', groupId);
+            createGroupAssignment(importedDb, userId, groupId);
+          });
+        } else if (
+          headerValue.indexOf("Support") > -1 ||
+          headerValue.indexOf("Sweep") > -1
+        ) {
+          iterateGroupUsers((cell) => {
+            if (!cell || cell.length === 0) return;
+
+            const userId = getUserIdByName(importedDb, cell);
+            if (!userId) {
+              console.error(`No matching user for ${cell}`); // todo: better error feedback?
+              return;
+            }
+
+            console.log('Creating support assignment for user', userId, 'ride', rideId, 'header value', headerValue);
+            createSupportAssignment(importedDb, userId, rideId, headerValue);
+          });
+        }
+      }
+    }
+  }
 };
 
 export async function importData(handleImportedDb) {
   await createDatabase((importedDb) => {
-    const callback = (response) => {
+    const callback = async (response) => {
       const token = response.access_token;
       gapi.client.setToken(token);
 
-      import_users(importedDb);
-      import_routes(importedDb);
-      import_groups(importedDb);
+      console.log('Performing import...');
+      await import_users(importedDb);
+      await import_routes(importedDb);
+      await import_groups(importedDb);
 
+      console.log('Performing save...');
       saveDatabase(importedDb);
       handleImportedDb(importedDb);
     };
@@ -158,3 +268,63 @@ export const triggerImport = () => {
   //   backup();
   import_data();
 };
+
+function getRouteIdByName(db, routeName) {
+  const result = db.exec("SELECT * FROM Routes WHERE route_name = ?", [
+    routeName,
+  ]);
+
+  if (result.length === 0) return null;
+  if (result[0].values.length === 0) return null;
+  if (result[0].values[0].length === 0) return null;
+
+  return result[0].values[0][0];
+}
+
+function createRide(db, routeId, date) {
+  db.run("INSERT INTO Rides (route_id, date) VALUES (?, ?)", [routeId, date]);
+  return db.exec("SELECT last_insert_rowid()")[0].values[0][0];
+}
+
+function createGroup(db, name, rideId) {
+  db.run("INSERT INTO Groups (group_name, ride_id) VALUES (?, ?)", [name, rideId]);
+  return db.exec("SELECT last_insert_rowid()")[0].values[0][0];
+}
+
+function createGroupAssignment(db, userId, groupId) {
+  db.run(
+    "INSERT INTO GroupAssignments (user_id, group_id, check_in, check_out) VALUES (?, ?, ?, ?)",
+    [userId, groupId, 0, 0]
+  );
+}
+
+function createSupportAssignment(db, userId, rideId, type) {
+  db.run("INSERT INTO RideSupport (user_id, ride_id, type) VALUES (?, ?, ?)", [
+    userId,
+    rideId,
+    type,
+  ]);
+}
+
+function getUserIdByName(db, fullName) {
+  const result = db.exec(
+    "SELECT * FROM Users WHERE first_name || ' ' || last_name = ?",
+    [fullName]
+  );
+
+  if (result.length === 0) return null;
+  if (result[0].values.length === 0) return null;
+  if (result[0].values[0].length === 0) return null;
+
+  return result[0].values[0][0];
+}
+
+function getUserTypeIdByName(db, name) {
+  const result = db.exec("SELECT * FROM UserTypes WHERE type = ?", [name]);
+
+  if (result.length === 0) return null;
+  if (result[0].values.length === 0) return null;
+  if (result[0].values[0].length === 0) return null;
+
+  return result[0].values[0][0];
+}
