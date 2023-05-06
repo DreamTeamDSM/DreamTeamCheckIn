@@ -75,15 +75,17 @@ export const getRideById = async (id) => {
   // console.log(stops);
   const stopsObjArray = resultToObjArray(stops);
   // console.log(stopsObjArray);
-  const groupStops = db.exec(
-    `SELECT * FROM ` +
+
+
+  const sql = `SELECT * FROM ` +
     `GroupCheck ` +
     `LEFT JOIN Groups on Groups.group_id=GroupCheck.group_id ` +
-    `WHERE Groups.ride_id=${id}`
-  )[0];
-  // console.log(groupStops);
+    `WHERE Groups.ride_id=${id} ` +
+    `and GroupCheck.group_id in (select GroupAssignments.group_id from GroupAssignments INNER JOIN Groups on GroupAssignments.group_id = Groups.group_id WHERE Groups.ride_id=${id} and GroupAssignments.check_in = 1 group by GroupAssignments.group_id)`;
+  const groupStops = db.exec(sql)[0];
+  //console.log("groupStops query data",groupStops);
   const groupStopsObjArray = resultToObjArray(groupStops);
-  // console.log(groupStopsObjArray);
+  //console.log("groupStopsObjArray",groupStopsObjArray);
   const groups = db.exec(
     `SELECT * FROM Groups where ride_id=${id}`
   )[0];
