@@ -1,7 +1,7 @@
 import { loadDatabase } from "../database";
 
 const resultToObjArray = (result) => {
-  if (!result?.values || !result.values.length === 0) return {};
+  if (!result?.values || !result.values.length === 0) return null;
 
   const ObjArray = result.values.map(value => {
     let obj = {};
@@ -34,7 +34,7 @@ export const getRideById = async (id) => {
   //So we can populate page with info once ride is selected
   const db = await loadDatabase();
   const ride = db.exec(
-    `SELECT route_id, date FROM Rides WHERE ride_id=${id}`
+    `SELECT route_id, ride_id, date FROM Rides WHERE ride_id=${id}`
   )[0];
   // console.log(ride);
   const rideObj = resultToObjArray(ride)[0];
@@ -92,9 +92,9 @@ export const getRideById = async (id) => {
   const allTheData = {
     Ride: rideObj,
     Route: routeObj,
-    Date: ride.values[0][1],
+    Date: rideObj.date,
     Destination: routeObj.route_name,
-    NumMentors: mentorsObjArray.length,
+    NumMentors: mentorsObjArray?.length ?? 0,
     NumRiders: ridersObjArray.length,
     Miles: routeObj.distance,
     Riders: ridersObjArray,

@@ -21,7 +21,10 @@ const AppContext = React.createContext(
         error: false,
         setError: () => { },
         setSearchText: () => { },
-        searchText: ""
+        searchText: "",
+        checkIn: () => { },
+        checkOut: () => { },
+        changeGroup: () => { },
     }
 );
 
@@ -57,14 +60,32 @@ export const AppContextProvider = ({ children }) => {
             const fetchedRides = await getRides();
             const mostRecentRide = getMostRecent();
 
-            const fetchedCurrentRide = await getRideById(mostRecentRide.ride_id);
+            console.log(fetchedRides[0]);
+
+            const fetchedCurrentRide = await getRideById(fetchedRides[0].ride_id);
+
+            console.log(fetchedCurrentRide);
+
             setRides(fetchedRides);
             setCurrentRide(fetchedCurrentRide);
         } catch (err) {
+            console.error(err)
             setError(err)
         }
 
         setLoading(false)
+    }
+
+    const checkIn = async () => {
+        console.log("check in");
+    };
+
+    const checkOut = async() => {
+        console.log("check out");
+    };
+
+    const changeGroup = async() => {
+        console.log("change group");
     }
 
     return (
@@ -80,6 +101,9 @@ export const AppContextProvider = ({ children }) => {
             setError,
             setSearchText,
             searchText,
+            checkIn,
+            checkOut,
+            changeGroup,
         }}>
             {children}
         </AppContext.Provider>

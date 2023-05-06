@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS "Users" (
 	"user_id"	INTEGER NOT NULL,
 	"first_name"	TEXT,
 	"last_name"	TEXT,
-	"photo"	BLOB,
+	"photo_url"	TEXT,
 	"user_type_id" INTEGER,
 	"active"	INTEGER DEFAULT 0 CHECK("active" IN (0, 1)),
 	"isNew" INTEGER DEFAULT 0 CHECK("isNew" IN (0,1)),
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS "Routes" (
 	"climb" NUMERIC,
 	"hours" NUMERIC,
 	"difficulty" TEXT,
-	"type"	TEXT CHECK(type IN ('outAndBack','Loop')),
+	"type"	TEXT,
 	PRIMARY KEY("route_id" AUTOINCREMENT)
 );
 
