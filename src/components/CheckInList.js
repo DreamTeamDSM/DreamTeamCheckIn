@@ -27,7 +27,7 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
     { field: 'fulltext', headerName: 'Fulltext', flex: 0 },
   ];
   const rows = users.map((cur) => {
-    const fulltext = (cur.first_name + cur.last_name).toLowerCase();
+    const fulltext = (((cur.group_name) ? cur.group_name : "unassigned") + cur.first_name + cur.last_name).toLowerCase();
     return { ...cur, id: cur.user_id, fulltext };
   });
 
