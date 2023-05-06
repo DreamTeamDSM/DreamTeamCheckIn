@@ -147,8 +147,8 @@ const import_groups = async (importedDb, stops) => {
     ).result.values;
 
     const iterateRange = (startRow, stopRow, startCol, stopCol, fn) => {
-      for (let row = startRow; row <= Math.min(rows.length-1, stopRow); row++) {
-        for (let col = startCol; col <= Math.min(rows[row].length-1, stopCol); col++) {
+      for (let row = startRow; row <= Math.min(rows.length - 1, stopRow); row++) {
+        for (let col = startCol; col <= Math.min(rows[row].length - 1, stopCol); col++) {
           fn(rows[row][col], row, col);
         }
       }
@@ -230,21 +230,28 @@ const import_groups = async (importedDb, stops) => {
   }
 };
 
-export async function importData(handleImportedDb) {
+export async function importData(handleImportedDb, setLoading = () => { }, setError = () => { }) {
   await createDatabase((importedDb) => {
     const callback = async (response) => {
-      const token = response.access_token;
-      gapi.client.setToken(token);
+      try {
+        const token = response.access_token;
+        gapi.client.setToken(token);
 
-      console.log('Performing import...');
-      await import_users(importedDb);
-      const stops = await import_routes(importedDb);
-      console.log('Stops 2', stops);
-      await import_groups(importedDb, stops);
+        console.log('Performing import...');
+        await import_users(importedDb);
+        const stops = await import_routes(importedDb);
+        console.log('Stops 2', stops);
+        await import_groups(importedDb, stops);
 
-      console.log('Saving imported database...');
-      saveDatabase(importedDb);
-      handleImportedDb(importedDb);
+        console.log('Saving imported database...');
+        saveDatabase(importedDb);
+        handleImportedDb(importedDb);
+      } catch (err) {
+        console.error(err)
+        setError(err)
+      } finally {
+        setLoading(false)
+      }
     };
 
     google.accounts.oauth2
