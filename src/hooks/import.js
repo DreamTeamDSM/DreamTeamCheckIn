@@ -234,6 +234,12 @@ export async function importData(handleImportedDb, setLoading = () => { }, setEr
   await createDatabase((importedDb) => {
     const callback = async (response) => {
       try {
+        if (response.error) {
+          setError(response.error)
+          setLoading(false)
+          return
+        }
+
         const token = response.access_token;
         gapi.client.setToken(token);
 
