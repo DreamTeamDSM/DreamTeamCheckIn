@@ -34,7 +34,7 @@ export const AppContextProvider = ({ children }) => {
         try {
             const db = await createDatabase();
 
-            await seedDatabase(db);
+            await seedDatabase2(db);
 
             await saveDatabase(db);
 
