@@ -1,6 +1,7 @@
 import React from 'react';
 import { createTheme, ThemeProvider as MThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from '@mui/material';
+import { lighten, darken } from "polished";
 
 const mdTheme = createTheme({
     palette: {
@@ -15,10 +16,28 @@ const mdTheme = createTheme({
             contrastText: "#fff",
         },
         secondary: {
-            light: "#ff7961",
-            main: "#f44336",
-            dark: "#ba000d",
-            contrastText: "#000",
+            light: lighten(0.1, "#188B54"),
+            main: "#188B54",
+            dark: darken(0.1, "#188B54"),
+            contrastText: "#fff",
+        },
+        lightBlue: {
+            light: lighten(0.1, "#738BB1"),
+            main: '#738BB1',
+            dark: darken(0.1, "#738BB1"),
+            contrastText: "#fff",
+        },
+        darkBlue: {
+            light: lighten(0.1, "#0D2A57"),
+            main: "#0D2A57",
+            dark: lighten(0.2, "#0D2A57"),
+            contrastText: "#fff",
+        },
+        green: {
+            light: lighten(0.1, "#188B54"),
+            main: '#188B54',
+            dark: darken(0.1, "#188B54"),
+            contrastText: "#fff",
         },
         white: {
             main: '#fff'

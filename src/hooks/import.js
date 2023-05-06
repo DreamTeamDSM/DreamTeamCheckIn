@@ -1,14 +1,21 @@
 import { auth } from "../auth";
 import { createDatabase, loadDatabase, saveDatabase } from "../database";
 
+const CLIENT_ID =
+  "592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com";
+
 export const isSynced = async () => {
+  //TODO - loop through isRideSynced for each ride, if any false - not synced
+};
+
+export const isRideSynced = async (id) => {
   //do not allow import if we have more recent changes to GroupAssignment or GroupCheck since last RideExport
   const db = await loadDatabase();
   let isSynced = true;
 
   //get latest export for each ride
   const latestExports = db.exec(
-    "SELECT ride_id, date FROM RideExports GROUP BY ride_id ORDER BY date DESC LIMIT 1"
+    `SELECT ride_id, date FROM RideExports WHERE ride_id=${id} ORDER BY date DESC LIMIT 1`
   )[0];
 
   //get group assignments for each group ride where updated at is greater than last ride export

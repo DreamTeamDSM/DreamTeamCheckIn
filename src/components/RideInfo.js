@@ -37,6 +37,8 @@ const RideInfo = () => {
 
     const handleExport = () => export_data(data.currentRide.Ride.ride_id);
 
+    console.log(data.currentRide.isSynced);
+
     return (
         <>
             <Box display={'flex'} justifyItems={'space-between'} mt={5} mb={'12px'}>
@@ -44,8 +46,22 @@ const RideInfo = () => {
                     color="inherit"
                     noWrap
                     sx={{ flexGrow: 1 }}> {'RIDES'}</Typography>
-                <Button variant='outlined' startIcon={<CloudUploadIcon />} onClick={handleExport}>{'Export'}</Button>
+                <Box display={'flex'} >
+                {
+                    data?.currentRide?.IsSynced && (
+                    <Typography mt='10px' mr='10px'>Synced</Typography>
+                     )
+                }
+                {
+                    !data?.currentRide?.IsSynced && (
+                        <Typography mt='10px' mr='10px'>Warning: Not Synced</Typography>
+                         )
+                }
+                  <Button variant='outlined' startIcon={<CloudUploadIcon />} onClick={handleExport}>{'Export'}</Button>
+                </Box>
+
             </Box>
+
             <Grid container spacing={2}>
                 <Grid item sm={12} lg={3}>
                     <RideMetadata />
