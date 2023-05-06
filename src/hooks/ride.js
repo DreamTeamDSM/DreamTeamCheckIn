@@ -66,7 +66,7 @@ export const getRideById = async (id) => {
     `LEFT JOIN Groups on GroupAssignments.group_id=Groups.group_id ` +
     `WHERE (Groups.ride_id=${id} OR Groups.ride_id IS NULL) AND Users.user_type_id=(SELECT user_type_id FROM UserTypes WHERE type='Rider') ` +
     `ORDER BY Groups.ride_id DESC, Users.last_name,Users.first_name`
-  )[0];
+  )[0];;l
   // console.log(riders);
   const ridersObjArray = resultToObjArray(riders);
   const stops = db.exec(
