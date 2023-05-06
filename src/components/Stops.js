@@ -161,7 +161,7 @@ export default function Stops({stops,groups,groupStops}) {
       {stops.map((stop)=>{
 
         const filteredRows = rows.filter((cur)=>{
-          return (stop.stop_id == cur.stop_id);
+          return (stop.stop_id == cur.stop_id && cur.group_name.indexOf("Group") > -1);
         });
 
         const checkInCount = filteredRows.reduce((acc,cur)=>{
@@ -189,12 +189,12 @@ export default function Stops({stops,groups,groupStops}) {
             <Typography style={{marginLeft: "auto"}}>{checkInCount} / {checkOutCount} / {completeCount}</Typography>
           </AccordionSummary>
           <AccordionDetails>
-              <div style={{ height: 400, width: '100%' }}>
+              <div style={{ width: '100%' }}>
                 <DataGrid
                   filterModel={filterModel}
                   rows={filteredRows}
                   columns={groupColumns}
-                  pageSize={10}
+                  pageSize={15}
                   rowsPerPageOptions={[5, 10, 20]}
                   columnVisibilityModel={{
                     id: false,

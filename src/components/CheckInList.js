@@ -246,11 +246,14 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
 
     const [chipText, setChipText] = useState(defaultState);
 
+    const user = users.find((user) => user.user_id === params.row.id)
+
     return (
       <Chip
         variant="contained"
         label={chipText}
         sx={getChipStyles(chipText)}
+        disabled={!Boolean(user.group_id)}
         onClick={() => {
           if (chipText === CHECKIN) {
             setChipText(COMPLETE);
