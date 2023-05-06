@@ -29,3 +29,9 @@ export const check_out_group = async (group_id, stop_id) => {
     db.exec(`UPDATE GroupCheck SET check_out=1 WHERE stop_id=${stop_id} AND group_id=${group_id}`);
     await saveDatabase(db);
 }
+
+export const reset_group = async (group_id, stop_id) => {
+    let db = await loadDatabase();
+    db.exec(`UPDATE GroupCheck SET check_in=0, check_out=0 WHERE group_id=${group_id} and stop_id=${stop_id}`);
+    await saveDatabase(db);
+}
