@@ -18,16 +18,17 @@ export default function Riders() {
 
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
-    { field: 'groupnumber', headerName: 'Group #', flex: 1 },
-    { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: renderChip },
+    { field: 'group_id', headerName: 'Group #', flex: 1 },
+    { field: 'check_in', headerName: 'Check In/Out', flex: 2, renderCell: renderChip },
     { field: 'avatar', headerName: 'Avatar', flex: 1, renderCell: rednerAvatar },
-    { field: 'firstname', headerName: 'First Name', flex: 2 },
-    { field: 'lastname', headerName: 'Last Name', flex: 2 },
+    { field: 'first_name', headerName: 'First Name', flex: 2 },
+    { field: 'last_name', headerName: 'Last Name', flex: 2 },
     { field: 'fulltext', headerName: 'Fulltext', flex: 0 },
   ];
 
   const rows = data.currentRide.Riders.map((cur)=>{
-    return {...cur,id: cur.user_id};
+    const fulltext = (cur.groupnumber + " " + cur.firstname + cur.lastname).toLowerCase();
+    return {...cur,id: cur.user_id, fulltext};
   });
 
   function checkIn(dispatch, id) {
