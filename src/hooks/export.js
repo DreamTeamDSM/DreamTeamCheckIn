@@ -3,9 +3,9 @@ import { loadDatabase, saveDatabase } from "../database.js";
 const CLIENT_ID =
   "592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com";
 
-const CHECK_DOCUMENT = '1126HuVhvZ8dSiNW3DRs6nPyIsJtNje4oysBVKkPdJ3c';
-const USER_CHECKS_SHEET = 'User Checks';
-const GROUP_CHECKS_SHEET = 'Group Checks';
+const CHECK_DOCUMENT = "1126HuVhvZ8dSiNW3DRs6nPyIsJtNje4oysBVKkPdJ3c";
+const USER_CHECKS_SHEET = "User Checks";
+const GROUP_CHECKS_SHEET = "Group Checks";
 
 export async function export_data(rideId, onDbExported) {
   console.log("Exporting data to Google Drive for ride", rideId, "...");
@@ -13,12 +13,14 @@ export async function export_data(rideId, onDbExported) {
     const db = await loadDatabase();
 
     const token = response.access_token;
-    gapi.client.setToken(token);
+    gapi.client.setToken({ access_token: token });
 
     await exportGroupChecks(db, rideId);
-    await exportUserChecks(db);
+    await exportUserChecks(db, rideId);
 
-    onDbExported();
+    if (onDbExported) {
+      onDbExported();
+    }
 
     await saveExport(db, rideId);
   };
@@ -33,24 +35,70 @@ export async function export_data(rideId, onDbExported) {
 }
 
 async function exportGroupChecks(db, rideId) {
-  getGroupChecks(db, rideId);
+  try {
+    const result = db.exec(
+      "SELECT Groups.group_name, Stops.description, GroupCheck.check_in, GroupCheck.check_out FROM GroupCheck " +
+        "INNER JOIN Groups ON GroupCheck.group_id = Groups.group_id " +
+        "INNER JOIN Stops ON GroupCheck.stop_id = Stops.stop_id " +
+        "WHERE Groups.ride_id = ?",
+      [rideId]
+    );
+
+    console.log(
+      "Exporting",
+      result[0].values.length,
+      "group checks",
+      result[0].values
+    );
+
+    await gapi.client.sheets.spreadsheets.values.update({
+      spreadsheetId: CHECK_DOCUMENT,
+      range: `'${GROUP_CHECKS_SHEET}'!A2:D${result[0].values.length + 1}`,
+      valueInputOption: "RAW",
+      resource: {
+        values: result[0].values,
+      },
+    });
+
+    console.log("Done pushing to sheets");
+  } catch (e) {
+    console.log("Error pushing group checks to sheets", e);
+  }
 }
 
-async function exportUserChecks(db, rideId) {}
+async function exportUserChecks(db, rideId) {
+  try {
+    const result = db.exec(
+      "SELECT Users.first_name, Users.last_name, check_in, check_out FROM GroupAssignments " +
+        "INNER JOIN Groups ON GroupAssignments.group_id = Groups.group_id " +
+        "INNER JOIN Users ON GroupAssignments.user_id = Users.user_id " +
+        "WHERE Groups.ride_id = ?",
+      [rideId]
+    );
 
-function getGroupChecks(db, rideId) {
-  const result = db.exec(
-    "SELECT Groups.group_name, Stops.description, check_in, check_out FROM GroupCheck " +
-    "INNER JOIN Groups ON GroupCheck.group_id = Groups.group_id " +
-    "INNER JOIN Stops ON GroupCheck.stop_id = Stops.stop_id " +
-    "WHERE Groups.ride_id = ?",
-    [rideId],
-  );
+    console.log(
+      "Exporting",
+      result[0].values.length,
+      "user checks",
+      result[0].values
+    );
 
-  console.log('Group checks:', result);
+    await gapi.client.sheets.spreadsheets.values.update({
+      spreadsheetId: CHECK_DOCUMENT,
+      range: `'${USER_CHECKS_SHEET}'!A2:D${result[0].values.length + 1}`,
+      valueInputOption: "RAW",
+      resource: {
+        values: result[0].values,
+      },
+    });
+
+    console.log("Done pushing to sheets");
+  } catch (e) {
+    console.log("Error pushing user checks to sheets", e);
+  }
 }
 
 const saveExport = async (db, ride_id) => {
   db.exec("INSERT INTO RideExports (ride_id) VALUES (?)", [ride_id]);
   await saveDatabase(db);
-}
+};

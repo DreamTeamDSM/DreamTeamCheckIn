@@ -13,6 +13,7 @@ import CheckInList from './CheckInList.js';
 import Stops from './Stops.js';
 import { RideMetadata } from './RideMetadata.js';
 import { useAppContext } from '../AppContext.js';
+import { export_data } from '../hooks/export.js';
 
 const a11yProps = (index) => {
     return {
@@ -34,10 +35,7 @@ const RideInfo = () => {
 
     const data = useAppContext();
 
-    const handleExport = () => {
-        // TODO: this should do something
-        window.open('https://i.kym-cdn.com/entries/icons/original/000/010/897/imageso.jpg')
-    }
+    const handleExport = () => export_data(data.currentRide.Ride.ride_id);
 
     return (
         <>
