@@ -8,19 +8,22 @@ import { DataGrid, GridLogicOperator } from '@mui/x-data-grid';
 import { Button } from './Button'
 import { GroupSelect } from './GroupSelect'
 import { lighten } from 'polished';
+import { useAppContext } from '../AppContext';
 
 const CHECKIN = "Check In";
 const CHECKOUT = "Check Out";
 const COMPLETE = "Complete";
 
-export default function Riders(props) {
+export default function Riders() {
+  const data = useAppContext();
+
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
     { field: 'group_id', headerName: 'Group #', flex: 2, renderCell: renderGroupSelect},
     { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: renderChip },
     { field: 'avatar', headerName: 'Avatar', flex: 1, renderCell: rednerAvatar },
-    { field: 'firstname', headerName: 'First Name', flex: 2 },
-    { field: 'lastname', headerName: 'Last Name', flex: 2 },
+    { field: 'first_name', headerName: 'First Name', flex: 2 },
+    { field: 'last_name', headerName: 'Last Name', flex: 2 },
     { field: 'fulltext', headerName: 'Fulltext', flex: 0 },
   ];
 
@@ -39,21 +42,26 @@ export default function Riders(props) {
     {id: 2010, name: "Group 11"},
   ];
 
-  const rows = props.riders;
+  const riders = data?.currentRide?.Riders || [];
+
+  const rows = riders.map((cur)=>{
+    const fulltext = (cur.groupnumber + " " + cur.firstname + cur.lastname).toLowerCase();
+    return {...cur,id: cur.user_id, fulltext};
+  });
 
   function checkIn(dispatch, id) {
     dispatch(CHECKOUT);
-    props.checkIn(id);
+    data.checkIn(id);
   }
 
   function checkOut(dispatch, id) {
     dispatch(COMPLETE);
-    props.checkOut(id);
+    data.checkOut(id);
   }
 
   function reset(dispatch, id) {
     dispatch(CHECKIN);
-    props.reset(id);
+    data.reset(id);
   }
 
   function changeGroup(id,groupId) {
@@ -182,10 +190,10 @@ export default function Riders(props) {
   React.useEffect(()=>{
     setFilterModel({
       items: [
-        { field: 'fulltext', operator: 'contains', value: props.searchText.toLowerCase() },
+        { field: 'fulltext', operator: 'contains', value: data.searchText.toLowerCase() },
       ]
     })
-  },[props.searchText]);
+  },[data.searchText]);
 
   const [filterModel, setFilterModel] = React.useState({
     items: []

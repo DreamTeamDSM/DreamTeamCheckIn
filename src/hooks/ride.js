@@ -47,17 +47,25 @@ export const getRideById = async (id) => {
   // const routeId = route.values[0][0];
   const routeDistance = route.values[0][1];
   const rideSupport = db.exec(
-    `SELECT * FROM Users WHERE user_id IN (SELECT user_id FROM RideSupport WHERE ride_id=${rideId})`
+    `SELECT * FROM Users WHERE user_id IN (SELECT user_id FROM RideSupport WHERE ride_id=${id})`
   )[0];
-  console.log(rideSupport);
+  // console.log(rideSupport);
   const mentors = db.exec(
-    `SELECT * FROM Users WHERE user_id IN (SELECT user_id FROM GroupAssignments WHERE group_id IN (SELECT group_id FROM Groups WHERE ride_id=${id}) AND user_type_id=(SELECT user_type_id FROM UserTypes WHERE type='Mentor'))`
-  )[0];
+    `SELECT * FROM ` +
+    `Users ` +
+    `LEFT JOIN GroupAssignments on Users.user_id=GroupAssignments.user_id ` +
+    `LEFT JOIN Groups on GroupAssignments.group_id=Groups.group_id ` +
+    `WHERE Groups.ride_id=${id} AND Users.user_type_id=(SELECT user_type_id FROM UserTypes WHERE type='Mentor')`
+  )[0]
   console.log(mentors);
   const mentorsObjArray = resultToObjArray(mentors);
   console.log(mentorsObjArray);
   const riders = db.exec(
-    `SELECT * FROM Users WHERE user_id IN (SELECT user_id FROM GroupAssignments WHERE group_id IN (SELECT group_id FROM Groups WHERE ride_id=${id}) AND user_type_id=(SELECT user_type_id FROM UserTypes WHERE type='Rider'))`
+    `SELECT * FROM ` +
+    `Users ` +
+    `LEFT JOIN GroupAssignments on Users.user_id=GroupAssignments.user_id ` +
+    `LEFT JOIN Groups on GroupAssignments.group_id=Groups.group_id ` +
+    `WHERE Groups.ride_id=${id} AND Users.user_type_id=(SELECT user_type_id FROM UserTypes WHERE type='Rider')`
   )[0];
   console.log(riders);
   const ridersObjArray = resultToObjArray(riders);
@@ -68,6 +76,21 @@ export const getRideById = async (id) => {
   console.log(stops);
   const stopsObjArray = resultToObjArray(stops);
   console.log(stopsObjArray);
+  const groupStops = db.exec(
+    `SELECT * FROM ` +
+    `GroupCheck ` +
+    `LEFT JOIN Groups on Groups.group_id=GroupCheck.group_id ` +
+    `WHERE Groups.ride_id=${id}`
+  )[0];
+  console.log(groupStops);
+  const groupStopsObjArray = resultToObjArray(groupStops);
+  console.log(groupStopsObjArray);
+  const groups = db.exec(
+    'SELECT * FROM Groups'
+  )[0];
+  console.log(groups);
+  const groupsObjArray = resultToObjArray(groups);
+  console.log(groupsObjArray)
 
   const allTheData = {
     Date: ride.values[0][1],
@@ -77,7 +100,10 @@ export const getRideById = async (id) => {
     Miles: routeDistance,
     Riders: ridersObjArray,
     Mentors: mentorsObjArray,
-    Stops: stopsObjArray
+    Support: rideSupport,
+    Stops: stopsObjArray,
+    GroupStops: groupStopsObjArray,
+    Groups: groupsObjArray,
   };
 
   console.log(allTheData);

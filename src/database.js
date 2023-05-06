@@ -103,7 +103,7 @@ export async function saveDatabaseAsFile(db) {
   document.body.appendChild(a);
   a.style = "display: none";
 
-  const blob = new Blob(binaryArray, { type: "octet/stream" });
+  const blob = new Blob([binaryArray], { type: "application/octet-stream" });
   const url = window.URL.createObjectURL(blob);
 
   a.href = url;
@@ -134,12 +134,12 @@ export async function seedDatabase2(db) {
   // Seed data for Users table
   db.exec(`
     INSERT INTO Users (user_id, first_name, last_name, photo, user_type_id, active) VALUES
-    (0,'John', 'Doe', NULL, 0, 1),
-    (1,'Jane', 'Doe', NULL, 0, 1),
-    (2,'Bob', 'Smith', NULL, 0, 1),
-    (3,'Jamie', 'Smith', NULL, 1, 1),
-    (4,'Alice', 'Johnson', NULL, 1, 1),
-    (5,'Mike', 'Williams', NULL, 1, 1);
+    (1,'John', 'Doe', NULL, 0, 1),
+    (2,'Jane', 'Doe', NULL, 0, 1),
+    (3,'Bob', 'Smith', NULL, 0, 1),
+    (4,'Jamie', 'Smith', NULL, 1, 1),
+    (5,'Alice', 'Johnson', NULL, 1, 1),
+    (6,'Mike', 'Williams', NULL, 1, 1);
   `);
 
   // Seed data for Routes table
@@ -155,25 +155,20 @@ export async function seedDatabase2(db) {
   // Seed data for Rides table
   db.exec(`
     INSERT INTO Rides (route_id, date) VALUES
-    (0, '2023-05-01'),
     (1, '2023-05-01'),
     (2, '2023-05-01'),
-    (0, '2023-05-02'),
+    (3, '2023-05-01'),
     (1, '2023-05-02'),
     (2, '2023-05-02'),
     (3, '2023-05-02'),
-    (2, '2023-05-03'),
-    (4, '2023-05-04');
+    (4, '2023-05-02'),
+    (3, '2023-05-03'),
+    (5, '2023-05-04');
   `);
 
   // Seed data for Groups table
   db.exec(`
     INSERT INTO Groups (group_name, ride_id) VALUES
-    ('Group 1', 0),
-    ('Group 2', 0),
-    ('Group 3', 0),
-    ('Group 4', 0),
-    ('Group 5', 0),
     ('Group 1', 1),
     ('Group 2', 1),
     ('Group 3', 1),
@@ -213,7 +208,12 @@ export async function seedDatabase2(db) {
     ('Group 2', 8),
     ('Group 3', 8),
     ('Group 4', 8),
-    ('Group 5', 8);
+    ('Group 5', 8),
+    ('Group 1', 9),
+    ('Group 2', 9),
+    ('Group 3', 9),
+    ('Group 4', 9),
+    ('Group 5', 9);
   `);
 
   // Seed data for GroupAssignments table

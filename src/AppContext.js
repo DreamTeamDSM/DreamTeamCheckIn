@@ -1,6 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 
-export const AppContext = React.createContext(
+import {
+    createDatabase,
+    saveDatabase,
+    seedDatabase,
+    seedDatabase2,
+} from "./database.js";
+
+import { getRideById, getRides } from "./hooks/ride";
+
+const AppContext = React.createContext(
     {
         rides: [],
         currentRide: null,
@@ -10,8 +19,61 @@ export const AppContext = React.createContext(
         setLoading: () => { },
         loading: false,
         error: false,
-        setError: () => { }
+        setError: () => { },
+        setSearchText: () => { },
+        searchText: ""
     }
 );
+
+export const AppContextProvider = ({ children }) => {
+    const [rides, setRides] = useState([]);
+    const [currentRide, setCurrentRide] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
+    const [searchText, setSearchText] = useState("");
+
+    const importFromSeededData = async () => {
+        setLoading(true)
+        try {
+            const db = await createDatabase();
+
+            await seedDatabase2(db);
+
+            await saveDatabase(db);
+
+            const fetchedRides = await getRides();
+
+            console.log(fetchedRides[0]);
+
+            const fetchedCurrentRide = await getRideById(fetchedRides[0].ride_id);
+
+            console.log(fetchedCurrentRide);
+            setRides(fetchedRides);
+            setCurrentRide(fetchedCurrentRide);
+        } catch (err) {
+            setError(err)
+        }
+
+        setLoading(false)
+    }
+
+    return (
+        <AppContext.Provider value={{
+            rides,
+            currentRide,
+            setRides,
+            setCurrentRide,
+            importData: importFromSeededData,
+            loading,
+            setLoading,
+            error,
+            setError,
+            setSearchText,
+            searchText,
+        }}>
+            {children}
+        </AppContext.Provider>
+    )
+}
 
 export const useAppContext = () => React.useContext(AppContext)
