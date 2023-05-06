@@ -83,8 +83,14 @@ export const getRideById = async (id) => {
     `WHERE Groups.ride_id=${id}`
   )[0];
   console.log(groupStops);
-  const grouStopsObjArray = resultToObjArray(groupStops);
-  console.log(grouStopsObjArray);
+  const groupStopsObjArray = resultToObjArray(groupStops);
+  console.log(groupStopsObjArray);
+  const groups = db.exec(
+    'SELECT * FROM Groups'
+  )[0];
+  console.log(groups);
+  const groupsObjArray = resultToObjArray(groups);
+  console.log(groupsObjArray)
 
   const allTheData = {
     Date: ride.values[0][1],
@@ -96,7 +102,8 @@ export const getRideById = async (id) => {
     Mentors: mentorsObjArray,
     Support: rideSupport,
     Stops: stopsObjArray,
-    GroupStops: grouStopsObjArray,
+    GroupStops: groupStopsObjArray,
+    Groups: groupsObjArray,
   };
 
   console.log(allTheData);
