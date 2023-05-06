@@ -11,7 +11,7 @@ import { useAppContext } from "../AppContext";
 import { export_data } from "../hooks/export";
 
 function DebugBar() {
-  const context = useAppContext();
+  const { currentRide } = useAppContext();
 
   return (
     <div className="debug-bar">
@@ -25,7 +25,7 @@ function DebugBar() {
       <button onClick={() => importData(() => console.log("Imported!"))}>
         Sync FROM Drive
       </button>
-      <button onClick={() => export_data(() => console.log("Exported!"))}>
+      <button onClick={() => export_data(currentRide.Ride[0], () => console.log("Exported!"))}>
         Sync TO Drive
       </button>
       <button onClick={() => getRideById(12)}>Get Ride 12</button>
