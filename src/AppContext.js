@@ -9,7 +9,7 @@ import {
 import { importData } from './hooks/import'
 import { getRideById, getRides } from "./hooks/ride";
 import { check_in_participant, check_out_participant, reset_participant } from "./hooks/check";
-import { updateGroupAssignment } from "./hooks/group.js";
+import { delete_groupAssignment, updateGroupAssignment } from "./hooks/group.js";
 
 const AppContext = React.createContext(
     {
@@ -31,6 +31,7 @@ const AppContext = React.createContext(
         checkOutStop: () => { },
         resetCheckIn: () => { },
         resetCheckInStop: () => { },
+        removeFromGroup: () => { }
     }
 );
 
@@ -104,6 +105,11 @@ export const AppContextProvider = ({ children }) => {
         await refresh()
     }
 
+    const removeFromGroup = async (groupAssignmentId) => {
+        await delete_groupAssignment(groupAssignmentId)
+        await refresh()
+    }
+
     const resetCheckIn = async (userId, groupId) => {
         await reset_participant(userId, groupId)
         await refresh()
@@ -140,6 +146,7 @@ export const AppContextProvider = ({ children }) => {
             checkOutStop,
             resetCheckIn,
             resetCheckInStop,
+            removeFromGroup,
             importData: async () => {
                 setLoading(true)
                 await importData()

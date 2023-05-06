@@ -8,7 +8,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import Button from "@mui/material/Button";
 import { ClickAwayListener } from "@mui/base";
 
-const GroupSelect = ({ groups, userId, defaultGroupId, changeGroup }) => {
+const GroupSelect = ({ groups, userId, groupAssignmentId, defaultGroupId, changeGroup, unassignGroup }) => {
     const [selectedGroupId, setSelectedGroupId] = useState(defaultGroupId);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -23,7 +23,12 @@ const GroupSelect = ({ groups, userId, defaultGroupId, changeGroup }) => {
 
     const handleSelectChange = (value) => {
         setSelectedGroupId(value);
-        changeGroup(userId, value);
+
+        if (value === -1) {
+            unassignGroup(groupAssignmentId)
+        } else {
+            changeGroup(userId, value);
+        }
 
         setAnchorEl(null)
     };
@@ -51,6 +56,13 @@ const GroupSelect = ({ groups, userId, defaultGroupId, changeGroup }) => {
                                     {group.group_name}
                                 </ListItemButton>
                             ))}
+                            <ListItemButton
+                                selected={currentGroupId === null}
+                                key={'unassigned-group'}
+                                onClick={() => handleSelectChange(-1)}
+                            >
+                                {'Unassigned'}
+                            </ListItemButton>
                         </List>
                     </ClickAwayListener>
                 </Paper>
