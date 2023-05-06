@@ -128,7 +128,8 @@ export const AppContextProvider = ({ children }) => {
         await refresh()
     }
 
-    const removeFromGroup = async (groupAssignmentId) => {
+    const removeFromGroup = async (groupAssignmentId, groupId, userId) => {
+        await reset_participant(userId, groupId)
         await delete_groupAssignment(groupAssignmentId)
         await refresh()
     }

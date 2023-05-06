@@ -14,6 +14,7 @@ import { useAppContext } from "../AppContext";
 const CHECKIN = "Check In";
 const CHECKOUT = "Check Out";
 const COMPLETE = "Complete";
+const sortOrder = [CHECKIN,CHECKOUT,COMPLETE]
 
 const darken = (color, amount) => {
   let r = parseInt(color.substr(1, 2), 16);
@@ -200,7 +201,18 @@ export default function CheckInList({
       defaultState = CHECKIN;
     }
 
-    const [chipText, setChipText] = useState(defaultState);
+    const [chipText, setChipText] = useState(CHECKIN);
+
+    React.useEffect(() => {
+      if (params.row.check_in == 1) {
+        setChipText(COMPLETE);
+      } else {
+        setChipText(CHECKIN);
+      }
+    }, [params.row.check_in]);
+
+    const user = users.find((user) => user.user_id === params.row.id);
+    const disabled = !Boolean(user.group_id);
 
     const handleButtonClick = () => {
       if (chipText === CHECKIN) {
@@ -236,11 +248,12 @@ export default function CheckInList({
         <ButtonGroup
           variant="contained"
           aria-label="check in or check out button group"
+          disabled={disabled}
           color={color}
         >
-          <Button onClick={handleButtonClick}>{chipText}</Button>
+          <Button onClick={handleButtonClick} disabled={disabled}>{chipText}</Button>
           {chipText !== CHECKIN ? (
-            <Button onClick={handleResetClick}>
+            <Button onClick={handleResetClick} disabled={disabled}>
               <Replay />
             </Button>
           ) : (
@@ -264,6 +277,18 @@ export default function CheckInList({
       headerName: "Check In/Out",
       flex: 2,
       renderCell: oneStepCheckIn ? renderOneStepChip : renderTwoStepChip,
+      valueGetter: (params) => {
+        if (params.row.check_in == 1 && params.row.check_out == 1) {
+          return(COMPLETE);
+        } else if (params.row.check_in == 1 && params.row.check_out == 0) {
+          return(CHECKOUT);
+        } else {
+          return(CHECKIN);
+        }
+      },
+      sortComparator: (v1, v2, param1, param2) => {
+        return sortOrder.indexOf(param1.value) - sortOrder.indexOf(param2.value)
+      }
     },
     {
       field: "avatar",
@@ -310,11 +335,7 @@ export default function CheckInList({
   }
 
   const unassignGroup = async (groupAssignmentId, groupId, userId) => {
-    // TODO: test this, cant check in mentors yet
-    if (!oneStepCheckIn) {
-      await data.resetCheckIn(userId, groupId);
-    }
-    await data.removeFromGroup(groupAssignmentId);
+    await data.removeFromGroup(groupAssignmentId, groupId, userId);
   };
 
   function renderGroupSelect(params) {
@@ -367,6 +388,11 @@ export default function CheckInList({
         rowsPerPageOptions={[5, 10, 20]}
         hideFooter={true}
         columnVisibilityModel={visibility}
+        initialState={{
+          sorting: {
+            sortModel: [{ field: 'first_name', sort: 'asc' }],
+          },
+        }}
       />
     </Box>
   );
