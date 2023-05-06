@@ -1,12 +1,22 @@
+import { loadDatabase } from "../database.js";
+
 const CLIENT_ID =
   "592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com";
 
-export async function export_data(db, onDbExported) {
-  const callback = (response) => {
+const CHECK_DOCUMENT = '1126HuVhvZ8dSiNW3DRs6nPyIsJtNje4oysBVKkPdJ3c';
+const USER_CHECKS_SHEET = 'User Checks';
+const GROUP_CHECKS_SHEET = 'Group Checks';
+
+export async function export_data(rideId, onDbExported) {
+  console.log("Exporting data to Google Drive for ride", rideId, "...");
+  const callback = async (response) => {
+    const db = loadDatabase();
+
     const token = response.access_token;
     gapi.client.setToken(token);
 
-    exportChecks();
+    await exportGroupChecks(db);
+    await exportUserChecks(db);
 
     onDbExported();
   };
@@ -20,6 +30,6 @@ export async function export_data(db, onDbExported) {
     .requestAccessToken();
 }
 
-function exportChecks(db) {
-  // TODO: write updated checks to sheets
-}
+async function exportGroupChecks(db, rideId) {}
+
+async function exportUserChecks(db, rideId) {}
