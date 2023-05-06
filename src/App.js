@@ -12,7 +12,7 @@ import "@fontsource/inter";
 
 function App() {
   // TODO
-  const setSearchText = () => {}
+  const setSearchText = () => { }
 
   const increaseRider = () => {
     setRiderCount((riderCount) => riderCount + 1);
@@ -85,11 +85,13 @@ function App() {
       <ThemeProvider>
         <header>
           <Navigation
-             searchHandler={setSearchText}
-              />
+            searchHandler={setSearchText}
+          />
         </header>
         <main>
-          <RidePanel />
+          <Container maxWidth="lg">
+            <RidePanel />
+          </Container>
         </main>
         <footer>
           <DebugBar />

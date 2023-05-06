@@ -35,15 +35,7 @@ const RidePanel = () => {
     }
 
     return (
-        <RideInfo
-        // riders={riders}
-        // checkIn={checkIn}
-        // checkOut={checkOut}
-        // reset={reset}
-        // riderCount={riderCount}
-        // searchText={searchText}
-        // importDataSync={importDataSync}
-        />
+        <RideInfo />
     )
 }
 

@@ -66,8 +66,6 @@ const import_users = (importedDb) => {
           continue;
         }
 
-        console.log('USER TYPE ', userTypeId);
-
         importedDb.run("INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?)", [
           row[0],
           row[1],
@@ -92,8 +90,6 @@ const import_routes = async (importedDb) => {
   for (var i = 1; i < routes.values.length; i++) {
     const row = routes.values[i];
 
-    console.log("Route row ", row);
-
     importedDb.run("INSERT INTO Routes VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [
       row[0],
       row[1],
@@ -109,14 +105,12 @@ const import_routes = async (importedDb) => {
   const stops = (
     await gapi.client.sheets.spreadsheets.values.get({
       spreadsheetId: USER_ROUTE_SPREADSHEET_ID,
-      range: "A:C",
+      range: "'Stops'!A:C",
     })
   ).result;
 
   for (var i = 1; i < stops.values.length; i++) {
     const row = stops.values[i];
-
-    console.log("Stop row ", row);
 
     importedDb.run("INSERT INTO Stops VALUES (?, ?, ?, ?)", [
       parseInt(row[1]),
@@ -151,15 +145,9 @@ const import_groups = async (importedDb) => {
       })
     ).result.values;
 
-    console.log('Data', rows);
-
-    // inclusive
     const iterateRange = (startRow, stopRow, startCol, stopCol, fn) => {
-      console.log('Iterating range', startRow, stopRow, startCol, stopCol);
       for (let row = startRow; row <= Math.min(rows.length-1, stopRow); row++) {
-        console.log('Row', row);
         for (let col = startCol; col <= Math.min(rows[row].length-1, stopCol); col++) {
-          console.log('Col', col);
           fn(rows[row][col], row, col);
         }
       }
@@ -176,10 +164,7 @@ const import_groups = async (importedDb) => {
       continue;
     }
 
-    console.log('Ride date', date, 'route name', routeName, 'route id', matchingRouteId);
     const rideId = createRide(importedDb, matchingRouteId, new Date(date).toLocaleDateString());
-    console.log('Ride created with id', rideId);
-
     for (var groupRow = 0; groupRow < GROUP_ROW_COUNT; groupRow++) {
       const headerRowIndex = SPREADSHEET_HEADER_ROW_COUNT + groupRow * GROUP_ROW_SPACING;
       const headerRow = rows[headerRowIndex];
@@ -200,18 +185,17 @@ const import_groups = async (importedDb) => {
           );
 
         if (headerValue.indexOf("Group") > -1) {
-          console.log('Creating group', headerValue, rideId);
           const groupId = createGroup(importedDb, headerValue, rideId);
+          createGroupCheck(importedDb, groupId, rideId);
           iterateGroupUsers((cell) => {
             if (!cell || cell.length === 0) return;
 
             const userId = getUserIdByName(importedDb, cell);
             if (!userId) {
-              console.error(`No matching user for ${cell}`); // todo: better error feedback?
+              console.error(`No matching user "${cell}" for rider/mentor assignment in group ${headerValue}`);
               return;
             }
 
-            console.log('Creating group assignment for user', userId, 'group', groupId);
             createGroupAssignment(importedDb, userId, groupId);
           });
         } else if (
@@ -223,11 +207,10 @@ const import_groups = async (importedDb) => {
 
             const userId = getUserIdByName(importedDb, cell);
             if (!userId) {
-              console.error(`No matching user for ${cell}`); // todo: better error feedback?
+              console.error(`No matching user "${cell}" for support assignment in in group ${headerValue}`);
               return;
             }
 
-            console.log('Creating support assignment for user', userId, 'ride', rideId, 'header value', headerValue);
             createSupportAssignment(importedDb, userId, rideId, headerValue);
           });
         }
@@ -247,7 +230,7 @@ export async function importData(handleImportedDb) {
       await import_routes(importedDb);
       await import_groups(importedDb);
 
-      console.log('Performing save...');
+      console.log('Saving imported database...');
       saveDatabase(importedDb);
       handleImportedDb(importedDb);
     };
@@ -295,6 +278,13 @@ function createGroupAssignment(db, userId, groupId) {
   db.run(
     "INSERT INTO GroupAssignments (user_id, group_id, check_in, check_out) VALUES (?, ?, ?, ?)",
     [userId, groupId, 0, 0]
+  );
+}
+
+function createGroupCheck(db, groupId, stopId) {
+  db.run(
+    "INSERT INTO GroupCheck (group_id, stop_id, check_in, check_out) VALUES (?, ?, ?, ?)",
+    [groupId, stopId, 0, 0]
   );
 }
 

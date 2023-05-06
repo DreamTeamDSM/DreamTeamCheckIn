@@ -13,52 +13,48 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useAppContext } from '../AppContext';
 
 const CHECKIN = "Check In";
 const CHECKOUT = "Check Out";
 const COMPLETE = "Complete";
 
-export default function Stops(props) {
+export default function Stops({stops,groups,groupStops}) {
 
-  const groups = [
-    { id: 1, checkin: 0, checkout: 0, name: "Group 1", fulltext: "Group 1"},
-    { id: 2, checkin: 0, checkout: 0, name: "Group 2", fulltext: "Group 2"},
-    { id: 3, checkin: 0, checkout: 0, name: "Group 3", fulltext: "Group 3"},
-    { id: 4, checkin: 0, checkout: 0, name: "Group 4", fulltext: "Group 4"},
-  ];
+  const data = useAppContext();
+
+  const groupLookup = groups.reduce((acc,cur)=>{
+    acc[cur.group_id] = cur.group_name;
+    return acc;
+  },{});
+
+  const rows = groupStops.map((cur) =>{
+    const group_name = groupLookup[cur.group_id];
+    return {...cur,id: cur.stop_id + "_" + cur.group_id,group_name};
+  });
+
+  console.log(rows);
 
   const groupColumns = [
     { field: 'id', headerName: 'Stop Group ID', flex: 1 },
-    { field: 'name', headerName: 'Description', flex: 1 },
+    { field: 'group_name', headerName: 'Description', flex: 1 },
     { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: renderChip },
     { field: 'fulltext', headerName: 'Fulltext', flex: 1 },
   ];
 
-  const stops = [
-    { id: 1002, route_id: 10002, description: "New Bronze at Granite Rock", order: 0 },
-    { id: 1003, route_id: 10003, description: "Old Bronze at Soft Rock", order: 1 },
-  ];
-
-  const columns = [
-    { field: 'id', headerName: 'Stop ID', flex: 1 },
-    { field: 'description', headerName: 'Description', flex: 1 },
-    { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: renderChip },
-  ];
-    //{ field: 'fulltext', headerName: 'Fulltext', flex: 0 },
-
-  function checkIn(dispatch, id) {
+  function checkIn(dispatch, stopId,groupId) {
     dispatch(CHECKOUT);
-    props.checkIn(id);
+    data.checkInStop(stopId,groupId);
   }
 
-  function checkOut(dispatch, id) {
+  function checkOut(dispatch, stopId,groupId) {
     dispatch(COMPLETE);
-    props.checkOut(id);
+    data.checkOutStop(stopId,groupId);
   }
 
-  function reset(dispatch, id) {
+  function reset(dispatch, stopId,groupId) {
     dispatch(CHECKIN);
-    props.reset(id);
+    data.resetCheckInStop(stopId,groupId);
   }
 
   function getChipStyles(label) {
@@ -110,9 +106,9 @@ export default function Stops(props) {
 
   function renderChip(params) {
     let defaultState = CHECKIN;
-    if (params.row.checkin == 1 && params.row.checkout == 1) {
+    if (params.row.check_in == 1 && params.row.check_out == 1) {
       defaultState = COMPLETE;
-    } else if (params.row.checkin == 1 && params.row.checkout == 0) {
+    } else if (params.row.check_in == 1 && params.row.check_out == 0) {
       defaultState = CHECKOUT;
     }
 
@@ -127,14 +123,15 @@ export default function Stops(props) {
 
         onClick={() => {
           if (chipText === CHECKIN) {
-            checkIn(setChipText, params.row.id);
+            console.log(params.row);
+            checkIn(setChipText, params.row.stop_id,params.row.group_id);
           } else if (chipText === CHECKOUT) {
-            checkOut(setChipText, params.row.id);
+            checkOut(setChipText, params.row.stop_id,params.row.group_id);
           }
           console.log(`Clicked button for row with id: ${params.id}`);
         }}
         onDelete={chipText === CHECKIN ? undefined : () => {
-          reset(setChipText, params.row.id);
+          reset(setChipText, params.row.stop_id,params.row.group_id);
         }}
         deleteIcon={< Replay />}
       />
@@ -147,37 +144,19 @@ export default function Stops(props) {
   React.useEffect(()=>{
     setFilterModel({
       items: [
-        { field: 'fulltext', operator: 'contains', value: props.searchText.toLowerCase() },
+        { field: 'fulltext', operator: 'contains', value: data.searchText.toLowerCase() },
       ]
     })
-  },[props.searchText]);
+  },[data.searchText]);
 
   const [filterModel, setFilterModel] = React.useState({
     items: []
   });
 
-  /*
-  return (
-    <div style={{ height: 400, width: '100%' }}>
-      <DataGrid
-        filterModel={filterModel}
-        rows={stops}
-        columns={columns}
-        pageSize={10}
-        rowsPerPageOptions={[5, 10, 20]}
-        columnVisibilityModel={{
-          id: false,
-          fulltext: false,
-        }}
-      />
-    </div>
-  );
-  */
-
   return (
     <div>
       {stops.map((stop)=>{
-        return (<Accordion>
+        return (<Accordion key={stop.stop_id}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
@@ -186,11 +165,10 @@ export default function Stops(props) {
             <Typography>{stop.description}</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography>
               <div style={{ height: 400, width: '100%' }}>
                 <DataGrid
                   filterModel={filterModel}
-                  rows={groups}
+                  rows={rows}
                   columns={groupColumns}
                   pageSize={10}
                   rowsPerPageOptions={[5, 10, 20]}
@@ -200,7 +178,6 @@ export default function Stops(props) {
                   }}
                 />
               </div>
-            </Typography>
           </AccordionDetails>
         </Accordion>);
       })}
