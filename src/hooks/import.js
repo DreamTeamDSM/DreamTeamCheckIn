@@ -105,7 +105,7 @@ const import_routes = async (importedDb) => {
   const stops = (
     await gapi.client.sheets.spreadsheets.values.get({
       spreadsheetId: USER_ROUTE_SPREADSHEET_ID,
-      range: "A:C",
+      range: "'Stops'!A:C",
     })
   ).result;
 
