@@ -1,5 +1,6 @@
 import { auth } from "../auth.js";
 import { loadDatabase, saveDatabase } from "../database.js";
+import { getRideById } from './ride';
 
 const CHECK_DOCUMENT = "1126HuVhvZ8dSiNW3DRs6nPyIsJtNje4oysBVKkPdJ3c";
 const USER_CHECKS_SHEET = "Users";
@@ -25,7 +26,9 @@ export async function export_data(rideId, onDbExported) {
 
 async function exportGroupChecks(db, rideId) {
   try {
-    const newSheetName = `${new Date().toLocaleDateString()} ${GROUP_CHECKS_SHEET}`;
+    const ride = await getRideById(rideId);
+
+    const newSheetName = `${ride.Date} ${GROUP_CHECKS_SHEET}`;
     console.log(`Upserting group export sheet "${newSheetName}"`);
 
     await upsertSheet(CHECK_DOCUMENT, newSheetName);
@@ -61,7 +64,9 @@ async function exportGroupChecks(db, rideId) {
 
 async function exportUserChecks(db, rideId) {
   try {
-    const newSheetName = `${new Date().toLocaleDateString()} ${USER_CHECKS_SHEET}`;
+    const ride = await getRideById(rideId);
+
+    const newSheetName = `${ride.Date} ${USER_CHECKS_SHEET}`;
     console.log(`Upserting user export sheet "${newSheetName}"`);
 
     await upsertSheet(CHECK_DOCUMENT, newSheetName);
@@ -125,7 +130,7 @@ const upsertSheet = async (spreadsheetId, sheetName) => {
       requests: [{
         addSheet: {
           properties: {
-            title: newSheetName,
+            title: sheetName,
           }
         }
       }],
