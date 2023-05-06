@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@mui/styles';
 import {
-  Avatar, Chip, Select, FormControl, InputLabel, MenuItem
+  Avatar, Chip
 } from '@mui/material';
 import Replay from '@mui/icons-material/Replay';
-import { DataGrid, GridLogicOperator } from '@mui/x-data-grid';
-import { Button } from './Button'
+import { DataGrid } from '@mui/x-data-grid';
 import { GroupSelect } from './GroupSelect'
 import { lighten } from 'polished';
 import { useAppContext } from '../AppContext';
@@ -149,8 +147,6 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
     );
   }
 
-  // TODO: do we want to disable the check in for mentors when they aren't
-  //  in a group because they might be in a support role instead
   function renderOneStepChip(params) {
     let defaultState;
     if (params.row.check_in == 1) {
@@ -167,7 +163,6 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
         variant="contained"
         label={chipText}
         sx={getChipStyles(chipText)}
-        disabled={!Boolean(user.group_id)}
         onClick={() => {
           if (chipText === CHECKIN) {
             setChipText(COMPLETE);
@@ -230,6 +225,7 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[5, 10, 20]}
+        hideFooter={true}
         columnVisibilityModel={visibility}
       />
     </div>
