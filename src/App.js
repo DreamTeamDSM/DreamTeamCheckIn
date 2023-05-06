@@ -24,7 +24,6 @@ function App(props) {
     setRiderCount((riderCount) => riderCount - 1);
   };
 
-
   // const checkIn = (id) => {
   //   const updatedRiders = riders.map((rider) => {
   //     if (rider.id === id) {
