@@ -170,10 +170,10 @@ const import_groups = async (importedDb) => {
       const headerRowIndex = SPREADSHEET_HEADER_ROW_COUNT + groupRow * GROUP_ROW_SPACING;
       const headerRow = rows[headerRowIndex];
 
-      for (var groupCol = 0; groupCol < GROUP_COLUMN_COUNT; groupCol++) {
+      const processGroup = (groupCol) => {
         const headerValue = headerRow[groupCol];
         if (!headerValue || headerValue.length === 0) {
-          continue;
+          return;
         }
 
         const iterateGroupUsers = (fn) =>
@@ -206,6 +206,11 @@ const import_groups = async (importedDb) => {
           headerValue.indexOf("Support") > -1 ||
           headerValue.indexOf("Sweep") > -1
         ) {
+          const groupId = createGroup(importedDb, headerValue, rideId);
+          for (const stopId of stopIds) {
+            createGroupCheck(importedDb, groupId, stopId);
+          }
+
           iterateGroupUsers((cell) => {
             if (!cell || cell.length === 0) return;
 
@@ -215,8 +220,20 @@ const import_groups = async (importedDb) => {
               return;
             }
 
+            createGroupAssignment(importedDb, userId, groupId);
             createSupportAssignment(importedDb, userId, rideId, headerValue);
           });
+        }
+      };
+
+      if (groupRow !== 2) {
+        for (var groupCol = 0; groupCol < GROUP_COLUMN_COUNT; groupCol++) {
+          processGroup(groupCol);
+        }
+      } else {
+        // The last row is iterated in reverse so the groups are all added before support/sweep
+        for (var groupCol = GROUP_COLUMN_COUNT; groupCol >= 0; groupCol--) {
+          processGroup(groupCol);
         }
       }
     }
@@ -306,7 +323,6 @@ function createGroupAssignment(db, userId, groupId) {
 }
 
 function createGroupCheck(db, groupId, stopId) {
-  console.log('createGRoupCheck called with', groupId, stopId);
   db.run(
     "INSERT INTO GroupCheck (group_id, stop_id, check_in, check_out) VALUES (?, ?, ?, ?)",
     [groupId, stopId, 0, 0]
