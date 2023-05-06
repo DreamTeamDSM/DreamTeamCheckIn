@@ -28,6 +28,8 @@ export default function Stops({stops,groups,groupStops}) {
     return acc;
   },{});
 
+  console.log(groupStops);
+
   const rows = groupStops.map((cur) =>{
     const group_name = groupLookup[cur.group_id];
     return {...cur,id: cur.stop_id + "_" + cur.group_id,group_name};
