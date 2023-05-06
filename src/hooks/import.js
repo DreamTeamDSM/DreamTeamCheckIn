@@ -190,6 +190,11 @@ const import_groups = async (importedDb, stops) => {
           const groupId = createGroup(importedDb, headerValue, rideId);
           for (var i = 1; i < stops.length; i++) {
             const stop = stops[i];
+
+            if (parseInt(stop[1]) !== matchingRouteId) {
+              continue;
+            }
+
             createGroupCheck(importedDb, groupId, stop[0]);
           }
 

@@ -43,9 +43,10 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
     data.checkOut(userId, user.group_id);
   }
 
-  function reset(dispatch, id) {
-    dispatch(CHECKIN);
-    data.resetCheckIn(id);
+  function reset(userId) {
+    const user = users.find((user) => user.user_id === userId)
+
+    data.resetCheckIn(userId, user.group_id);
   }
 
   function changeGroup(userId, groupId) {
@@ -116,14 +117,14 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
     }
 
     const [chipText, setChipText] = useState(defaultState);
-
+    const user = users.find((user) => user.user_id === params.row.id)
 
     return (
       <Chip
         variant="contained"
         label={chipText}
         sx={getChipStyles(chipText)}
-
+        disabled={!Boolean(user.group_id)}
         onClick={() => {
           if (chipText === CHECKIN) {
             setChipText(CHECKOUT);
@@ -135,7 +136,9 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
           console.log(`Clicked button for row with id: ${params.id}`);
         }}
         onDelete={chipText === CHECKIN ? undefined : () => {
-          reset(setChipText, params.row.id);
+          setChipText(CHECKIN)
+
+          reset(params.row.id);
         }}
         deleteIcon={< Replay />}
       />
@@ -152,14 +155,14 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
     }
 
     const [chipText, setChipText] = useState(defaultState);
-
+    const user = users.find((user) => user.user_id === params.row.id)
 
     return (
       <Chip
         variant="contained"
         label={chipText}
         sx={getChipStyles(chipText)}
-
+        disabled={!Boolean(user.group_id)}
         onClick={() => {
           if (chipText === CHECKIN) {
             setChipText(COMPLETE);
@@ -168,7 +171,9 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
           console.log(`Clicked button for row with id: ${params.id}`);
         }}
         onDelete={chipText === CHECKIN ? undefined : () => {
-          reset(setChipText, params.row.id);
+          setChipText(CHECKIN)
+
+          reset(params.row.id);
         }}
         deleteIcon={< Replay />}
       />
