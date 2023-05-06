@@ -1,5 +1,5 @@
 import { loadDatabase } from "../database";
-import { isSynced } from "./import";
+import { isRideSynced } from "./import";
 
 const resultToObjArray = (result) => {
   if (!result?.values || !result.values.length === 0) return null;
@@ -93,7 +93,7 @@ export const getRideById = async (id) => {
   const groupsObjArray = resultToObjArray(groups);
   // console.log(groupsObjArray)
 
-  const isSyncedResult = await isSynced(id);
+  const isSyncedResult = await isRideSynced(id);
 
   const allTheData = {
     Ride: rideObj,

@@ -13,7 +13,12 @@ import { export_data } from "../hooks/export";
 function DebugBar() {
   const queryParams = new URLSearchParams(location.search);
   const isDebugMode = queryParams.get('debug');
-  const { currentRide } = useAppContext();
+  const { currentRide, refresh } = useAppContext();
+
+  const syncToDrive = () => {
+    export_data(currentRide.Ride.ride_id, () => console.log("Exported!"));
+    refresh();
+  }
 
   return isDebugMode && (
     <div className="debug-bar">
@@ -27,7 +32,7 @@ function DebugBar() {
       <button onClick={() => importData(() => console.log("Imported!"))}>
         Sync FROM Drive
       </button>
-      <button onClick={() => export_data(currentRide.Ride.ride_id, () => console.log("Exported!"))}>
+      <button onClick={() => syncToDrive()}>
         Sync TO Drive
       </button>
       <button onClick={() => getRideById(12)}>Get Ride 12</button>
