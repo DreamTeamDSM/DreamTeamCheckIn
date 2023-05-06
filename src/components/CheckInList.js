@@ -53,14 +53,19 @@ export default function CheckInList({users,groups,oneStepCheckIn = false,hideGro
     //const fulltext = (cur.groupnumber + " " + cur.first_name + cur.last_name).toLowerCase();
     // need to include group in the fulltext
     const fulltext = (cur.first_name + cur.last_name).toLowerCase();
-    return {...cur,id: cur.user_id, fulltext, check_in: 0, check_out: 0};
-  }).reduce((acc,cur)=>{ // same, remove this reduce when the data is real
+    //return {...cur,id: cur.user_id, fulltext, check_in: 0, check_out: 0};
+    return {...cur,id: cur.user_id, fulltext};
+  });
+
+  /*
+  .reduce((acc,cur)=>{ // same, remove this reduce when the data is real
     if (ids.includes(cur.id) == false) {
       acc.push(cur);
       ids.push(cur.id);
     }
     return acc;
   },[]);
+  */
 
   console.log(rows);
 
