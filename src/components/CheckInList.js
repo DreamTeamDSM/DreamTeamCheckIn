@@ -225,13 +225,13 @@ export default function CheckInList({
     {
       field: "group_id",
       headerName: "Group #",
-      flex: 2,
+      flex: 1.5,
       renderCell: renderGroupSelect,
     },
     {
       field: "checkin",
       headerName: "Check In/Out",
-      flex: 2,
+      flex: 2.2,
       renderCell: oneStepCheckIn ? renderOneStepChip : renderTwoStepChip,
       valueGetter: (params) => {
         if (params.row.check_in == 1 && params.row.check_out == 1) {
@@ -249,10 +249,10 @@ export default function CheckInList({
     {
       field: "avatar",
       headerName: "Avatar",
-      flex: 1,
+      flex: .75,
       renderCell: renderAvatar,
     },
-    { field: "first_name", headerName: "First Name", flex: 2 },
+    { field: "first_name", headerName: "First Name", flex: 1.5 },
     { field: "last_name", headerName: "Last Name", flex: 2 },
     { field: "fulltext", headerName: "Fulltext", flex: 0 },
   ];
