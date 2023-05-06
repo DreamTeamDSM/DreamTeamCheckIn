@@ -83,11 +83,11 @@ export const AppContextProvider = ({ children }) => {
         });
         let syncStringBuild ='These rides need to be synced: ';
         syncStatuses.forEach(status => {
-            if(status.isSynced){
+            if(!status.isSynced){
                 syncStringBuild += status.date + ' '
             }
         });
-        console.log(syncStringBuild);
+
         setSyncStatues(syncStatuses);
         setIsSynced(!isSyncedResult);
         setSyncString(syncStringBuild);
