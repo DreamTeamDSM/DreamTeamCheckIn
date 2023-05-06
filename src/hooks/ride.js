@@ -90,6 +90,8 @@ export const getRideById = async (id) => {
   // console.log(groupsObjArray)
 
   const allTheData = {
+    Ride: rideObj,
+    Route: routeObj,
     Date: ride.values[0][1],
     Destination: routeObj.route_name,
     NumMentors: mentorsObjArray.length,
