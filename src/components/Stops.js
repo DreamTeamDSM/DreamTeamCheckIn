@@ -4,8 +4,11 @@ import { DataGrid } from "@mui/x-data-grid";
 import {
   Button,
   ButtonGroup,
-  Box,
+  Box, Avatar,
+  AvatarGroup,
 } from "@mui/material";
+import Badge from "@mui/material/Badge";
+
 
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -13,6 +16,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useAppContext } from "../AppContext";
+import { stringToColor } from "../utils/colors";
 
 const CHECKIN = "Check In";
 const CHECKOUT = "Check Out";
@@ -25,8 +29,6 @@ export default function Stops({ stops, groups, groupStops }) {
     acc[cur.group_id] = cur.group_name;
     return acc;
   }, {});
-
-  console.log("groupStops", groupStops);
 
   const rows = groupStops.map((cur) => {
     const group_name = groupLookup[cur.group_id];
@@ -44,6 +46,7 @@ export default function Stops({ stops, groups, groupStops }) {
       flex: 2,
       renderCell: renderActionButton,
     },
+    { field: "avatars", headerName: "Avatars", flex: 1, renderCell: renderAvatars },
   ];
 
   function checkIn(dispatch, stopId, groupId) {
@@ -60,6 +63,63 @@ export default function Stops({ stops, groups, groupStops }) {
     dispatch(CHECKIN);
     data.resetCheckInStop(stopId, groupId);
   }
+
+  const stringAvatar = (firstName, lastName) => {
+    return {
+      sx: {
+        bgcolor: stringToColor(`${firstName} ${lastName}`),
+      },
+      children: `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}`,
+    };
+  };
+
+  const PersonAvatar = ({ value, firstName, lastName }) => {
+    if (value) {
+      return <Avatar alt="User Avatar" src={value} {...stringAvatar(firstName, lastName)} />;
+    } else {
+      return <Avatar {...stringAvatar(firstName, lastName)} />;
+    }
+  };
+
+  const renderAvatar = (params) => {
+    const { row } = params;
+    const firstName = row.first_name;
+    const lastName = row.last_name;
+    const photoUrl = row.photo_url;
+    const isVeteran = !row.isNew;
+
+    if (isVeteran) {
+      return (
+        <Badge
+          overlap="circular"
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          badgeContent={"⭐"}
+        >
+          <PersonAvatar
+            value={photoUrl}
+            firstName={firstName}
+            lastName={lastName}
+          />
+        </Badge>
+      );
+    }
+
+    return (
+      <PersonAvatar value={photoUrl} firstName={firstName} lastName={lastName} />
+    );
+  };
+
+function renderAvatars(params){
+  const avatars = [
+    ...data.currentRide.Riders.filter(x => x.group_id == params.row.group_id),
+    ...data.currentRide.Mentors.filter(x => x.group_id == params.row.group_id)
+  ]
+  console.log(avatars); // avatars.photo_url
+  return (
+    <AvatarGroup max={8}>
+     {avatars.map(x => renderAvatar({row: x}))}
+    </AvatarGroup>);
+}
 
   function renderActionButton(params) {
     let defaultState = CHECKIN;
