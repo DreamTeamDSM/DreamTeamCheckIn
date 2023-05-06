@@ -6,7 +6,7 @@ const resultToObjArray = (result) => {
   const ObjArray = result.values.map(value => {
     let obj = {};
     value.map((val, index) => {
-      obj[result.columns[index]]=val
+      obj[result.columns[index]] = val
     })
     return obj;
   })
@@ -37,13 +37,14 @@ export const getRideById = async (id) => {
     `SELECT route_id, date FROM Rides WHERE ride_id=${id}`
   )[0];
   console.log(ride);
-  const rideId = ride.values[0][0];
+  const routeId = ride.values[0][0];
+  console.log('routeId', routeId)
   //TODO add description
   const route = db.exec(
-    `SELECT route_id, distance FROM Routes WHERE route_id=${rideId}`
+    `SELECT route_id, distance FROM Routes WHERE route_id=${routeId}`
   )[0];
   console.log(route);
-  const routeId = route.values[0][0];
+  // const routeId = route.values[0][0];
   const routeDistance = route.values[0][1];
   const rideSupport = db.exec(
     `SELECT * FROM Users WHERE user_id IN (SELECT user_id FROM RideSupport WHERE ride_id=${rideId})`
@@ -72,7 +73,7 @@ export const getRideById = async (id) => {
     Date: ride.values[0][1],
     Destination: "TODO",
     NumMentors: mentorsObjArray.length,
-    NumRiders:ridersObjArray.length,
+    NumRiders: ridersObjArray.length,
     Miles: routeDistance,
     Riders: ridersObjArray,
     Mentors: mentorsObjArray,

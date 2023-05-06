@@ -6,21 +6,22 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 
 import { MetadataBox } from './MetadataBox.js'
+import { useAppContext } from '../AppContext.js';
 
 const VerticalMetadataDivider = () => <Divider orientation="vertical" flexItem sx={{ marginTop: '16px', marginBottom: '16px' }} />
 const HorizontalMetadataDivider = () => <Divider orientation="horizontal" flexItem />
 
-const CompactMetadata = ({ ...props }) => (
+const CompactMetadata = ({ ride, ...props }) => (
     <Box display="flex"
         flexWrap="wrap"
         justifyContent="space-around"
         alignItems="center"
     >
-        <MetadataBox header={'Ride Date'} content={'05/05/2023'} />
+        <MetadataBox header={'Ride Date'} content={ride.Date} />
         <VerticalMetadataDivider />
-        <MetadataBox header={'Location'} content={'Bike World'} />
+        <MetadataBox header={'Location'} content={ride.Destination} />
         <VerticalMetadataDivider />
-        <MetadataBox header={'# Mentors'} content={'8'} />
+        <MetadataBox header={'# Mentors'} content={ride.NumRiders} />
         <VerticalMetadataDivider />
         <MetadataBox header={'# Riders'} content={props.riderCount} />
         <VerticalMetadataDivider />
@@ -53,14 +54,21 @@ const Paperize = ({ children }) => (
 )
 
 const RideMetadata = ({ ...props }) => {
+    const { currentRide } = useAppContext()
+
+    // what do
+    if (!currentRide) return <></>
+
+    console.log(currentRide)
+
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
 
     if (isLargeScreen) {
-        return <Paperize><FullSizeMetadata {...props} /></Paperize>
+        return <Paperize><FullSizeMetadata ride={currentRide} {...props} /></Paperize>
     }
 
-    return <Paperize><CompactMetadata {...props} /></Paperize>
+    return <Paperize><CompactMetadata ride={currentRide} {...props} /></Paperize>
 
 }
 
