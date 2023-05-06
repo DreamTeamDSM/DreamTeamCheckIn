@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS "Routes" (
 	"climb" NUMERIC,
 	"hours" NUMERIC,
 	"difficulty" TEXT,
-	"type"	TEXT CHECK(type IN ('outAndBack','Loop')),
+	"type"	TEXT,
 	PRIMARY KEY("route_id" AUTOINCREMENT)
 );
 
