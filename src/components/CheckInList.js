@@ -201,7 +201,18 @@ export default function CheckInList({
       defaultState = CHECKIN;
     }
 
-    const [chipText, setChipText] = useState(defaultState);
+    const [chipText, setChipText] = useState(CHECKIN);
+
+    React.useEffect(() => {
+      if (params.row.check_in == 1) {
+        setChipText(COMPLETE);
+      } else {
+        setChipText(CHECKIN);
+      }
+    }, [params.row.check_in]);
+
+    const user = users.find((user) => user.user_id === params.row.id);
+    const disabled = !Boolean(user.group_id);
 
     const handleButtonClick = () => {
       if (chipText === CHECKIN) {
@@ -237,11 +248,12 @@ export default function CheckInList({
         <ButtonGroup
           variant="contained"
           aria-label="check in or check out button group"
+          disabled={disabled}
           color={color}
         >
-          <Button onClick={handleButtonClick}>{chipText}</Button>
+          <Button onClick={handleButtonClick} disabled={disabled}>{chipText}</Button>
           {chipText !== CHECKIN ? (
-            <Button onClick={handleResetClick}>
+            <Button onClick={handleResetClick} disabled={disabled}>
               <Replay />
             </Button>
           ) : (
@@ -323,11 +335,7 @@ export default function CheckInList({
   }
 
   const unassignGroup = async (groupAssignmentId, groupId, userId) => {
-    // TODO: test this, cant check in mentors yet
-    if (!oneStepCheckIn) {
-      await data.resetCheckIn(userId, groupId);
-    }
-    await data.removeFromGroup(groupAssignmentId);
+    await data.removeFromGroup(groupAssignmentId, groupId, userId);
   };
 
   function renderGroupSelect(params) {
