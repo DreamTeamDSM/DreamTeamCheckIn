@@ -35,9 +35,7 @@ const Search = (props) => {
   };
 
   const handleClick = (event) => {
-    // TODO: Clear the search input
-    console.log(event);
-    console.log("clicked the clear icon...");
+    setSearchText("");
   };
 
   return (
@@ -47,6 +45,7 @@ const Search = (props) => {
           size="small"
           variant="outlined"
           onChange={handleChange}
+          value={searchText}
           style={{ backgroundColor: '#fff' }}
           InputProps={{
             startAdornment: (
