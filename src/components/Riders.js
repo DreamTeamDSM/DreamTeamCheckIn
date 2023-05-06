@@ -7,12 +7,15 @@ import Replay from '@mui/icons-material/Replay';
 import { DataGrid, GridLogicOperator } from '@mui/x-data-grid';
 import { Button } from './Button'
 import { lighten } from 'polished';
+import { useAppContext } from '../AppContext';
 
 const CHECKIN = "Check In";
 const CHECKOUT = "Check Out";
 const COMPLETE = "Complete";
 
-export default function Riders(props) {
+export default function Riders() {
+  const data = useAppContext();
+
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
     { field: 'groupnumber', headerName: 'Group #', flex: 1 },
@@ -23,21 +26,23 @@ export default function Riders(props) {
     { field: 'fulltext', headerName: 'Fulltext', flex: 0 },
   ];
 
-  const rows = props.riders;
+  const rows = data.currentRide.Riders.map((cur)=>{
+    return {...cur,id: cur.user_id};
+  });
 
   function checkIn(dispatch, id) {
     dispatch(CHECKOUT);
-    props.checkIn(id);
+    data.checkIn(id);
   }
 
   function checkOut(dispatch, id) {
     dispatch(COMPLETE);
-    props.checkOut(id);
+    data.checkOut(id);
   }
 
   function reset(dispatch, id) {
     dispatch(CHECKIN);
-    props.reset(id);
+    data.reset(id);
   }
 
   function rednerAvatar(params) {
@@ -132,10 +137,10 @@ export default function Riders(props) {
   React.useEffect(()=>{
     setFilterModel({
       items: [
-        { field: 'fulltext', operator: 'contains', value: props.searchText.toLowerCase() },
+        { field: 'fulltext', operator: 'contains', value: data.searchText.toLowerCase() },
       ]
     })
-  },[props.searchText]);
+  },[data.searchText]);
 
   const [filterModel, setFilterModel] = React.useState({
     items: []

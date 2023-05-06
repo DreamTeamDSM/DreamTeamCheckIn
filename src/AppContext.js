@@ -19,7 +19,9 @@ const AppContext = React.createContext(
         setLoading: () => { },
         loading: false,
         error: false,
-        setError: () => { }
+        setError: () => { },
+        setSearchText: () => { },
+        searchText: ""
     }
 );
 
@@ -28,6 +30,7 @@ export const AppContextProvider = ({ children }) => {
     const [currentRide, setCurrentRide] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
+    const [searchText,setSearchText] = useState("");
 
     const importFromSeededData = async () => {
         setLoading(true)
@@ -60,7 +63,9 @@ export const AppContextProvider = ({ children }) => {
             loading,
             setLoading,
             error,
-            setError
+            setError,
+            setSearchText,
+            searchText,
         }}>
             {children}
         </AppContext.Provider>
