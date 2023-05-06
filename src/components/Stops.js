@@ -43,10 +43,10 @@ export default function Stops({ stops, groups, groupStops }) {
     {
       field: "checkin",
       headerName: "Check In/Out",
-      flex: 2,
+      flex: 1,
       renderCell: renderActionButton,
     },
-    { field: "avatars", headerName: "Avatars", flex: 1, renderCell: renderAvatars },
+    { field: "avatars", headerName: "Avatars", flex: 2, renderCell: renderAvatars },
   ];
 
   function checkIn(dispatch, stopId, groupId) {
