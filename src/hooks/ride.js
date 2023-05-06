@@ -1,7 +1,7 @@
 import { loadDatabase } from "../database";
 
 const resultToObjArray = (result) => {
-  if (!result?.values || !result.values.length === 0) return {};
+  if (!result?.values || !result.values.length === 0) return null;
 
   const ObjArray = result.values.map(value => {
     let obj = {};
@@ -94,7 +94,7 @@ export const getRideById = async (id) => {
     Route: routeObj,
     Date: rideObj.date,
     Destination: routeObj.route_name,
-    NumMentors: mentorsObjArray.length,
+    NumMentors: mentorsObjArray?.length ?? 0,
     NumRiders: ridersObjArray.length,
     Miles: routeObj.distance,
     Riders: ridersObjArray,
