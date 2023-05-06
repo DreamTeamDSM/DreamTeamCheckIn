@@ -59,11 +59,11 @@ const RideInfo = () => {
                         </TabPanel>
                         <TabPanel value={value} index={1}>
                             {/*<Mentors checkIn={checkIn} checkOut={checkOut} riders={riders} reset={reset} searchText={searchText}/>*/}
-                            <CheckInList users={data?.currentRide?.Riders || []} groups={data?.currentRide?.Groups || []} oneStepCheckIn/>
+                            <CheckInList users={data?.currentRide?.Mentors || []} groups={data?.currentRide?.Groups || []} oneStepCheckIn/>
                         </TabPanel>
                         <TabPanel value={value} index={2}>
                             {/* <Stops checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset} searchText={props.searchText}/> */}
-                            <CheckInList users={data?.currentRide?.Riders || []} groups={data?.currentRide?.Groups || []} oneStepCheckIn hideGroup/>
+                            <CheckInList users={data?.currentRide?.Mentors || []} groups={data?.currentRide?.Groups || []} oneStepCheckIn hideGroup/>
                         </TabPanel>
                         <TabPanel value={value} index={3}>
                             {/* <Stops checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset} searchText={props.searchText}/> */}
