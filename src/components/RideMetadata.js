@@ -12,7 +12,7 @@ import { useAppContext } from '../AppContext.js';
 const VerticalMetadataDivider = () => <Divider orientation="vertical" flexItem sx={{ marginTop: '16px', marginBottom: '16px' }} />
 const HorizontalMetadataDivider = () => <Divider orientation="horizontal" flexItem />
 
-const CompactMetadata = ({ ride, ...props }) => (
+const CompactMetadata = ({ ride }) => (
     <Box display="flex"
         flexWrap="wrap"
         justifyContent="space-around"
@@ -24,13 +24,13 @@ const CompactMetadata = ({ ride, ...props }) => (
         <VerticalMetadataDivider />
         <MetadataBox header={'# Mentors'} content={ride.NumMentors} />
         <VerticalMetadataDivider />
-        <MetadataBox header={'# Riders'} content={props.NumRiders} />
+        <MetadataBox header={'# Riders'} content={ride.NumRiders} />
         <VerticalMetadataDivider />
-        <MetadataBox header={'Miles'} content={props.Miles} />
+        <MetadataBox header={'Miles'} content={ride.Miles} />
     </Box>
 )
 
-const FullSizeMetadata = ({ ride, ...props }) => (
+const FullSizeMetadata = ({ ride }) => (
     <Box
         display="flex"
         flexWrap="wrap"
@@ -42,9 +42,9 @@ const FullSizeMetadata = ({ ride, ...props }) => (
         <HorizontalMetadataDivider />
         <MetadataBox header={'# Mentors'} content={ride.NumMentors} />
         <HorizontalMetadataDivider />
-        <MetadataBox header={'# Riders'} content={props.NumRiders} />
+        <MetadataBox header={'# Riders'} content={ride.NumRiders} />
         <HorizontalMetadataDivider />
-        <MetadataBox header={'Miles'} content={props.Miles} />
+        <MetadataBox header={'Miles'} content={ride.Miles} />
     </Box>
 )
 
