@@ -3,6 +3,7 @@ import {
   Avatar, Chip
 } from '@mui/material';
 import Replay from '@mui/icons-material/Replay';
+import Badge from '@mui/material/Badge';
 import { DataGrid } from '@mui/x-data-grid';
 import { GroupSelect } from './GroupSelect'
 import { lighten } from 'polished';
@@ -12,6 +13,88 @@ const CHECKIN = "Check In";
 const CHECKOUT = "Check Out";
 const COMPLETE = "Complete";
 
+const darken = (color, amount) => {
+  let r = parseInt(color.substr(1, 2), 16);
+  let g = parseInt(color.substr(3, 2), 16);
+  let b = parseInt(color.substr(5, 2), 16);
+  r = Math.max(0, r - amount);
+  g = Math.max(0, g - amount);
+  b = Math.max(0, b - amount);
+  let hex = '#' + r.toString(16).padStart(2, '0') +
+    g.toString(16).padStart(2, '0') +
+    b.toString(16).padStart(2, '0');
+  return hex;
+}
+
+const stringToColor = (str) => {
+  // Generate a hash value from the string
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  // Convert the hash value to a hex color code
+  let color = '#';
+  for (let i = 0; i < 3; i++) {
+    let value = (hash >> (i * 8)) & 0xFF;
+    color += ('00' + value.toString(16)).substr(-2);
+  }
+
+  // Check if the color is too bright for white lettering
+  let brightness = Math.round(((parseInt(color.substr(1, 2), 16) * 299) +
+    (parseInt(color.substr(3, 2), 16) * 587) +
+    (parseInt(color.substr(5, 2), 16) * 114)) / 1000);
+  if (brightness > 125) {
+    const difference = brightness - 125 + 5;
+    // If the color is too bright, darken it
+    return darken(color, difference)
+  }
+
+  return color;
+}
+
+const stringAvatar = (firstName, lastName) => {
+  return {
+    sx: {
+      bgcolor: stringToColor(`${firstName} ${lastName}`),
+    },
+    children: `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}`,
+  };
+}
+
+const PersonAvatar = ({ value, firstName, lastName }) => {
+  // TODO this will become null and should be an image blob?
+  if (value !== "NULL") {
+    return <Avatar alt="User Avatar" src={value} />
+  } else {
+    return <Avatar {...stringAvatar(firstName, lastName)} />
+  }
+}
+
+const renderAvatar = (params) => {
+  const { row } = params;
+  const firstName = row.first_name;
+  const lastName = row.last_name;
+  const photoUrl = row.photo_url;
+  const isVeteran = !row.isNew;
+
+  if (isVeteran) {
+    return (
+      <Badge
+        overlap="circular"
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        badgeContent={'⭐'}
+      >
+        <PersonAvatar value={photoUrl} firstName={firstName} lastName={lastName} />
+      </Badge>
+    )
+  }
+
+  return (
+    <PersonAvatar value={photoUrl} firstName={firstName} lastName={lastName} />
+  )
+}
+
 export default function CheckInList({ users, groups, oneStepCheckIn = false, hideGroup = false }) {
   const data = useAppContext();
 
@@ -19,11 +102,12 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
     { field: 'id', headerName: 'ID', flex: 1 },
     { field: 'group_id', headerName: 'Group #', flex: 2, renderCell: renderGroupSelect },
     { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: (oneStepCheckIn) ? renderOneStepChip : renderTwoStepChip },
-    { field: 'avatar', headerName: 'Avatar', flex: 1, renderCell: rednerAvatar },
+    { field: 'avatar', headerName: 'Avatar', flex: 1, renderCell: renderAvatar },
     { field: 'first_name', headerName: 'First Name', flex: 2 },
     { field: 'last_name', headerName: 'Last Name', flex: 2 },
     { field: 'fulltext', headerName: 'Fulltext', flex: 0 },
   ];
+
   const rows = users.map((cur) => {
     const fulltext = (((cur.group_name) ? cur.group_name : "unassigned") + cur.first_name + cur.last_name).toLowerCase();
     return { ...cur, id: cur.user_id, fulltext };
@@ -55,12 +139,6 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
 
   const unassignGroup = (groupAssignmentId) => {
     data.removeFromGroup(groupAssignmentId)
-  }
-
-  function rednerAvatar(params) {
-    return (
-      <Avatar src={params.value} alt="User Avatar" />
-    )
   }
 
   function getChipStyles(label) {
@@ -156,7 +234,6 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
     }
 
     const [chipText, setChipText] = useState(defaultState);
-    const user = users.find((user) => user.user_id === params.row.id)
 
     return (
       <Chip
