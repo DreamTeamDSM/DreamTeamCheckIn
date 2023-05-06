@@ -1,6 +1,8 @@
 import { auth } from "../auth";
 import { createDatabase, loadDatabase, saveDatabase } from "../database";
 
+import { precacheAndRoute } from 'workbox-precaching';
+
 export const isSynced = async () => {
   //TODO - loop through isRideSynced for each ride, if any false - not synced
 };
@@ -59,6 +61,7 @@ const import_users = (importedDb) => {
     })
     .then((response) => {
       const result = response.result;
+      const urlsToCache = [];
       for (const row of result.values) {
         // Skip header row
         if (row[0] === "ID") {
@@ -71,6 +74,7 @@ const import_users = (importedDb) => {
           continue;
         }
 
+
         importedDb.run("INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?)", [
           row[0],
           row[1],
@@ -80,8 +84,32 @@ const import_users = (importedDb) => {
           row[5],
           row[6],
         ]);
+
+        urlsToCache.push(row[3]);
       }
+
+      console.log("urlsToCache",urlsToCache);
+      cache_urls(urlsToCache);
+
     });
+};
+
+const cache_urls = (inputUrls) => {
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+
+
+    const urls = inputUrls.filter((cur)=>{
+      return (!!cur);
+    });
+
+    precacheAndRoute(urls, {
+      // cache configuration options
+      maxAgeSeconds: 60 * 60 * 24 * 14
+    });
+    console.log("Cached user avatar images with precache in workbox");
+  } else {
+    console.log("skipping precache of user avatar images, can't find service worker");
+  }
 };
 
 const import_routes = async (importedDb) => {
