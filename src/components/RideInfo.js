@@ -9,6 +9,7 @@ import { useTheme, useMediaQuery } from '@mui/material';
 
 import { TabPanel } from './TabPanel.js';
 import Riders from './Riders.js';
+import Mentors from './Mentors.js';
 import Stops from './Stops.js';
 import { RideMetadata } from './RideMetadata.js';
 
@@ -52,7 +53,7 @@ const RideInfo = (props) => {
                             <Riders checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset} searchText={props.searchText}/>
                         </TabPanel>
                         <TabPanel value={value} index={1}>
-                            Item Two
+                            <Mentors checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset} searchText={props.searchText}/>
                         </TabPanel>
                         <TabPanel value={value} index={2}>
                             <Stops checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset} searchText={props.searchText}/>
