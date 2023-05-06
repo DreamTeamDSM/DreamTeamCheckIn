@@ -150,6 +150,7 @@ export const AppContextProvider = ({ children }) => {
             importData: async () => {
                 setLoading(true)
                 await importData(async () => {
+                    setError(false)
                     await refresh()
                 }, setLoading, setError)
             }

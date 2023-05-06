@@ -253,10 +253,16 @@ export async function importData(handleImportedDb, setLoading = () => { }, setEr
       }
     };
 
+    const errorCallback = async (response) => {
+      setError(response)
+      setLoading(false)
+    }
+
     google.accounts.oauth2
       .initTokenClient({
         client_id: CLIENT_ID,
         callback: callback,
+        error_callback: errorCallback,
         scope: "https://www.googleapis.com/auth/spreadsheets",
       })
       .requestAccessToken();
