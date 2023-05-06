@@ -15,9 +15,7 @@ function App() {
     <AppContextProvider>
       <ThemeProvider>
         <header>
-          <Navigation
-            searchHandler={setSearchText}
-          />
+          <Navigation />
         </header>
         <main>
           <Container maxWidth="lg">
