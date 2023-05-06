@@ -1,42 +1,38 @@
+import { auth } from "../auth.js";
 import { loadDatabase, saveDatabase } from "../database.js";
-
-const CLIENT_ID =
-  "592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com";
+import { getRideById } from './ride';
 
 const CHECK_DOCUMENT = "1126HuVhvZ8dSiNW3DRs6nPyIsJtNje4oysBVKkPdJ3c";
 const USER_CHECKS_SHEET = "Users";
 const GROUP_CHECKS_SHEET = "Groups";
 
-export async function export_data(rideId, onDbExported) {
-  console.log("Exporting data to Google Drive for ride", rideId, "...");
+export async function export_data(rideId, onDbExported, setLoading) {
+  setLoading(true);
   const callback = async (response) => {
     const db = await loadDatabase();
 
-    const token = response.access_token;
-    gapi.client.setToken({ access_token: token });
-
+    console.log("Exporting data to Google Drive for ride", rideId, "...");
     await exportGroupChecks(db, rideId);
     await exportUserChecks(db, rideId);
+
+
 
     if (onDbExported) {
       onDbExported();
     }
 
     await saveExport(db, rideId);
+    setLoading(false);
   };
 
-  google.accounts.oauth2
-    .initTokenClient({
-      client_id: CLIENT_ID,
-      callback: callback,
-      scope: "https://www.googleapis.com/auth/spreadsheets",
-    })
-    .requestAccessToken();
+  auth(callback);
 }
 
 async function exportGroupChecks(db, rideId) {
   try {
-    const newSheetName = `${new Date().toLocaleDateString()} ${GROUP_CHECKS_SHEET}`;
+    const ride = await getRideById(rideId);
+
+    const newSheetName = `${ride.Date} ${GROUP_CHECKS_SHEET}`;
     console.log(`Upserting group export sheet "${newSheetName}"`);
 
     await upsertSheet(CHECK_DOCUMENT, newSheetName);
@@ -72,7 +68,9 @@ async function exportGroupChecks(db, rideId) {
 
 async function exportUserChecks(db, rideId) {
   try {
-    const newSheetName = `${new Date().toLocaleDateString()} ${USER_CHECKS_SHEET}`;
+    const ride = await getRideById(rideId);
+
+    const newSheetName = `${ride.Date} ${USER_CHECKS_SHEET}`;
     console.log(`Upserting user export sheet "${newSheetName}"`);
 
     await upsertSheet(CHECK_DOCUMENT, newSheetName);
@@ -136,7 +134,7 @@ const upsertSheet = async (spreadsheetId, sheetName) => {
       requests: [{
         addSheet: {
           properties: {
-            title: newSheetName,
+            title: sheetName,
           }
         }
       }],
