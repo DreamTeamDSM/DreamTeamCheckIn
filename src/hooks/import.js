@@ -16,7 +16,7 @@ export const isRideSynced = async (id) => {
   )[0];
 
 
-  const updatedData = db.exec(`SELECT * FROM GroupAssignments WHERE create_date != update_date`)[0];
+  const updatedData = db.exec(`SELECT * FROM GroupAssignments LEFT JOIN Groups on Groups.group_id=GroupAssignments.group_id WHERE create_date != update_date and ride_id=${id}`)[0];
 
   //No exports, and updates... we are not synced
   if (!latestExports?.values?.length && updatedData?.values?.length) return false;
