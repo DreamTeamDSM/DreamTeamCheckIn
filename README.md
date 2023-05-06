@@ -31,3 +31,8 @@ To build the project.
 1. npm run build
 
 Build files are placed in the build/ folder. The application can be hosted through any typical static file hosting site.
+
+
+# Google Sheets Integration
+
+/TODO Fill this section out
