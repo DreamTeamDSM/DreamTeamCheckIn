@@ -3,41 +3,40 @@ import { createDatabase, loadDatabase, saveDatabase } from "../database";
 const CLIENT_ID =
   "592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com";
 
-const isSynced = () => {
-  //do not allow import if we have more recent changes to GroupAssignment or GroupCheck since last RideExport
-  const db = loadDatabase();
-  let isSynced = true;
+  export const isSynced = async () => {
+    //do not allow import if we have more recent changes to GroupAssignment or GroupCheck since last RideExport
+    const db = await loadDatabase();
+    let isSynced = true;
 
-  //get latest export for each ride
-  const latest_exports = db.exec(
-    "SELECT TOP 1 ride_id, created_at FROM RideExport GROUP BY ride_id ORDER BY created_at DESC"
-  );
+    //get latest export for each ride
+    const latestExports = db.exec(
+      "SELECT ride_id, date FROM RideExports GROUP BY ride_id ORDER BY date DESC LIMIT 1"
+    )[0];
 
-  //get group assignments for each group ride where updated at is greater than last ride export
-  latest_exports.values.array.forEach((latest_export) => {
-    const not_exported_assignments = db.exec(
-      `SELECT * from GroupAssignment WHERE group_id IN (SELECT group_id FROM Group WHERE ride_id = ${latest_export[0]}) AND updated_at > (${latest_export[created_at]})`
-    );
-    if (not_exported_assignments.length() > 0) isSynced = false;
-  });
+    //get group assignments for each group ride where updated at is greater than last ride export
+    if(!latestExports?.values?.length) return false;
 
-  //select group check for each ride where updated at is greater than last ride export
-  latest_exports.values.array.forEach((latest_export) => {
-    const not_exported_group_checks = db.exec(
-      `SELECT * FROM GroupCheck WHERE group_id IN (SELECT group_id from Group where ride_id = ${latest_export[0]}) AND updated_at > (${latest_export[created_at]})`
-    );
-    if (not_exported_group_checks.length() > 0) isSynced = false;
-  });
+    latestExports.values.forEach((latestExport) => {
+      const notExportedAssignments = db.exec(
+        `SELECT * from GroupAssignments WHERE group_id IN (SELECT group_id FROM Groups WHERE ride_id = ${latestExport[0]}) AND update_date > '${latestExport[1]}'`
+      );
+      console.log(notExportedAssignments);
+      if (notExportedAssignments.length > 0) isSynced = false;
+    });
 
-  //if any of the above is not zero... tell user which rides have not been exported or just false for now....
-  return isSynced;
+    //select group check for each ride where updated at is greater than last ride export
+    latestExports.values.forEach((latestExport) => {
+      const notExportedGroupChecks = db.exec(
+        `SELECT * FROM GroupCheck WHERE group_id IN (SELECT group_id FROM Groups WHERE ride_id = ${latestExport[0]}) AND update_date > '${latestExport[1]}'`
+      );
+      console.log(notExportedGroupChecks);
+      if (notExportedGroupChecks.length > 0) isSynced = false;
+    });
 
-  /* example output from db.exec
-  [
-    {columns:['a','b'], values:[[0,'hello'],[1,'world']]}
-  ]
-  */
-};
+    //if any of the above is not zero... tell user which rides have not been exported or just false for now....
+    return isSynced;
+
+  };
 
 const backup = () => {
   //save the current db file.. just incase. do we save this db file locally and just rename? or push it up to google? or both?
