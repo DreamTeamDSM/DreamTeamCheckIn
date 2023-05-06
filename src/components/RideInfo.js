@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -7,6 +7,9 @@ import Tab from '@mui/material/Tab';
 import Grid from '@mui/material/Grid'
 import { useTheme, useMediaQuery, Button } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloudDoneIcon from '@mui/icons-material/CloudDone';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 import { TabPanel } from './TabPanel.js';
 import CheckInList from './CheckInList.js';
@@ -28,6 +31,8 @@ const RideInfo = () => {
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
 
     const [value, setValue] = React.useState(0);
+    const [isSynced, setIsSynced] = React.useState(false);
+    const [isSyncedText, setIsSyncedText] = React.useState('Export');
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -35,7 +40,15 @@ const RideInfo = () => {
 
     const data = useAppContext();
 
-    const handleExport = () => export_data(data.currentRide.Ride.ride_id);
+    useEffect(() => {
+        setIsSyncedText(!data?.currentRide?.IsSynced ? 'Export' : 'Synced')
+        setIsSynced(data.currentRide.IsSynced)
+    }, [data.currentRide.IsSynced])
+
+    const handleExport = () => {
+        console.log(data.setExportLoading);
+        export_data(data.currentRide.Ride.ride_id, data.refresh, data.setExportLoading);
+    }
 
     console.log(data.currentRide.isSynced);
 
@@ -46,19 +59,7 @@ const RideInfo = () => {
                     color="inherit"
                     noWrap
                     sx={{ flexGrow: 1 }}> {'RIDES'}</Typography>
-                <Box display={'flex'} >
-                {
-                    data?.currentRide?.IsSynced && (
-                    <Typography mt='10px' mr='10px'>Synced</Typography>
-                     )
-                }
-                {
-                    !data?.currentRide?.IsSynced && (
-                        <Typography mt='10px' mr='10px'>Warning: Not Synced</Typography>
-                         )
-                }
-                  <Button variant='outlined' startIcon={<CloudUploadIcon />} onClick={handleExport}>{'Export'}</Button>
-                </Box>
+                  <Button variant='outlined' startIcon={data.isExportLoading ? <CircularProgress/> : (isSynced ? <CloudDoneIcon/> : <CloudUploadIcon />)} onClick={handleExport}>{isSyncedText}</Button>
 
             </Box>
 
