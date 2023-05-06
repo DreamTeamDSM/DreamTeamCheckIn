@@ -8,6 +8,7 @@ import {
     seedDatabase2,
 } from "./database.js";
 
+import { importData } from './hooks/import'
 import { getRideById, getRides } from "./hooks/ride";
 
 const AppContext = React.createContext(
@@ -46,7 +47,7 @@ export const AppContextProvider = ({ children }) => {
             } else {
                 return mostRecent;
             }
-            }, { date: "2000-01-01" }
+        }, { date: "2000-01-01" }
         );
     }
 
@@ -72,7 +73,7 @@ export const AppContextProvider = ({ children }) => {
     useEffect(() => performInitialLoad(), []);
 
     const checkIn = async (userId) => {
-        console.log("check in",userId);
+        console.log("check in", userId);
 
         /*
         const list = currentRide?.Riders || [];
@@ -91,11 +92,11 @@ export const AppContextProvider = ({ children }) => {
         */
     };
 
-    const checkOut = async() => {
+    const checkOut = async () => {
         console.log("check out");
     };
 
-    const changeGroup = async() => {
+    const changeGroup = async () => {
         console.log("change group");
     }
 
@@ -114,6 +115,7 @@ export const AppContextProvider = ({ children }) => {
             checkIn,
             checkOut,
             changeGroup,
+            importData
         }}>
             {children}
         </AppContext.Provider>
