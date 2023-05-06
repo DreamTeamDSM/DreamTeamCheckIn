@@ -17,28 +17,8 @@ import { useAppContext } from "../AppContext";
 function DebugBar() {
   const context = useAppContext()
 
-  const handleClick = async () => {
-    const db = await createDatabase();
-
-    await seedDatabase(db);
-
-    await saveDatabase(db);
-  };
-  const handleClick2 = async () => {
-    const db = await createDatabase();
-
-    await seedDatabase2(db);
-
-    await saveDatabase(db);
-  };
   return (
     <div className="debug-bar">
-      <button type="button" onClick={handleClick}>
-        Initialize + Seed Database!
-      </button>
-      <button type="button" onClick={handleClick2}>
-        Seed NEW!
-      </button>
       <button
         onClick={() => loadDatabase().then((db) => saveDatabaseAsFile(db))}
       >
