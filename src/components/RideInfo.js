@@ -5,11 +5,11 @@ import Typography from '@mui/material/Typography';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Grid from '@mui/material/Grid'
-import { useTheme, useMediaQuery } from '@mui/material';
+import { useTheme, useMediaQuery, Button } from '@mui/material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 import { TabPanel } from './TabPanel.js';
 import CheckInList from './CheckInList.js';
-import Mentors from './Mentors.js';
 import Stops from './Stops.js';
 import { RideMetadata } from './RideMetadata.js';
 import { useAppContext } from '../AppContext.js';
@@ -34,13 +34,20 @@ const RideInfo = () => {
 
     const data = useAppContext();
 
+    const handleExport = () => {
+        // TODO: this should do something
+        window.open('https://i.kym-cdn.com/entries/icons/original/000/010/897/imageso.jpg')
+    }
+
     return (
         <>
-            <Typography component="h1" variant="h4" mt={5}
-                gutterBottom
-                color="inherit"
-                noWrap
-                sx={{ flexGrow: 1 }}> {'RIDES'}</Typography>
+            <Box display={'flex'} justifyItems={'space-between'} mt={5} mb={'12px'}>
+                <Typography component="h1" variant="h4"
+                    color="inherit"
+                    noWrap
+                    sx={{ flexGrow: 1 }}> {'RIDES'}</Typography>
+                <Button variant='outlined' startIcon={<CloudUploadIcon />} onClick={handleExport}>{'Export'}</Button>
+            </Box>
             <Grid container spacing={2}>
                 <Grid item sm={12} lg={3}>
                     <RideMetadata />
@@ -54,16 +61,16 @@ const RideInfo = () => {
                             <Tab label="Stops" {...a11yProps(3)} />
                         </Tabs>
                         <TabPanel value={value} index={0}>
-                            <CheckInList users={data?.currentRide?.Riders || []} groups={data?.currentRide?.Groups || []}/>
+                            <CheckInList users={data?.currentRide?.Riders || []} groups={data?.currentRide?.Groups || []} />
                         </TabPanel>
                         <TabPanel value={value} index={1}>
-                            <CheckInList users={data?.currentRide?.Mentors || []} groups={data?.currentRide?.Groups || []} oneStepCheckIn/>
+                            <CheckInList users={data?.currentRide?.Mentors || []} groups={data?.currentRide?.Groups || []} oneStepCheckIn />
                         </TabPanel>
                         <TabPanel value={value} index={2}>
-                            <CheckInList users={data?.currentRide?.Mentors || []} groups={data?.currentRide?.Groups || []} oneStepCheckIn hideGroup/>
+                            <CheckInList users={data?.currentRide?.Mentors || []} groups={data?.currentRide?.Groups || []} oneStepCheckIn hideGroup />
                         </TabPanel>
                         <TabPanel value={value} index={3}>
-                            <Stops stops={data?.currentRide?.Stops || []} groupStops={data?.currentRide?.GroupStops || []} groups={data?.currentRide?.Groups || []}/>
+                            <Stops stops={data?.currentRide?.Stops || []} groupStops={data?.currentRide?.GroupStops || []} groups={data?.currentRide?.Groups || []} />
                         </TabPanel>
                     </Box>
                 </Grid>
