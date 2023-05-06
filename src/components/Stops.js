@@ -164,6 +164,21 @@ export default function Stops({stops,groups,groupStops}) {
           return (stop.stop_id == cur.stop_id);
         });
 
+        const checkInCount = filteredRows.reduce((acc,cur)=>{
+          if (cur.check_in == 0) acc++;
+          return acc;
+        },0);
+        const checkOutCount = filteredRows.reduce((acc,cur)=>{
+          if (cur.check_in == 1 && cur.check_out == 0) acc++;
+          return acc;
+        },0);
+        const completeCount = filteredRows.reduce((acc,cur)=>{
+          if (cur.check_in == 1 && cur.check_out == 1) acc++;
+          return acc;
+        },0);
+
+        console.log("filteredRows",filteredRows);
+
         return (<Accordion key={stop.stop_id}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -171,6 +186,7 @@ export default function Stops({stops,groups,groupStops}) {
             id="panel1a-header"
           >
             <Typography>{stop.description}</Typography>
+            <Typography style={{marginLeft: "auto"}}>{checkInCount}/{checkOutCount}/{completeCount}</Typography>
           </AccordionSummary>
           <AccordionDetails>
               <div style={{ height: 400, width: '100%' }}>
