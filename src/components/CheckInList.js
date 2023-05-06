@@ -14,13 +14,13 @@ const CHECKIN = "Check In";
 const CHECKOUT = "Check Out";
 const COMPLETE = "Complete";
 
-export default function Riders() {
+export default function CheckInList({users,groups,oneStepCheckIn = false,hideGroup = false}) {
   const data = useAppContext();
 
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
     { field: 'group_id', headerName: 'Group #', flex: 2, renderCell: renderGroupSelect},
-    { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: renderChip },
+    { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: (oneStepCheckIn) ? renderOneStepChip: renderTwoStepChip },
     { field: 'avatar', headerName: 'Avatar', flex: 1, renderCell: rednerAvatar },
     { field: 'first_name', headerName: 'First Name', flex: 2 },
     { field: 'last_name', headerName: 'Last Name', flex: 2 },
@@ -44,16 +44,16 @@ export default function Riders() {
   ];
   */
 
-  const riders = data?.currentRide?.Riders || [];
-  const groups = data?.currentRide?.Groups || [];
+  //const riders = data?.currentRide?.Riders || [];
+  //const groups = data?.currentRide?.Groups || [];
   console.log(groups);
   const ids = []; // delete when data is real
 
-  const rows = riders.map((cur)=>{
+  const rows = users.map((cur)=>{
     //const fulltext = (cur.groupnumber + " " + cur.first_name + cur.last_name).toLowerCase();
     // need to include group in the fulltext
     const fulltext = (cur.first_name + cur.last_name).toLowerCase();
-    return {...cur,id: cur.user_id, fulltext};
+    return {...cur,id: cur.user_id, fulltext, check_in: 0, check_out: 0};
   }).reduce((acc,cur)=>{ // same, remove this reduce when the data is real
     if (ids.includes(cur.id) == false) {
       acc.push(cur);
@@ -137,11 +137,11 @@ export default function Riders() {
     }
   }
 
-  function renderChip(params) {
+  function renderTwoStepChip(params) {
     let defaultState = CHECKIN;
-    if (params.row.checkin == 1 && params.row.checkout == 1) {
+    if (params.row.check_in == 1 && params.row.check_out == 1) {
       defaultState = COMPLETE;
-    } else if (params.row.checkin == 1 && params.row.checkout == 0) {
+    } else if (params.row.check_in == 1 && params.row.check_out == 0) {
       defaultState = CHECKOUT;
     }
 
@@ -170,6 +170,39 @@ export default function Riders() {
     );
   }
 
+
+  function renderOneStepChip(params) {
+    let defaultState;
+    if (params.row.check_in == 1) {
+      defaultState = COMPLETE;
+    } else {
+      defaultState = CHECKIN;
+    }
+
+    const [chipText, setChipText] = useState(defaultState);
+
+
+    return (
+      <Chip
+        variant="contained"
+        label={chipText}
+        sx={getChipStyles(chipText)}
+
+        onClick={() => {
+          if (chipText === CHECKIN) {
+            checkIn(setChipText, params.row.id);
+          }
+          console.log(`Clicked button for row with id: ${params.id}`);
+        }}
+        onDelete={chipText === CHECKIN ? undefined : () => {
+          reset(setChipText, params.row.id);
+        }}
+        deleteIcon={< Replay />}
+      />
+      // </Chip>
+    );
+  }
+
   function renderGroupSelect(params) {
     return (<GroupSelect groups={groups} userId={params.row.id} defaultGroupId={params.row.group_id} changeGroup={changeGroup} />);
   }
@@ -187,6 +220,15 @@ export default function Riders() {
     items: []
   });
 
+  const visibility = {
+    id: false,
+    fulltext: false,
+  }
+
+  if (hideGroup) {
+    visibility['group_id'] = false;
+  }
+
   return (
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid
@@ -195,10 +237,7 @@ export default function Riders() {
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[5, 10, 20]}
-        columnVisibilityModel={{
-          id: false,
-          fulltext: false,
-        }}
+        columnVisibilityModel={visibility}
       />
     </div>
   );

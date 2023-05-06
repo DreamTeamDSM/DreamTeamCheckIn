@@ -8,10 +8,11 @@ import Grid from '@mui/material/Grid'
 import { useTheme, useMediaQuery } from '@mui/material';
 
 import { TabPanel } from './TabPanel.js';
-import Riders from './Riders.js';
+import CheckInList from './CheckInList.js';
 import Mentors from './Mentors.js';
 import Stops from './Stops.js';
 import { RideMetadata } from './RideMetadata.js';
+import { useAppContext } from '../AppContext.js';
 
 const a11yProps = (index) => {
     return {
@@ -32,6 +33,8 @@ const RideInfo = () => {
         setValue(newValue);
     };
 
+    const data = useAppContext();
+
     return (
         <>
             <Typography component="h1" variant="h4" mt={5}
@@ -48,15 +51,21 @@ const RideInfo = () => {
                         <Tabs value={value} onChange={handleChange}>
                             <Tab label="Riders" {...a11yProps(0)} />
                             <Tab label="Mentors" {...a11yProps(1)} />
-                            <Tab label="Groups" {...a11yProps(2)} />
+                            <Tab label="Support" {...a11yProps(2)} />
+                            <Tab label="Stops" {...a11yProps(3)} />
                         </Tabs>
                         <TabPanel value={value} index={0}>
-                            <Riders />
+                            <CheckInList users={data?.currentRide?.Riders || []} groups={data?.currentRide?.Groups || []}/>
                         </TabPanel>
                         <TabPanel value={value} index={1}>
                             {/*<Mentors checkIn={checkIn} checkOut={checkOut} riders={riders} reset={reset} searchText={searchText}/>*/}
+                            <CheckInList users={data?.currentRide?.Riders || []} groups={data?.currentRide?.Groups || []} oneStepCheckIn/>
                         </TabPanel>
                         <TabPanel value={value} index={2}>
+                            {/* <Stops checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset} searchText={props.searchText}/> */}
+                            <CheckInList users={data?.currentRide?.Riders || []} groups={data?.currentRide?.Groups || []} oneStepCheckIn hideGroup/>
+                        </TabPanel>
+                        <TabPanel value={value} index={3}>
                             {/* <Stops checkIn={props.checkIn} checkOut={props.checkOut} riders={props.riders} reset={props.reset} searchText={props.searchText}/> */}
                         </TabPanel>
                     </Box>
