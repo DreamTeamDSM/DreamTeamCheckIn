@@ -49,15 +49,20 @@ export const AppContextProvider = ({ children }) => {
     const getMostRecent = (fetchedRides) => {
         const today = new Date();
 
-        return fetchedRides.reduce((mostRecent, current) => {
-            const currentDate = new Date(current.date);
-            if (currentDate <= today && currentDate > new Date(mostRecent.date)) {
-                return current;
-            } else {
-                return mostRecent;
-            }
-        }, { date: "2000-01-01" }
-        );
+        if (fetchedRides) {
+            return fetchedRides.reduce((mostRecent, current) => {
+                const currentDate = new Date(current.date);
+                if (currentDate <= today && currentDate > new Date(mostRecent.date)) {
+                    return current;
+                } else {
+                    return mostRecent;
+                }
+            }, { date: "2000-01-01" }
+            );
+        } else {
+            return ({});
+        }
+
     }
 
     const refresh = async () => {
