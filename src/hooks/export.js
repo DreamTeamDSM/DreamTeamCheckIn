@@ -4,8 +4,8 @@ const CLIENT_ID =
   "592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com";
 
 const CHECK_DOCUMENT = "1126HuVhvZ8dSiNW3DRs6nPyIsJtNje4oysBVKkPdJ3c";
-const USER_CHECKS_SHEET = "User Checks";
-const GROUP_CHECKS_SHEET = "Group Checks";
+const USER_CHECKS_SHEET = "Users";
+const GROUP_CHECKS_SHEET = "Groups";
 
 export async function export_data(rideId, onDbExported) {
   console.log("Exporting data to Google Drive for ride", rideId, "...");
@@ -36,6 +36,20 @@ export async function export_data(rideId, onDbExported) {
 
 async function exportGroupChecks(db, rideId) {
   try {
+    const newSheetName = `${new Date().toLocaleDateString()} ${GROUP_CHECKS_SHEET}`;
+    console.log(`Creating new group export sheet "${newSheetName}"`);
+
+    await gapi.client.sheets.spreadsheets.batchUpdate({
+      spreadsheetId: CHECK_DOCUMENT,
+      requests: [{
+        addSheet: {
+          properties: {
+            title: newSheetName,
+          }
+        }
+      }],
+    });
+
     const result = db.exec(
       "SELECT Groups.group_name, Stops.description, GroupCheck.check_in, GroupCheck.check_out FROM GroupCheck " +
         "INNER JOIN Groups ON GroupCheck.group_id = Groups.group_id " +
@@ -53,7 +67,7 @@ async function exportGroupChecks(db, rideId) {
 
     await gapi.client.sheets.spreadsheets.values.update({
       spreadsheetId: CHECK_DOCUMENT,
-      range: `'${GROUP_CHECKS_SHEET}'!A2:D${result[0].values.length + 1}`,
+      range: `'${newSheetName}'!A2:D${result[0].values.length + 1}`,
       valueInputOption: "RAW",
       resource: {
         values: result[0].values,
@@ -68,6 +82,20 @@ async function exportGroupChecks(db, rideId) {
 
 async function exportUserChecks(db, rideId) {
   try {
+    const newSheetName = `${new Date().toLocaleDateString()} ${USER_CHECKS_SHEET}`;
+    console.log(`Creating new user export sheet "${newSheetName}"`);
+
+    await gapi.client.sheets.spreadsheets.batchUpdate({
+      spreadsheetId: CHECK_DOCUMENT,
+      requests: [{
+        addSheet: {
+          properties: {
+            title: newSheetName,
+          }
+        }
+      }],
+    });
+
     const result = db.exec(
       "SELECT Users.first_name, Users.last_name, check_in, check_out FROM GroupAssignments " +
         "INNER JOIN Groups ON GroupAssignments.group_id = Groups.group_id " +
@@ -85,7 +113,7 @@ async function exportUserChecks(db, rideId) {
 
     await gapi.client.sheets.spreadsheets.values.update({
       spreadsheetId: CHECK_DOCUMENT,
-      range: `'${USER_CHECKS_SHEET}'!A2:D${result[0].values.length + 1}`,
+      range: `'${newSheetName}'!A2:D${result[0].values.length + 1}`,
       valueInputOption: "RAW",
       resource: {
         values: result[0].values,
