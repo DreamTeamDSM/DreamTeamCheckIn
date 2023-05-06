@@ -51,6 +51,7 @@ export const AppContextProvider = ({ children }) => {
             setRides(fetchedRides);
             setCurrentRide(fetchedCurrentRide);
         } catch (err) {
+            console.error(err)
             setError(err)
         }
 
