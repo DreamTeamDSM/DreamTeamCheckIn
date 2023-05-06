@@ -9,6 +9,7 @@ import {
 } from "./database.js";
 
 import { getRideById, getRides } from "./hooks/ride";
+import { check_in_participant } from "./hooks/check";
 
 const AppContext = React.createContext(
     {
@@ -26,6 +27,8 @@ const AppContext = React.createContext(
         checkIn: () => { },
         checkOut: () => { },
         changeGroup: () => { },
+        checkInStop: () => { },
+        checkOutStop: () => { },
     }
 );
 
@@ -99,6 +102,14 @@ export const AppContextProvider = ({ children }) => {
         console.log("change group");
     }
 
+    const checkInStop = async(stopId,groupId) => {
+        console.log("check in stop",stopId,groupId);
+    };
+
+    const checkOutStop = async(stopId,groupId) => {
+        console.log("check out stop",stopId,groupId);
+    };
+
     return (
         <AppContext.Provider value={{
             rides,
@@ -114,6 +125,8 @@ export const AppContextProvider = ({ children }) => {
             checkIn,
             checkOut,
             changeGroup,
+            checkInStop,
+            checkOutStop,
         }}>
             {children}
         </AppContext.Provider>

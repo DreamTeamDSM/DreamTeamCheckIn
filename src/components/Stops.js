@@ -13,52 +13,40 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useAppContext } from '../AppContext';
 
 const CHECKIN = "Check In";
 const CHECKOUT = "Check Out";
 const COMPLETE = "Complete";
 
-export default function Stops(props) {
+export default function Stops({stops,groups}) {
 
-  const groups = [
-    { id: 1, checkin: 0, checkout: 0, name: "Group 1", fulltext: "Group 1"},
-    { id: 2, checkin: 0, checkout: 0, name: "Group 2", fulltext: "Group 2"},
-    { id: 3, checkin: 0, checkout: 0, name: "Group 3", fulltext: "Group 3"},
-    { id: 4, checkin: 0, checkout: 0, name: "Group 4", fulltext: "Group 4"},
-  ];
+  const data = useAppContext();
+
+  const rows = groups.map((cur) =>{
+    return {...cur,id: cur.group_id};
+  });
 
   const groupColumns = [
     { field: 'id', headerName: 'Stop Group ID', flex: 1 },
-    { field: 'name', headerName: 'Description', flex: 1 },
+    { field: 'group_name', headerName: 'Description', flex: 1 },
     { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: renderChip },
     { field: 'fulltext', headerName: 'Fulltext', flex: 1 },
   ];
 
-  const stops = [
-    { id: 1002, route_id: 10002, description: "New Bronze at Granite Rock", order: 0 },
-    { id: 1003, route_id: 10003, description: "Old Bronze at Soft Rock", order: 1 },
-  ];
-
-  const columns = [
-    { field: 'id', headerName: 'Stop ID', flex: 1 },
-    { field: 'description', headerName: 'Description', flex: 1 },
-    { field: 'checkin', headerName: 'Check In/Out', flex: 2, renderCell: renderChip },
-  ];
-    //{ field: 'fulltext', headerName: 'Fulltext', flex: 0 },
-
   function checkIn(dispatch, id) {
     dispatch(CHECKOUT);
-    props.checkIn(id);
+    data.checkInStop(id);
   }
 
   function checkOut(dispatch, id) {
     dispatch(COMPLETE);
-    props.checkOut(id);
+    data.checkOutStop(id);
   }
 
   function reset(dispatch, id) {
     dispatch(CHECKIN);
-    props.reset(id);
+    data.reset(id);
   }
 
   function getChipStyles(label) {
@@ -147,32 +135,14 @@ export default function Stops(props) {
   React.useEffect(()=>{
     setFilterModel({
       items: [
-        { field: 'fulltext', operator: 'contains', value: props.searchText.toLowerCase() },
+        { field: 'fulltext', operator: 'contains', value: data.searchText.toLowerCase() },
       ]
     })
-  },[props.searchText]);
+  },[data.searchText]);
 
   const [filterModel, setFilterModel] = React.useState({
     items: []
   });
-
-  /*
-  return (
-    <div style={{ height: 400, width: '100%' }}>
-      <DataGrid
-        filterModel={filterModel}
-        rows={stops}
-        columns={columns}
-        pageSize={10}
-        rowsPerPageOptions={[5, 10, 20]}
-        columnVisibilityModel={{
-          id: false,
-          fulltext: false,
-        }}
-      />
-    </div>
-  );
-  */
 
   return (
     <div>
@@ -190,7 +160,7 @@ export default function Stops(props) {
               <div style={{ height: 400, width: '100%' }}>
                 <DataGrid
                   filterModel={filterModel}
-                  rows={groups}
+                  rows={rows}
                   columns={groupColumns}
                   pageSize={10}
                   rowsPerPageOptions={[5, 10, 20]}
