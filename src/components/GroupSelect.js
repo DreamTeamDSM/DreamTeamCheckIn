@@ -12,7 +12,6 @@ const GroupSelect = ({groups, userId, defaultGroupId, changeGroup}) => {
 
     return (
     <FormControl>
-        <InputLabel id="group-select-label">Group</InputLabel>
         <Select
         labelId="group-select-label"
         id="group-select"
