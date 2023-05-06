@@ -1,9 +1,6 @@
 import { auth } from "../auth";
 import { createDatabase, loadDatabase, saveDatabase } from "../database";
 
-const CLIENT_ID =
-  "592413971720-1psng6fqdu3dtn9hhvv1und82snfho3i.apps.googleusercontent.com";
-
 export const isSynced = async () => {
   //TODO - loop through isRideSynced for each ride, if any false - not synced
 };
@@ -261,11 +258,7 @@ const import_groups = async (importedDb) => {
   }
 };
 
-export async function importData(
-  handleImportedDb,
-  setLoading = () => {},
-  setError = () => {}
-) {
+export async function importData(setSuccess = () => { }, setLoading = () => { }, setError = () => { }) {
   await createDatabase((importedDb) => {
     const callback = async () => {
       try {
@@ -274,10 +267,10 @@ export async function importData(
         await import_routes(importedDb);
         await import_groups(importedDb);
 
-        console.log("Saving imported database...");
-        saveDatabase(importedDb);
+        console.log('Saving imported database...');
+        await saveDatabase(importedDb);
 
-        await handleImportedDb(importedDb);
+        await setSuccess();
       } catch (err) {
         console.error(err);
         setError(err);

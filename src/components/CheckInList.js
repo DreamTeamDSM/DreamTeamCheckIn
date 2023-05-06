@@ -70,9 +70,8 @@ const stringAvatar = (firstName, lastName) => {
 };
 
 const PersonAvatar = ({ value, firstName, lastName }) => {
-  // TODO this will become null and should be an image blob?
-  if (value !== "NULL") {
-    return <Avatar alt="User Avatar" src={value} />;
+  if (value) {
+    return <Avatar alt="User Avatar" src={value} {...stringAvatar(firstName, lastName)} />;
   } else {
     return <Avatar {...stringAvatar(firstName, lastName)} />;
   }
@@ -359,7 +358,7 @@ export default function CheckInList({
   }
 
   return (
-    <div style={{ width: "100%" }}>
+    <Box style={{ width: "100%" }} mb={8}>
       <DataGrid
         filterModel={filterModel}
         rows={rows}
@@ -369,6 +368,6 @@ export default function CheckInList({
         hideFooter={true}
         columnVisibilityModel={visibility}
       />
-    </div>
+    </Box>
   );
 }
