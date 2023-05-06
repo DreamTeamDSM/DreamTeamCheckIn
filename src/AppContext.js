@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import {
     createDatabase,
     saveDatabase,
+    seedDatabase,
     seedDatabase2,
 } from "./database.js";
 
@@ -33,7 +34,7 @@ export const AppContextProvider = ({ children }) => {
         try {
             const db = await createDatabase();
 
-            await seedDatabase2(db);
+            await seedDatabase(db);
 
             await saveDatabase(db);
 
