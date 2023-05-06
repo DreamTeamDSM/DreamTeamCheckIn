@@ -63,9 +63,6 @@ export async function createDatabase(callback) {
         callback(db);
       }
     })
-    .catch(error => {
-      console.error(error);
-    });
 
     // Seed data for UserTypes table
     db.exec(`

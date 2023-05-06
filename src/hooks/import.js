@@ -261,11 +261,7 @@ const import_groups = async (importedDb) => {
   }
 };
 
-export async function importData(
-  handleImportedDb,
-  setLoading = () => {},
-  setError = () => {}
-) {
+export async function importData(setSuccess = () => { }, setLoading = () => { }, setError = () => { }) {
   await createDatabase((importedDb) => {
     const callback = async () => {
       try {
@@ -274,10 +270,10 @@ export async function importData(
         await import_routes(importedDb);
         await import_groups(importedDb);
 
-        console.log("Saving imported database...");
-        saveDatabase(importedDb);
+        console.log('Saving imported database...');
+        await saveDatabase(importedDb);
 
-        await handleImportedDb(importedDb);
+        await setSuccess();
       } catch (err) {
         console.error(err);
         setError(err);

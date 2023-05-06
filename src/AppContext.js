@@ -8,9 +8,8 @@ import {
 
 import { importData } from './hooks/import'
 import { getRideById, getRides } from "./hooks/ride";
-import { check_in_participant, check_out_participant, reset_participant, check_in_group, check_out_group, reset_group} from "./hooks/check";
+import { check_in_participant, check_out_participant, reset_participant, check_in_group, check_out_group, reset_group } from "./hooks/check";
 import { delete_groupAssignment, updateGroupAssignment } from "./hooks/group.js";
-import { setRef } from "@mui/material";
 
 const AppContext = React.createContext(
     {
@@ -33,9 +32,9 @@ const AppContext = React.createContext(
         resetCheckIn: () => { },
         resetCheckInStop: () => { },
         removeFromGroup: () => { },
-        refresh: () => {},
+        refresh: () => { },
         exportLoading: false,
-        setExportLoading: () => {},
+        setExportLoading: () => { },
     }
 );
 
@@ -79,17 +78,25 @@ export const AppContextProvider = ({ children }) => {
     const performInitialLoad = async () => {
         try {
             setLoading(true)
-            const db = await loadDatabase();
+            let db = await loadDatabase();
+
             if (!db) {
-                saveDatabase(await createDatabase());
+                db = await createDatabase()
+                console.log('inital load')
+                await saveDatabase(db)
             }
 
             const loadedRides = await getRides();
-            const mostRecentRide = getMostRecent(loadedRides);
-            const loadedCurrentRide = await getRideById(mostRecentRide.ride_id);
 
-            setRides(loadedRides);
-            setCurrentRide(loadedCurrentRide);
+            if (loadedRides?.length) {
+                const mostRecentRide = getMostRecent(loadedRides);
+                const loadedCurrentRide = await getRideById(mostRecentRide.ride_id);
+
+                setRides(loadedRides);
+                setCurrentRide(loadedCurrentRide);
+
+                return
+            }
         } catch (err) {
             console.error(err)
             setError(err)
@@ -128,19 +135,19 @@ export const AppContextProvider = ({ children }) => {
 
     const checkInStop = async (stopId, groupId) => {
         console.log("check in stop", stopId, groupId)
-        await check_in_group(groupId,stopId)
+        await check_in_group(groupId, stopId)
         await refresh()
     };
 
     const checkOutStop = async (stopId, groupId) => {
         console.log("check out stop", stopId, groupId);
-        await check_out_group(groupId,stopId);
+        await check_out_group(groupId, stopId);
         await refresh()
     };
 
     const resetCheckInStop = async (stopId, groupId) => {
         console.log("reset checkin stop", stopId, groupId);
-        await reset_group(groupId,stopId)
+        await reset_group(groupId, stopId)
         await refresh()
     };
 
@@ -171,7 +178,7 @@ export const AppContextProvider = ({ children }) => {
                 setLoading(true)
                 await importData(async () => {
                     setError(false)
-                    await refresh()
+                    await performInitialLoad()
                 }, setLoading, setError)
             }
         }}>
