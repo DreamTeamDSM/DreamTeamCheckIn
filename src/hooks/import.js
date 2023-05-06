@@ -15,8 +15,13 @@ export const isRideSynced = async (id) => {
     `SELECT ride_id, date FROM RideExports WHERE ride_id=${id} ORDER BY date DESC LIMIT 1`
   )[0];
 
-  //get group assignments for each group ride where updated at is greater than last ride export
-  if (!latestExports?.values?.length) return false;
+
+  const updatedData = db.exec(`SELECT * FROM GroupAssignments WHERE create_date != update_date`)[0];
+
+  //No exports, and updates... we are not synced
+  if (!latestExports?.values?.length && updatedData?.values?.length) return false;
+  //No exports, and no updates.. we are not synced
+  if (!latestExports?.values?.length && !updatedData?.values?.length) return true;
 
   latestExports.values.forEach((latestExport) => {
     const notExportedAssignments = db.exec(
