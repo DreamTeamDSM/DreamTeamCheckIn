@@ -11,12 +11,15 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Search } from "./Search";
 
 import Logo from "../assets/logo";
+import { useAppContext } from '../AppContext';
 const Navigation = (props) => {
+    const { setSearchText } = useAppContext()
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
     const handleClose = (event) => {
         console.log('selected', event.currentTarget.getAttribute('ride-id'))
 
@@ -53,8 +56,8 @@ const Navigation = (props) => {
                             <MenuItem onClick={handleClose} ride-id='ride-id-something-or-other'>{'5/6/23 Cumming to Walnut Ridge'}</MenuItem>
                         </Menu>
                     </div>
-                    <div style={{marginLeft: 'auto'}}>
-                        <Search searchHandler={props.searchHandler} />
+                    <div style={{ marginLeft: 'auto' }}>
+                        <Search searchHandler={setSearchText} />
                     </div>
                 </Toolbar>
             </AppBar>
