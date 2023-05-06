@@ -4,13 +4,12 @@ import {
     createDatabase,
     loadDatabase,
     saveDatabase,
-    seedDatabase,
-    seedDatabase2,
 } from "./database.js";
 
 import { importData } from './hooks/import'
 import { getRideById, getRides } from "./hooks/ride";
 import { check_in_participant } from "./hooks/check";
+import { updateGroupAssignment } from "./hooks/group.js";
 
 const AppContext = React.createContext(
     {
@@ -104,23 +103,23 @@ export const AppContextProvider = ({ children }) => {
         console.log("check out");
     };
 
-    const changeGroup = async () => {
-        console.log("change group");
+    const changeGroup = async (userId, rideId, newGroupId) => {
+        await updateGroupAssignment(userId, rideId, newGroupId)
     }
 
-    const resetCheckIn = async(userId) => {
-        console.log("reset checkin",userId);
+    const resetCheckIn = async (userId) => {
+        console.log("reset checkin", userId);
     };
 
-    const checkInStop = async(stopId,groupId) => {
-        console.log("check in stop",stopId,groupId);
+    const checkInStop = async (stopId, groupId) => {
+        console.log("check in stop", stopId, groupId);
     };
 
-    const checkOutStop = async(stopId,groupId) => {
-        console.log("check out stop",stopId,groupId);
+    const checkOutStop = async (stopId, groupId) => {
+        console.log("check out stop", stopId, groupId);
     };
 
-    const resetCheckInStop = async(stopId,groupId) => {
+    const resetCheckInStop = async (stopId, groupId) => {
         console.log("reset checkin stop", stopId, groupId);
     };
 
