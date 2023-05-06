@@ -31,14 +31,16 @@ export default function CheckInList({ users, groups, oneStepCheckIn = false, hid
     return { ...cur, id: cur.user_id, fulltext };
   });
 
-  function checkIn(dispatch, id) {
-    //dispatch(CHECKOUT);
-    data.checkIn(id);
+  function checkIn(userId) {
+    const user = users.find((user) => user.user_id === userId)
+
+    data.checkIn(userId, user.group_id);
   }
 
-  function checkOut(dispatch, id) {
-    //dispatch(COMPLETE);
-    data.checkOut(id);
+  function checkOut(userId) {
+    const user = users.find((user) => user.user_id === userId)
+
+    data.checkOut(userId, user.group_id);
   }
 
   function reset(dispatch, id) {
