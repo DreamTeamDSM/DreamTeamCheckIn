@@ -69,7 +69,7 @@ const import_users = (importedDb) => {
           row[0],
           row[1],
           row[2],
-          "NULL", // TODO: row[3]
+          row[3],
           userTypeId,
           row[5],
           row[6],
@@ -179,7 +179,7 @@ const import_groups = async (importedDb) => {
         const iterateGroupUsers = (fn) =>
           iterateRange(
             headerRowIndex + 1,
-            headerRowIndex + GROUP_ROW_SPACING,
+            headerRowIndex + GROUP_ROW_SPACING - 3,
             groupCol,
             groupCol,
             fn
