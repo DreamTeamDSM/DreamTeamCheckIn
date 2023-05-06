@@ -66,6 +66,7 @@ export default function Riders() {
 
   function changeGroup(id,groupId) {
     console.log(id,groupId);
+    data.changeGroup(id,groupId);
   }
 
   function rednerAvatar(params) {

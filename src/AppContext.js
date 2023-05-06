@@ -21,7 +21,10 @@ const AppContext = React.createContext(
         error: false,
         setError: () => { },
         setSearchText: () => { },
-        searchText: ""
+        searchText: "",
+        checkIn: () => { },
+        checkOut: () => { },
+        changeGroup: () => { },
     }
 );
 
@@ -58,6 +61,18 @@ export const AppContextProvider = ({ children }) => {
         setLoading(false)
     }
 
+    const checkIn = async () => {
+        console.log("check in");
+    };
+
+    const checkOut = async() => {
+        console.log("check out");
+    };
+
+    const changeGroup = async() => {
+        console.log("change group");
+    }
+
     return (
         <AppContext.Provider value={{
             rides,
@@ -71,6 +86,9 @@ export const AppContextProvider = ({ children }) => {
             setError,
             setSearchText,
             searchText,
+            checkIn,
+            checkOut,
+            changeGroup,
         }}>
             {children}
         </AppContext.Provider>
