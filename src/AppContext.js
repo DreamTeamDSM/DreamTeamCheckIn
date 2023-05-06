@@ -62,6 +62,11 @@ export const AppContextProvider = ({ children }) => {
     }
 
     const refresh = async () => {
+        if (!currentRide?.Ride?.ride_id) {
+            console.error('Trying to refresh current ride, even though a current ride is not set. 🤔')
+
+            return;
+        }
         const currentRideId = currentRide.Ride.ride_id
 
         const refreshedRides = await getRides();
