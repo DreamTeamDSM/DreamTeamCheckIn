@@ -1,26 +1,5 @@
 import { CLIENT_ID } from '../config';
 
-const getTokenCallback = (callback) => {
-    return async (response) => {
-        const expirationTime = new Date();
-        expirationTime.setSeconds(expirationTime.getSeconds() + response.expires_in);
-        localStorage['expirationTime'] = expirationTime.getTime();
-
-        localStorage['accessToken'] = response.access_token;
-        gapi.client.setToken({ access_token: response.access_token });
-
-        if (callback) {
-            callback(response);
-        }
-    };
-};
-
-const client = google.accounts.oauth2.initTokenClient({
-  client_id: CLIENT_ID,
-  callback: getTokenCallback(),
-  scope: "https://www.googleapis.com/auth/spreadsheets",
-});
-
 export const auth = (onAuthenticated, onError) => {
     const expirationTimeStr = localStorage['expirationTime'];
     if (expirationTimeStr) {
@@ -35,7 +14,21 @@ export const auth = (onAuthenticated, onError) => {
     }
 
     console.log('No previous token or expired. Requesting new token.');
-    client.callback = getTokenCallback(onAuthenticated);
-    client.error_callback = onError;
-    client.requestAccessToken();
+    google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        callback: async (response) => {
+            const expirationTime = new Date();
+            expirationTime.setSeconds(expirationTime.getSeconds() + response.expires_in);
+            localStorage['expirationTime'] = expirationTime.getTime();
+
+            localStorage['accessToken'] = response.access_token;
+            gapi.client.setToken({ access_token: response.access_token });
+
+            if (onAuthenticated) {
+                onAuthenticated(response);
+            }
+        },
+        error_callback: onError,
+        scope: "https://www.googleapis.com/auth/spreadsheets",
+    }).requestAccessToken();
 };
