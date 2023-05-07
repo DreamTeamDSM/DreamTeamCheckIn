@@ -1,4 +1,4 @@
-import { auth } from "../auth.js";
+import { auth } from "../utils/auth.js";
 import { loadDatabase, saveDatabase } from "../utils/database.js";
 import { getRideById } from './ride';
 

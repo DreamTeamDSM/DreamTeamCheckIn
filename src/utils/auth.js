@@ -1,4 +1,4 @@
-import { CLIENT_ID } from './config';
+import { CLIENT_ID } from '../config';
 
 const getTokenCallback = (callback) => {
     return async (response) => {
