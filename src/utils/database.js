@@ -49,13 +49,15 @@ export async function createDatabase(callback) {
     locateFile: (file) => `https://sql.js.org/dist/${file}`,
   });
 
+  console.log(process.env);
+
   const db = new SQL.Database();
 
-  await fetch('sql/init_db.sql')
+  await fetch(((process.env.PUBLIC_URL) ? process.env.PUBLIC_URL + '/': '') + 'sql/init_db.sql')
+  //await fetch('sql/init_db.sql')
     .then(response => response.text())
     .then(data => {
       console.log("Executing create table scripts...");
-      console.log(data);
       db.exec(data);
       console.log("Successfully created db tables!");
 
