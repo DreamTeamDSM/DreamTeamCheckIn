@@ -51,7 +51,7 @@ export async function createDatabase(callback) {
 
   const db = new SQL.Database();
 
-  await fetch('/DreamTeamCheckIn/sql/init_db.sql')
+  await fetch('sql/init_db.sql')
     .then(response => response.text())
     .then(data => {
       console.log("Executing create table scripts...");
