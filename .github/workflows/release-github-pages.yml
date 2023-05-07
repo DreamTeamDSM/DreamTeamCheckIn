@@ -13,7 +13,7 @@ jobs:
     - name: Install dependencies
       run: npm ci
     - name: Stamp release version
-      run: $VERSION=${{github.event.release.tag_name}} npm run stamp-version
+      run: VERSION=${{github.event.release.tag_name}} npm run stamp-version
     - name: Perform production build
       run: npm run build
     - name: Deploy build to GitHub pages
