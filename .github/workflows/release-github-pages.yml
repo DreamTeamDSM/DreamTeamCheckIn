@@ -1,0 +1,20 @@
+name: Release GitHub Pages
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout released code
+      uses: actions/checkout@v2
+    - name: Install dependencies
+      run: npm ci
+    - name: Perform production build
+      run: npm run build
+    - name: Run unit/integration tests
+      run: npm run test
+    - name: Deploy build to GitHub pages
+      run: npm run deploy
