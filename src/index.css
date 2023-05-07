@@ -4,3 +4,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-family: "Inter";
 }
+
+main {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 116px);
+}
+
+.version-stamp {
+  margin-bottom: 20px;
+}

@@ -9,6 +9,7 @@ import { RidePanel } from "./components/RidePanel";
 import { NotificationProvider } from "./components/NotificationContext";
 
 import "@fontsource/inter";
+import { Link, Typography } from "@mui/material";
 
 function App() {
   return (
@@ -24,6 +25,11 @@ function App() {
             </Container>
           </main>
           <footer>
+            <div className="version-stamp">
+              <Typography align="center">
+                <Link href="https://github.com/DreamTeamDSM/DreamTeamCheckIn/releases/tag/REPLACE_WITH_RELEASE">vREPLACE_WITH_RELEASE</Link>
+              </Typography>
+            </div>
             <DebugBar />
           </footer>
         </ThemeProvider>

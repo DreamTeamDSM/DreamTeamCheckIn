@@ -46,7 +46,8 @@
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",
     "init-db": "node setupDb",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "stamp-version": "replace-in-file --is-regex true /REPLACE_WITH_RELEASE/g $VERSION src/App.js"
   },
   "browserslist": {
     "production": [
@@ -59,5 +60,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "replace-in-file": "^6.3.5"
   }
 }
