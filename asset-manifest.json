@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/DreamTeamCheckIn/static/css/main.553877f1.css",
-    "main.js": "/DreamTeamCheckIn/static/js/main.db6dbdc4.js",
+    "main.css": "/DreamTeamCheckIn/static/css/main.176d9827.css",
+    "main.js": "/DreamTeamCheckIn/static/js/main.0a572ba8.js",
     "static/js/787.ea6513a6.chunk.js": "/DreamTeamCheckIn/static/js/787.ea6513a6.chunk.js",
     "static/media/inter-all-400-normal.woff": "/DreamTeamCheckIn/static/media/inter-all-400-normal.8c804432e8c67741aac0.woff",
     "service-worker.js": "/DreamTeamCheckIn/service-worker.js",
@@ -13,12 +13,12 @@
     "static/media/inter-greek-ext-400-normal.woff2": "/DreamTeamCheckIn/static/media/inter-greek-ext-400-normal.3f642a92b6e57b3a4b84.woff2",
     "static/media/inter-vietnamese-400-normal.woff2": "/DreamTeamCheckIn/static/media/inter-vietnamese-400-normal.789afb71d327988e2fc8.woff2",
     "index.html": "/DreamTeamCheckIn/index.html",
-    "main.553877f1.css.map": "/DreamTeamCheckIn/static/css/main.553877f1.css.map",
-    "main.db6dbdc4.js.map": "/DreamTeamCheckIn/static/js/main.db6dbdc4.js.map",
+    "main.176d9827.css.map": "/DreamTeamCheckIn/static/css/main.176d9827.css.map",
+    "main.0a572ba8.js.map": "/DreamTeamCheckIn/static/js/main.0a572ba8.js.map",
     "787.ea6513a6.chunk.js.map": "/DreamTeamCheckIn/static/js/787.ea6513a6.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.553877f1.css",
-    "static/js/main.db6dbdc4.js"
+    "static/css/main.176d9827.css",
+    "static/js/main.0a572ba8.js"
   ]
 }
