@@ -1,4 +1,4 @@
-import { loadDatabase, saveDatabase } from "../database";
+import { loadDatabase, saveDatabase } from "../utils/database";
 
 const resultToObjArray = (result) => {
   if (!result?.values || !result.values.length === 0) return null;

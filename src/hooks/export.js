@@ -1,5 +1,5 @@
 import { auth } from "../auth.js";
-import { loadDatabase, saveDatabase } from "../database.js";
+import { loadDatabase, saveDatabase } from "../utils/database.js";
 import { getRideById } from './ride';
 
 const CHECK_DOCUMENT = "1126HuVhvZ8dSiNW3DRs6nPyIsJtNje4oysBVKkPdJ3c";

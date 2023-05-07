@@ -1,5 +1,5 @@
 import { auth } from "../auth";
-import { createDatabase, loadDatabase, saveDatabase } from "../database";
+import { createDatabase, loadDatabase, saveDatabase } from "../utils/database";
 
 export const getSyncStatus = async (rides) => {
 

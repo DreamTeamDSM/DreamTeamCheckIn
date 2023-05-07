@@ -4,7 +4,7 @@ import {
     createDatabase,
     loadDatabase,
     saveDatabase,
-} from "./database.js";
+} from "./utils/database";
 
 import { importData, getSyncStatus } from './hooks/import';
 import { getRideById, getRides } from "./hooks/ride";

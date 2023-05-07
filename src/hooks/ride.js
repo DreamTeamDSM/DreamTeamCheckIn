@@ -1,4 +1,4 @@
-import { loadDatabase } from "../database";
+import { loadDatabase } from "../utils/database";
 import { isRideSynced } from "./import";
 
 const resultToObjArray = (result) => {

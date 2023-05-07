@@ -1,4 +1,4 @@
-import { loadDatabase, saveDatabase } from '../database';
+import { loadDatabase, saveDatabase } from '../utils/database';
 
 export const reset_participant = async (user_id, group_id) => {
     let db = await loadDatabase();

@@ -4,7 +4,7 @@ import {
   destroyDatabase,
   loadDatabase,
   saveDatabaseAsFile,
-} from "../database.js";
+} from "../utils/database";
 
 function DebugBar() {
   const queryParams = new URLSearchParams(location.search);
