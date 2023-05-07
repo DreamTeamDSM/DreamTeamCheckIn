@@ -46,8 +46,7 @@
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",
     "init-db": "node setupDb",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build -r https://github.com/DreamTeamDSM/DreamTeamCheckIn.git"
+    "deploy": "gh-pages -d build"
   },
   "browserslist": {
     "production": [
