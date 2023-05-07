@@ -7,6 +7,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - name: Checkout released code
       uses: actions/checkout@v2
@@ -17,4 +19,7 @@ jobs:
     - name: Perform production build
       run: npm run build
     - name: Deploy build to GitHub pages
-      run: npm run deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        publish_dir: build
