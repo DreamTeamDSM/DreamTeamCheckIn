@@ -56,7 +56,7 @@ export const getRideById = async (id) => {
     `    WHERE Groups.ride_id=${id}` +
     `) q ON q.user_id = Users.user_id ` +
     `WHERE Users.user_type_id=(SELECT user_type_id FROM UserTypes WHERE type='Mentor') ` +
-    `ORDER BY ride_id DESC, Users.last_name,Users.first_name`
+    `ORDER BY ride_id DESC, Users.first_name`
   )[0]
   // console.log(mentors);
   const mentorsObjArray = resultToObjArray(mentors);
@@ -69,7 +69,7 @@ export const getRideById = async (id) => {
     `    WHERE Groups.ride_id=${id}` +
     `) q ON q.user_id = Users.user_id ` +
     `WHERE Users.user_type_id=(SELECT user_type_id FROM UserTypes WHERE type='Rider') ` +
-    `ORDER BY ride_id DESC, Users.last_name,Users.first_name`
+    `ORDER BY ride_id DESC, Users.first_name`
   )[0];
   console.log(id, riders);
   const ridersObjArray = resultToObjArray(riders);
