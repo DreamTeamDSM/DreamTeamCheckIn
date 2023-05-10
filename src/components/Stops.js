@@ -111,8 +111,8 @@ export default function Stops({ stops, groups, groupStops }) {
 
 function renderAvatars(params){
   const avatars = [
-    ...data.currentRide.Riders.filter(x => x.group_id == params.row.group_id),
-    ...data.currentRide.Mentors.filter(x => x.group_id == params.row.group_id)
+    ...data.currentRide.Riders.filter(x => x.group_id == params.row.group_id && x.check_in == 1),
+    ...data.currentRide.Mentors.filter(x => x.group_id == params.row.group_id && x.check_in == 1)
   ]
   console.log(avatars); // avatars.photo_url
   return (
