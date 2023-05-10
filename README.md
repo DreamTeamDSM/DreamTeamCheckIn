@@ -1,38 +1,7 @@
-# Overview
+# Dream Team Check-In
 
-This repository contains the source code for the progressive web app (PWA) that drives the Dream Team Check In system. The application can be run and installed on a device that runs Chrome (or a browser that can install PWAs) and then operated in an offline mode as well.
+A check-in/out app for the Des Moines Dream Team's rides.
 
-# Prerequisites
+## Releasing
 
-Here are the tools required to install the application:
-
-1. Node 16+
-2. Git
-3. Google account for authentication to access the Google Sheets
-
-# Installation
-
-To install the project:
-
-1. Clone the github repo to a new folder.
-2. npm install
-
-# Development
-
-The project uses a development server to test and make local changes.
-
-1. npm start
-
-
-# Build and Deployment
-
-To build the project.
-
-1. npm run build
-
-Build files are placed in the build/ folder. The application can be hosted through any typical static file hosting site.
-
-
-# Google Sheets Integration
-
-/TODO Fill this section out
+To release a new version of the app, [create a new GitHub release](https://github.com/DreamTeamDSM/DreamTeamCheckIn/releases). Once created, GitHub Actions will automatically [begin a workflow to deploy to GitHub Pages](https://github.com/DreamTeamDSM/DreamTeamCheckIn/actions/workflows/release-github-pages.yml). Additionally, the workflow will "stamp" the version to the bottom of the app with a link to the release in GitHub, so the user can easily tell which version they have installed and can view release notes for that version.
