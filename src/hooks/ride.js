@@ -50,7 +50,7 @@ export const getRideById = async (id) => {
   // console.log(rideSupport);
   const mentors = db.exec(
     `SELECT *, Users.user_id FROM Users ` +
-    `INNER JOIN UserTypes ON UserTypes.user_type_id = Users.user_type_id AND UserTypes.type='Mentor' ` +
+    `INNER JOIN UserTypes ON UserTypes.user_type_id = Users.user_type_id ` +
     `LEFT JOIN (` +
     `    SELECT * FROM GroupAssignments` +
     `    LEFT JOIN Groups on GroupAssignments.group_id=Groups.group_id` +
