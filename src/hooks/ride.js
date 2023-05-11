@@ -49,7 +49,7 @@ export const getRideById = async (id) => {
   )[0];
   // console.log(rideSupport);
   const mentors = db.exec(
-    `SELECT *, Users.user_id FROM Users ` +
+    `SELECT *, Users.user_id, q.group_name || UserTypes.type || Users.first_name AS group_summary_sort FROM Users ` +
     `INNER JOIN UserTypes ON UserTypes.user_type_id = Users.user_type_id ` +
     `LEFT JOIN (` +
     `    SELECT * FROM GroupAssignments` +
@@ -63,7 +63,7 @@ export const getRideById = async (id) => {
   const mentorsObjArray = resultToObjArray(mentors);
   // console.log(mentorsObjArray);
   const riders = db.exec(
-    `SELECT *, Users.user_id FROM Users ` +
+    `SELECT *, Users.user_id, q.group_name || UserTypes.type || Users.first_name AS group_summary_sort FROM Users ` +
     `INNER JOIN UserTypes ON UserTypes.user_type_id = Users.user_type_id ` +
     `LEFT JOIN (` +
     `    SELECT * FROM GroupAssignments` +

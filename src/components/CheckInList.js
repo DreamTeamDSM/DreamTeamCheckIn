@@ -285,6 +285,7 @@ export default function CheckInList({
       renderCell: renderAvatar(handleAvatarClick),
     },
     { field: "name", headerName: "Name", flex: 1.5 },
+    { field: "group_summary_sort", headerName: "GroupSummarySort", flex: 0 },
     { field: "fulltext", headerName: "Fulltext", flex: 0 },
   ];
 
@@ -362,6 +363,7 @@ export default function CheckInList({
     id: false,
     fulltext: false,
     type: false,
+    group_summary_sort: false,
   };
 
   if (hideGroup) {
@@ -372,9 +374,7 @@ export default function CheckInList({
     visibility["checkin"] = false;
     visibility["type"] = true;
     sortModel = [
-      { field: 'group_id', sort: 'asc' },
-      { field: 'type', sort: 'asc'},
-      { field: 'first_name', sort: 'asc' }
+      { field: 'group_summary_sort', sort: 'asc' }
     ];
   }
 
