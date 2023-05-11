@@ -50,12 +50,13 @@ export const getRideById = async (id) => {
   // console.log(rideSupport);
   const mentors = db.exec(
     `SELECT *, Users.user_id FROM Users ` +
+    `INNER JOIN UserTypes ON UserTypes.user_type_id = Users.user_type_id AND UserTypes.type='Mentor' ` +
     `LEFT JOIN (` +
     `    SELECT * FROM GroupAssignments` +
     `    LEFT JOIN Groups on GroupAssignments.group_id=Groups.group_id` +
     `    WHERE Groups.ride_id=${id}` +
     `) q ON q.user_id = Users.user_id ` +
-    `WHERE Users.user_type_id=(SELECT user_type_id FROM UserTypes WHERE type='Mentor') ` +
+    `WHERE UserTypes.type='Mentor' ` +
     `ORDER BY ride_id DESC, Users.first_name`
   )[0]
   // console.log(mentors);
@@ -63,12 +64,13 @@ export const getRideById = async (id) => {
   // console.log(mentorsObjArray);
   const riders = db.exec(
     `SELECT *, Users.user_id FROM Users ` +
+    `INNER JOIN UserTypes ON UserTypes.user_type_id = Users.user_type_id ` +
     `LEFT JOIN (` +
     `    SELECT * FROM GroupAssignments` +
     `    LEFT JOIN Groups on GroupAssignments.group_id=Groups.group_id` +
     `    WHERE Groups.ride_id=${id}` +
     `) q ON q.user_id = Users.user_id ` +
-    `WHERE Users.user_type_id=(SELECT user_type_id FROM UserTypes WHERE type='Rider') ` +
+    `WHERE UserTypes.type='Rider' ` +
     `ORDER BY ride_id DESC, Users.first_name`
   )[0];
   console.log(id, riders);
