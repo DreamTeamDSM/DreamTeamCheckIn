@@ -385,7 +385,7 @@ export default function CheckInList({
           sorting: {
             sortModel: [
               groupSummaryList && { field: 'group_id', sort: 'asc' },
-              groupSummaryList && { field: 'user_type_id', sort: 'asc'},
+              groupSummaryList && { field: 'type', sort: 'asc'},
               { field: 'first_name', sort: 'asc' }
             ],
           },
