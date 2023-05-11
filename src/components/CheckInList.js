@@ -356,6 +356,8 @@ export default function CheckInList({
     items: [],
   });
 
+  let sortModel = [{ field: 'first_name', sort: 'asc' }];
+
   const visibility = {
     id: false,
     fulltext: false,
@@ -369,6 +371,11 @@ export default function CheckInList({
   if (groupSummaryList) {
     visibility["checkin"] = false;
     visibility["type"] = true;
+    sortModel = [
+      { field: 'group_id', sort: 'asc' },
+      { field: 'type', sort: 'asc'},
+      { field: 'first_name', sort: 'asc' }
+    ];
   }
 
   return (
@@ -383,11 +390,7 @@ export default function CheckInList({
         columnVisibilityModel={visibility}
         initialState={{
           sorting: {
-            sortModel: [
-              groupSummaryList && { field: 'group_id', sort: 'asc' },
-              groupSummaryList && { field: 'type', sort: 'asc'},
-              { field: 'first_name', sort: 'asc' }
-            ],
+            sortModel: sortModel,
           },
         }}
       />
