@@ -49,7 +49,7 @@ const RideInfo = () => {
         console.log(data.setExportLoading);
         export_data(data.currentRide.Ride.ride_id, data.refresh, data.setExportLoading);
     }
-console.log(data?.currentRide?.Riders);
+
     return (
         <>
             <Box display={'flex'} justifyItems={'space-between'} mt={5} mb={'12px'}>
