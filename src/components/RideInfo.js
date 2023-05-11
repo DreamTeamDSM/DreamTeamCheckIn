@@ -85,8 +85,8 @@ const RideInfo = () => {
                         <TabPanel value={value} index={3}>
                             <CheckInList users={
                                 [
-                                    ...data?.currentRide?.Riders.filter(x => x.group_id > 0 && x.check_in == 1),
-                                    ...data?.currentRide?.Mentors.filter(x => x.group_id > 0 && x.check_in == 1)
+                                    ...data?.currentRide?.Riders.filter(x => x.group_id >= 0 && x.check_in == 1),
+                                    ...data?.currentRide?.Mentors.filter(x => x.group_id >= 0 && x.check_in == 1)
                                 ]
                             } groups={data?.currentRide?.Groups || []} groupSummaryList />
                         </TabPanel>
