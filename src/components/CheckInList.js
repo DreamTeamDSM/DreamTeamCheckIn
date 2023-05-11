@@ -80,6 +80,7 @@ export default function CheckInList({
   users,
   groups,
   oneStepCheckIn = false,
+  groupSummaryList = false,
   hideGroup = false,
 }) {
   const [isAvatarModalOpen, setAvatarModalOpen] = React.useState(false);
@@ -276,6 +277,7 @@ export default function CheckInList({
         return sortOrder.indexOf(param1.value) - sortOrder.indexOf(param2.value)
       }
     },
+    { field: "type", headerName: "User Type", flex: 1 },
     {
       field: "avatar",
       headerName: "Avatar",
@@ -283,6 +285,7 @@ export default function CheckInList({
       renderCell: renderAvatar(handleAvatarClick),
     },
     { field: "name", headerName: "Name", flex: 1.5 },
+    { field: "group_summary_sort", headerName: "GroupSummarySort", flex: 0 },
     { field: "fulltext", headerName: "Fulltext", flex: 0 },
   ];
 
@@ -354,13 +357,25 @@ export default function CheckInList({
     items: [],
   });
 
+  let sortModel = [{ field: 'first_name', sort: 'asc' }];
+
   const visibility = {
     id: false,
     fulltext: false,
+    type: false,
+    group_summary_sort: false,
   };
 
   if (hideGroup) {
     visibility["group_id"] = false;
+  }
+
+  if (groupSummaryList) {
+    visibility["checkin"] = false;
+    visibility["type"] = true;
+    sortModel = [
+      { field: 'group_summary_sort', sort: 'asc' }
+    ];
   }
 
   return (
@@ -375,7 +390,7 @@ export default function CheckInList({
         columnVisibilityModel={visibility}
         initialState={{
           sorting: {
-            sortModel: [{ field: 'first_name', sort: 'asc' }],
+            sortModel: sortModel,
           },
         }}
       />

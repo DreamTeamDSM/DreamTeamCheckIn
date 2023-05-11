@@ -71,6 +71,7 @@ const RideInfo = () => {
                             <Tab label="Riders" {...a11yProps(0)} />
                             <Tab label="Mentors" {...a11yProps(1)} />
                             <Tab label="Stops" {...a11yProps(2)} />
+                            <Tab label="Groups" {...a11yProps(3)} />
                         </Tabs>
                         <TabPanel value={value} index={0}>
                             <CheckInList users={data?.currentRide?.Riders || []} groups={data?.currentRide?.Groups || []} />
@@ -80,6 +81,14 @@ const RideInfo = () => {
                         </TabPanel>
                         <TabPanel value={value} index={2}>
                             <Stops stops={data?.currentRide?.Stops || []} groupStops={data?.currentRide?.GroupStops || []} groups={data?.currentRide?.Groups || []} />
+                        </TabPanel>
+                        <TabPanel value={value} index={3}>
+                            <CheckInList users={
+                                [
+                                    ...data?.currentRide?.Riders.filter(x => x.group_id >= 0 && x.check_in == 1),
+                                    ...data?.currentRide?.Mentors.filter(x => x.group_id >= 0 && x.check_in == 1)
+                                ]
+                            } groups={data?.currentRide?.Groups || []} groupSummaryList />
                         </TabPanel>
                     </Box>
                 </Grid>

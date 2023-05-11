@@ -49,26 +49,28 @@ export const getRideById = async (id) => {
   )[0];
   // console.log(rideSupport);
   const mentors = db.exec(
-    `SELECT *, Users.user_id FROM Users ` +
+    `SELECT *, Users.user_id, q.group_name || UserTypes.type || Users.first_name AS group_summary_sort FROM Users ` +
+    `INNER JOIN UserTypes ON UserTypes.user_type_id = Users.user_type_id ` +
     `LEFT JOIN (` +
     `    SELECT * FROM GroupAssignments` +
     `    LEFT JOIN Groups on GroupAssignments.group_id=Groups.group_id` +
     `    WHERE Groups.ride_id=${id}` +
     `) q ON q.user_id = Users.user_id ` +
-    `WHERE Users.user_type_id=(SELECT user_type_id FROM UserTypes WHERE type='Mentor') ` +
+    `WHERE UserTypes.type='Mentor' ` +
     `ORDER BY ride_id DESC, Users.first_name`
   )[0]
   // console.log(mentors);
   const mentorsObjArray = resultToObjArray(mentors);
   // console.log(mentorsObjArray);
   const riders = db.exec(
-    `SELECT *, Users.user_id FROM Users ` +
+    `SELECT *, Users.user_id, q.group_name || UserTypes.type || Users.first_name AS group_summary_sort FROM Users ` +
+    `INNER JOIN UserTypes ON UserTypes.user_type_id = Users.user_type_id ` +
     `LEFT JOIN (` +
     `    SELECT * FROM GroupAssignments` +
     `    LEFT JOIN Groups on GroupAssignments.group_id=Groups.group_id` +
     `    WHERE Groups.ride_id=${id}` +
     `) q ON q.user_id = Users.user_id ` +
-    `WHERE Users.user_type_id=(SELECT user_type_id FROM UserTypes WHERE type='Rider') ` +
+    `WHERE UserTypes.type='Rider' ` +
     `ORDER BY ride_id DESC, Users.first_name`
   )[0];
   console.log(id, riders);
