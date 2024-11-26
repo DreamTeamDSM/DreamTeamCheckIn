@@ -1,5 +1,8 @@
 name: Release GitHub Pages
 
+runs:
+  using: 'node20'
+
 on:
   release:
     types: [published]
