@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/DreamTeamCheckIn/static/css/main.176d9827.css",
-    "main.js": "/DreamTeamCheckIn/static/js/main.a978961d.js",
+    "main.js": "/DreamTeamCheckIn/static/js/main.99403cff.js",
     "static/js/453.d9375dce.chunk.js": "/DreamTeamCheckIn/static/js/453.d9375dce.chunk.js",
     "static/media/inter-all-400-normal.woff": "/DreamTeamCheckIn/static/media/inter-all-400-normal.8c804432e8c67741aac0.woff",
     "service-worker.js": "/DreamTeamCheckIn/service-worker.js",
@@ -14,11 +14,11 @@
     "static/media/inter-vietnamese-400-normal.woff2": "/DreamTeamCheckIn/static/media/inter-vietnamese-400-normal.789afb71d327988e2fc8.woff2",
     "index.html": "/DreamTeamCheckIn/index.html",
     "main.176d9827.css.map": "/DreamTeamCheckIn/static/css/main.176d9827.css.map",
-    "main.a978961d.js.map": "/DreamTeamCheckIn/static/js/main.a978961d.js.map",
+    "main.99403cff.js.map": "/DreamTeamCheckIn/static/js/main.99403cff.js.map",
     "453.d9375dce.chunk.js.map": "/DreamTeamCheckIn/static/js/453.d9375dce.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.176d9827.css",
-    "static/js/main.a978961d.js"
+    "static/js/main.99403cff.js"
   ]
 }
