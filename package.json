@@ -1,6 +1,6 @@
 {
   "name": "dream-team-checkin",
-  "version": "0.1.0",
+  "version": "1.4.2",
   "homepage": "https://dreamteamdsm.github.io/DreamTeamCheckIn",
   "private": true,
   "dependencies": {
@@ -64,5 +64,16 @@
   },
   "devDependencies": {
     "replace-in-file": "^6.3.5"
+  },
+  "description": "A check-in/out app for the Des Moines Dream Team's rides.",
+  "main": "config-overrides.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DreamTeamDSM/DreamTeamCheckIn.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DreamTeamDSM/DreamTeamCheckIn/issues"
   }
 }
