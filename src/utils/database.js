@@ -4,6 +4,86 @@ const initSqlJs = require("sql.js");
 
 const SQLITE_DB_FILE = "sqlite.db";
 
+const getSqlJsPublicPath = (relativePath) => {
+  if (process.env.PUBLIC_URL) {
+    return `${process.env.PUBLIC_URL.replace(/\/+$/,'')}/${relativePath}`;
+  }
+
+  const pathSegments = window.location.pathname.split('/').filter(Boolean);
+  const basePath = pathSegments.length > 0 ? `/${pathSegments[0]}` : '';
+  return `${basePath}/${relativePath}`.replace(/\/+/g, '/');
+};
+
+let cachedSqlJsWasm = null;
+
+const getSqlJsCandidateUrls = (file) => {
+  const candidates = [];
+  if (process.env.PUBLIC_URL) {
+    candidates.push(`${process.env.PUBLIC_URL.replace(/\/+$/,'')}/sql/${file}`);
+  }
+  candidates.push(`/sql/${file}`);
+
+  const pathSegments = window.location.pathname.split('/').filter(Boolean);
+  if (pathSegments.length > 0) {
+    candidates.push(`/${pathSegments[0]}/sql/${file}`);
+  }
+
+  return candidates.map((path) => {
+    try {
+      return new URL(path, window.location.origin).toString();
+    } catch (err) {
+      return path;
+    }
+  });
+};
+
+const fetchSqlJsWasmBinary = async (file) => {
+  if (cachedSqlJsWasm) {
+    return cachedSqlJsWasm;
+  }
+
+  const candidates = getSqlJsCandidateUrls(file);
+  console.log('sql.js wasm candidate URLs:', candidates);
+
+  for (const url of candidates) {
+    try {
+      const response = await fetch(url, { credentials: 'same-origin' });
+      const contentType = response.headers.get('content-type');
+      console.log('sql.js wasm fetch attempt', { url, status: response.status, contentType });
+
+      if (!response.ok) {
+        continue;
+      }
+
+      const arrayBuffer = await response.arrayBuffer();
+      const bytes = new Uint8Array(arrayBuffer);
+
+      if (contentType && contentType.includes('application/wasm')) {
+        cachedSqlJsWasm = bytes;
+        return bytes;
+      }
+
+      if (bytes[0] === 0x00 && bytes[1] === 0x61 && bytes[2] === 0x73 && bytes[3] === 0x6d) {
+        console.warn('sql.js wasm fetched correctly despite content type', { url, contentType });
+        cachedSqlJsWasm = bytes;
+        return bytes;
+      }
+
+      console.warn('sql.js wasm fetched but response is not wasm', { url, status: response.status, contentType, sample: new TextDecoder().decode(bytes.subarray(0, 32)) });
+    } catch (err) {
+      console.warn('sql.js wasm fetch failed', url, err);
+    }
+  }
+
+  throw new Error(`Failed to load sql.js wasm from candidate URLs: ${candidates.join(', ')}`);
+};
+
+const getSqlJsLocateFile = (file, scriptDirectory) => {
+  const result = getSqlJsPublicPath(`sql/${file}`);
+  console.log('sql.js locateFile fallback ->', { file, scriptDirectory, resolvedUrl: result, publicUrl: process.env.PUBLIC_URL, pathname: window.location.pathname });
+  return result;
+};
+
 export async function destroyDatabase() {
   console.log("Destroying database...");
   const dirHandle = await navigator.storage.getDirectory();
@@ -31,8 +111,10 @@ export async function loadDatabase() {
   const fileData = new Uint8Array(await file.arrayBuffer());
 
   console.log(`Reinitializing database from data (${file.size} bytes)...`);
+  const wasmBinary = await fetchSqlJsWasmBinary('sql-wasm.wasm');
   const SQL = await initSqlJs({
-    locateFile: (file) => `https://sql.js.org/dist/${file}`,
+    wasmBinary,
+    locateFile: getSqlJsLocateFile,
   });
 
   const db = new SQL.Database(fileData);
@@ -45,16 +127,20 @@ export async function loadDatabase() {
 export async function createDatabase(callback) {
   console.log("Creating new database...");
 
+  const wasmBinary = await fetchSqlJsWasmBinary('sql-wasm.wasm');
   const SQL = await initSqlJs({
-    locateFile: (file) => `https://sql.js.org/dist/${file}`,
+    wasmBinary,
+    locateFile: getSqlJsLocateFile,
+    onAbort: (error) => {
+      console.error('sql.js init aborted:', error);
+    },
   });
 
-  console.log(process.env);
+  console.log('sql.js createDatabase init', { PUBLIC_URL: process.env.PUBLIC_URL, location: window.location.href });
 
   const db = new SQL.Database();
 
-  await fetch(((process.env.PUBLIC_URL) ? process.env.PUBLIC_URL + '/': '') + 'sql/init_db.sql')
-  //await fetch('sql/init_db.sql')
+  await fetch(getSqlJsPublicPath('sql/init_db.sql'))
     .then(response => response.text())
     .then(data => {
       console.log("Executing create table scripts...");
@@ -371,8 +457,10 @@ export async function seedDatabase(db) {
 }
 
 export async function createEmptyDatabase() {
+  const wasmBinary = await fetchSqlJsWasmBinary('sql-wasm.wasm');
   const SQL = await initSqlJs({
-    locateFile: (file) => `https://sql.js.org/dist/${file}`,
+    wasmBinary,
+    locateFile: getSqlJsLocateFile,
   });
 
   const db = new SQL.Database();
