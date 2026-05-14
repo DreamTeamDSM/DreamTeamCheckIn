@@ -138,7 +138,10 @@ export const AppContextProvider = ({ children }) => {
         }
     };
 
-    useEffect(() => performInitialLoad(), []);
+    useEffect(() => {
+        // Call the async loader without returning its promise (avoid returning a Promise from useEffect)
+        performInitialLoad();
+    }, []);
 
     // TODO: mentors cant be checked in at the moment
     const checkIn = async (userId, groupId) => {
