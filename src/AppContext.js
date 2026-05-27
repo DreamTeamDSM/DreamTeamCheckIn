@@ -124,11 +124,19 @@ export const AppContextProvider = ({ children }) => {
 
             if (loadedRides?.length) {
                 const mostRecentRide = getMostRecent(loadedRides);
-                const loadedCurrentRide = await getRideById(mostRecentRide.ride_id);
+                const fallbackRide = loadedRides[0];
+                const rideId = mostRecentRide?.ride_id ?? fallbackRide?.ride_id;
 
                 updateSyncStatus(loadedRides);
                 setRides(loadedRides);
-                setCurrentRide(loadedCurrentRide);
+
+                if (rideId) {
+                    const loadedCurrentRide = await getRideById(rideId);
+                    setCurrentRide(loadedCurrentRide);
+                } else {
+                    console.warn('No valid ride_id found when initializing current ride');
+                    setCurrentRide(null);
+                }
             }
         } catch (err) {
             console.error(err)

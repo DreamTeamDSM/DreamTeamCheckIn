@@ -15,17 +15,23 @@ export const getSyncStatus = async (rides) => {
 };
 
 export const isRideSynced = async (id) => {
+  // Validate id early to avoid injecting `undefined` into SQL strings
+  if (id === undefined || id === null) {
+    console.error('isRideSynced called with undefined id');
+    return false;
+  }
+
   //do not allow import if we have more recent changes to GroupAssignment or GroupCheck since last RideExport
   const db = await loadDatabase();
   let isSynced = true;
 
   //get latest export for each ride
   const latestExports = db.exec(
-    `SELECT ride_id, date FROM RideExports WHERE ride_id=${id} ORDER BY date DESC LIMIT 1`
+    `SELECT ride_id, date FROM RideExports WHERE ride_id=${Number(id)} ORDER BY date DESC LIMIT 1`
   )[0];
 
 
-  const updatedData = db.exec(`SELECT * FROM GroupAssignments LEFT JOIN Groups on Groups.group_id=GroupAssignments.group_id WHERE create_date != update_date and ride_id=${id}`)[0];
+  const updatedData = db.exec(`SELECT * FROM GroupAssignments LEFT JOIN Groups on Groups.group_id=GroupAssignments.group_id WHERE create_date != update_date and ride_id=${Number(id)}`)[0];
 
   //No exports, and updates... we are not synced
   if (!latestExports?.values?.length && updatedData?.values?.length) return false;
@@ -61,7 +67,7 @@ const USER_ROUTE_SPREADSHEET_ID =
   "1imhKCBAr6SbfcvMs_I3hqQHPCZxHANd7x0mFehFSleA";
 
 const import_users = (importedDb, pushNotification) => {
-  gapi.client.sheets.spreadsheets.values
+  return gapi.client.sheets.spreadsheets.values
     .get({
       spreadsheetId: USER_ROUTE_SPREADSHEET_ID,
       range: "'Users'!A:G",
@@ -77,12 +83,11 @@ const import_users = (importedDb, pushNotification) => {
 
         const userTypeId = getUserTypeIdByName(importedDb, row[4]);
         if (!userTypeId) {
-          const error = `User type ${row[4]} not found`
-          pushNotification(message, 'error')
+          const error = `User type ${row[4]} not found`;
+          pushNotification(error, 'error');
           console.error(error);
           continue;
         }
-
 
         importedDb.run("INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?)", [
           row[0],
@@ -97,9 +102,8 @@ const import_users = (importedDb, pushNotification) => {
         urlsToCache.push(row[3]);
       }
 
-      console.log("urlsToCache",urlsToCache);
+      console.log("urlsToCache", urlsToCache);
       cache_urls(urlsToCache);
-
     });
 };
 
@@ -341,15 +345,49 @@ export const triggerImport = () => {
 };
 
 function getRouteIdByName(db, routeName) {
-  const result = db.exec("SELECT * FROM Routes WHERE route_name = ?", [
-    routeName,
-  ]);
+  if (!routeName) return null;
 
-  if (result.length === 0) return null;
-  if (result[0].values.length === 0) return null;
-  if (result[0].values[0].length === 0) return null;
+  // Try exact match first
+  try {
+    const safeName = JSON.stringify(routeName);
+    let result = db.exec(`SELECT route_id, route_name FROM Routes WHERE route_name = ${safeName}`);
+    if (result.length && result[0].values.length) return result[0].values[0][0];
 
-  return result[0].values[0][0];
+    // Try trimmed exact match
+    const trimmed = routeName.trim();
+    if (trimmed !== routeName) {
+      const safeTrim = JSON.stringify(trimmed);
+      result = db.exec(`SELECT route_id, route_name FROM Routes WHERE route_name = ${safeTrim}`);
+      if (result.length && result[0].values.length) return result[0].values[0][0];
+    }
+
+    // Fetch all routes and attempt case-insensitive or fuzzy matches
+    const all = db.exec(`SELECT route_id, route_name FROM Routes`);
+    const available = (all.length && all[0].values) ? all[0].values : [];
+    const lcTarget = routeName.trim().toLowerCase();
+
+    for (const row of available) {
+      const id = row[0];
+      const name = row[1] || '';
+      if (name.trim().toLowerCase() === lcTarget) return id;
+    }
+
+    for (const row of available) {
+      const id = row[0];
+      const name = row[1] || '';
+      if (name.toLowerCase().includes(lcTarget)) {
+        console.warn(`getRouteIdByName: fuzzy matched "${routeName}" -> "${name}" (route_id=${id})`);
+        return id;
+      }
+    }
+
+    const names = available.map(r => r[1]);
+    console.error(`No matching route for "${routeName}" (must match exactly). Available routes: ${names.join(', ')}`);
+  } catch (ex) {
+    console.error('Error querying routes in getRouteIdByName', ex);
+  }
+
+  return null;
 }
 
 function createRide(db, routeId, date) {
@@ -388,9 +426,10 @@ function createSupportAssignment(db, userId, rideId, type) {
 }
 
 function getUserIdByName(db, fullName) {
+  if (!fullName) return null;
+  const safeName = JSON.stringify(fullName);
   const result = db.exec(
-    "SELECT * FROM Users WHERE first_name || ' ' || last_name = ?",
-    [fullName]
+    `SELECT * FROM Users WHERE first_name || ' ' || last_name = ${safeName}`
   );
 
   if (result.length === 0) return null;
@@ -401,7 +440,9 @@ function getUserIdByName(db, fullName) {
 }
 
 function getUserTypeIdByName(db, name) {
-  const result = db.exec("SELECT * FROM UserTypes WHERE type = ?", [name]);
+  if (!name) return null;
+  const safeName = JSON.stringify(name);
+  const result = db.exec(`SELECT * FROM UserTypes WHERE type = ${safeName}`);
 
   if (result.length === 0) return null;
   if (result[0].values.length === 0) return null;
@@ -411,11 +452,10 @@ function getUserTypeIdByName(db, name) {
 }
 
 function getStopIdsForRouteId(db, routeId) {
+  if (routeId === undefined || routeId === null) return null;
+  const rid = Number(routeId);
   const result = db.exec(
-    "SELECT * FROM Stops " +
-    "INNER JOIN Routes ON Routes.route_id = Stops.route_id " +
-    "WHERE Routes.route_id = ?",
-    [routeId]
+    `SELECT * FROM Stops INNER JOIN Routes ON Routes.route_id = Stops.route_id WHERE Routes.route_id = ${rid}`
   );
 
   if (result.length === 0) return null;

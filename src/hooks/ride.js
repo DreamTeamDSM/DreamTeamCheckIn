@@ -2,7 +2,7 @@ import { loadDatabase } from "../utils/database";
 import { isRideSynced } from "./import";
 
 const resultToObjArray = (result) => {
-  if (!result?.values || !result.values.length === 0) return null;
+  if (!result?.values || result.values.length === 0) return null;
 
   const ObjArray = result.values.map(value => {
     let obj = {};
@@ -33,6 +33,10 @@ export const getRides = async () => {
 
 export const getRideById = async (id) => {
   //So we can populate page with info once ride is selected
+  if (id === undefined || id === null) {
+    console.error('getRideById called with undefined id');
+    return null;
+  }
   const db = await loadDatabase();
   const ride = db.exec(
     `SELECT route_id, ride_id, date FROM Rides WHERE ride_id=${id}`
