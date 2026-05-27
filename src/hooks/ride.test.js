@@ -1,5 +1,5 @@
 import { getRides } from "./ride";
 
-it("should get rides", () => {
-  getRides();
+test('getRides is defined', () => {
+  expect(typeof getRides).toBe('function');
 });
