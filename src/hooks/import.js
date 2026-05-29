@@ -107,21 +107,41 @@ const import_users = (importedDb, pushNotification) => {
     });
 };
 
-const cache_urls = (inputUrls) => {
-  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+const cache_urls = async (inputUrls) => {
+  const urls = (inputUrls || []).filter((cur) => !!cur);
 
+  if (!urls.length) return;
 
-    const urls = inputUrls.filter((cur)=>{
-      return (!!cur);
-    });
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller && 'caches' in window) {
+    try {
+      const cacheName = 'user-avatar-cache-v1';
+      const cache = await caches.open(cacheName);
 
-    precacheAndRoute(urls, {
-      // cache configuration options
-      maxAgeSeconds: 60 * 60 * 24 * 14
-    });
-    console.log("Cached user avatar images with precache in workbox");
+      // Use addAll but fall back to individual requests if one fails
+      try {
+        await cache.addAll(urls);
+      } catch (err) {
+        // addAll can fail if any request errors; add entries individually
+        await Promise.all(
+          urls.map(async (u) => {
+            try {
+              const res = await fetch(u, { mode: 'no-cors' });
+              if (res && (res.ok || res.type === 'opaque')) {
+                await cache.put(u, res.clone());
+              }
+            } catch (e) {
+              console.warn('Failed to fetch/cache', u, e);
+            }
+          })
+        );
+      }
+
+      console.log('Cached user avatar images in browser cache:', urls.length);
+    } catch (e) {
+      console.error('Error caching user avatar images', e);
+    }
   } else {
-    console.log("skipping precache of user avatar images, can't find service worker");
+    console.log("skipping precache of user avatar images, can't find service worker or caches API");
   }
 };
 
